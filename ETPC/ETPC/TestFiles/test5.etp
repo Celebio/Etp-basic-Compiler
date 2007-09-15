@@ -1,0 +1,43 @@
+
+type userd
+	champ1 as integer
+	isim as string
+	tutu as integer
+	tur as personne
+end type
+
+type personne
+	nom as string
+	num as userd
+	yoyo as integer
+	age as integer
+end type
+
+procedure kjhfd:(fs as integer,sdf as string)
+	'a=-(53+d)-34
+	'b=-(sdf*24-32)+azea*not 5*432 and evz-23
+	local erv as integer
+	local b as personne
+	local rty as integer
+	local e as integer
+	local a as integer
+	
+	'a= erv[erv[2].nom].num[rty.champ1].champ1
+	'a= rty.champ1
+	
+	'a=erv+rty
+	
+	'a=erv+43+rty-e/erv+e*a*erv-rty/a
+	
+	'oiu = 9874
+	
+	'a=e+(erv+(rty+(a+35)))
+	'a=e+(erv+(rty+(a+35)))
+	'a=e+erv+rty+a+35
+	'a= e+(erv*(erv*(rty+(e+(a*(erv*(rty+(e+a+rty*rty+ a+35+ a+35*(e/rty/rty+ a+35*erv*a)/e+rty+ a+35*erv+rty+ a+35*(e/rty/erv*a)))))))))
+	
+	'a=a+43+b.num.tur.num.tutu+3598
+	
+	
+	
+	

@@ -1,0 +1,18 @@
+
+
+les expressions booleenes (avec des variables)
+revoir la verif sémantique
+les tableaux
+les instructions (for, goto label,foreach)
+les floats
+
+aide pour l'éditeur de code
+
+
+public ag [43*b] as integer
+
+public a ... puis local a ne marche pas
+
+isConstant
+
+

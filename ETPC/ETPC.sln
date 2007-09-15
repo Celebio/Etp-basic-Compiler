@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ETPC", "ETPC\ETPC.vcproj", "{85536BCA-88D5-4821-9292-911C8E87275E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		DebutMSIL|Win32 = DebutMSIL|Win32
+		Release|Win32 = Release|Win32
+		ReleaseMSIL|Win32 = ReleaseMSIL|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{85536BCA-88D5-4821-9292-911C8E87275E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{85536BCA-88D5-4821-9292-911C8E87275E}.Debug|Win32.Build.0 = Debug|Win32
+		{85536BCA-88D5-4821-9292-911C8E87275E}.DebutMSIL|Win32.ActiveCfg = DebutMSIL|Win32
+		{85536BCA-88D5-4821-9292-911C8E87275E}.DebutMSIL|Win32.Build.0 = DebutMSIL|Win32
+		{85536BCA-88D5-4821-9292-911C8E87275E}.Release|Win32.ActiveCfg = Release|Win32
+		{85536BCA-88D5-4821-9292-911C8E87275E}.Release|Win32.Build.0 = Release|Win32
+		{85536BCA-88D5-4821-9292-911C8E87275E}.ReleaseMSIL|Win32.ActiveCfg = ReleaseMSIL|Win32
+		{85536BCA-88D5-4821-9292-911C8E87275E}.ReleaseMSIL|Win32.Build.0 = ReleaseMSIL|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

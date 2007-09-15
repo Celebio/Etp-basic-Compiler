@@ -1,0 +1,24 @@
+
+
+
+procedure main:
+    
+        local a as integer
+        'local byter as byte
+        local gdf as long
+
+        a = 32*5+b/c-sqrt(474)
+        
+        'a=0
+        'byter=10
+        'dispbyte(byter)
+        
+        'for byter=255 to 0 step -1
+         '   dispbyte(byter)
+        'next
+        'do
+        '    dispint(a)
+        '    a = a+(1+2)
+        'loop while a<824
+
+
