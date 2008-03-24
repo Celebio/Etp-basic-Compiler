@@ -24,8 +24,8 @@
 
 
 #define max(a,b) (a>b?a:b)
-#define max3(a,b,c)  ( a>b ? (max(a,c)) : (max(b,c)) )
-
+//#define max3(a,b,c)  ( a>b ? (max(a,c)) : (max(b,c)) )
+#define max3(a,b,c) (max(a,max(b,c)))		// Geyelin optimisation
 
 Gen68k::Gen68k(void){
 	RegPile=new PileRegTemp68k(&ILcoder,&Stack);
