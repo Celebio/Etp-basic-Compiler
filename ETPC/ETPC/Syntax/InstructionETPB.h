@@ -32,7 +32,7 @@ typedef enum InstrTypeEnum {
 	INS_CALL,
 	INS_RETURN,
 	INS_UNKNOWN
-};
+} InstrTypeEnum;
 
 
 class InstructionETPB :
@@ -42,7 +42,7 @@ private:
 	InstrTypeEnum nat;
 	union {
 		struct {
-			CNoeud* ExprAssigned;				// expression de la chose affecté
+			CNoeud* ExprAssigned;				// expression de la chose affect?
 			CNoeud* ExprArbre;					// l'arbre de l'expression de l'affectation
 		} affect;
 
@@ -51,11 +51,11 @@ private:
 			Collection* IfCorps;					// le corps de ce qu'il faut executer pour le IF
 			Collection* ExprElseIf;							// les expressions des elseIf
 			Collection* ElseCorps;					// le corps de ce qu'il faut executer pour le else
-			Collection* ElseIfCorps;	// les corps des différents bloc des endif
+			Collection* ElseIfCorps;	// les corps des diff?rents bloc des endif
 		} conditionIF;
 
 		struct {
-			CNoeud* ExprAssigned;					// expression de la chose affecté
+			CNoeud* ExprAssigned;					// expression de la chose affect?
 			CNoeud* ExprArbreINIT;					// l'arbre de l'expression de l'affectation
 			CNoeud* ExprArbreTO;					// l'expression de la limite "To ..."
 			CNoeud* ExprArbreSTEP;					// l'expression de la limite "To ..."
@@ -67,9 +67,9 @@ private:
 			Collection* Corps;		// le corps de ce qu'il faut executer dans la boucle
 		} structDO;
 
-		VariableItem* Declared;		// la variable déclarée
+		VariableItem* Declared;		// la variable d?clar?e
 		CNoeud* CallExpr;		// l'expression de l'appel de procedure
-		CNoeud* ReturnExpr;		// l'expression retournée
+		CNoeud* ReturnExpr;		// l'expression retourn?e
 	} val;
 
 	void printProblem();
@@ -79,7 +79,7 @@ public:
 	InstructionETPB(InstrTypeEnum bNat);
 	~InstructionETPB(void);
 
-	// les obligés
+	// les oblig?s
 	void Detruir();
 	void Afficher();
 

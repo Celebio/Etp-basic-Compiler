@@ -21,23 +21,23 @@ procedure kjhfd:(fs as integer,sdf as string)
 	local rty as integer
 	local e as integer
 	local a as integer
-	
+
 	'a= erv[erv[2].nom].num[rty.champ1].champ1
 	'a= rty.champ1
-	
+
 	'a=erv+rty
-	
+	a = 5
 	'a=erv+43+rty-e/erv+e*a*erv-rty/a
-	
+
 	'oiu = 9874
-	
+
 	'a=e+(erv+(rty+(a+35)))
 	'a=e+(erv+(rty+(a+35)))
 	'a=e+erv+rty+a+35
 	'a= e+(erv*(erv*(rty+(e+(a*(erv*(rty+(e+a+rty*rty+ a+35+ a+35*(e/rty/rty+ a+35*erv*a)/e+rty+ a+35*erv+rty+ a+35*(e/rty/erv*a)))))))))
-	
+
 	'a=a+43+b.num.tur.num.tutu+3598
-	
-	
-	
-	
+
+
+
+

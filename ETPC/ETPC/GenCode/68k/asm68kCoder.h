@@ -25,9 +25,9 @@
 #include "VirtStack68k.h"
 #include "noeud.h"
 
-typedef enum LigneNature68k {NA_ETIQ,NA_INST,NA_COMMENT,NA_UNKNOWN};
-typedef enum OperandeNature68k {OP_DIRECT,OP_INDIRECT,OP_INDEXE,OP_ENTIER,OP_FLOAT,OP_CHAINE,OP_ETIQ};
-typedef enum size_op68k{ SZ_UNKNOWN=-1,SZ_NA=-2,SZ_B=1,SZ_W=2,SZ_L=4,SZ_F=10 };
+typedef enum LigneNature68k {NA_ETIQ,NA_INST,NA_COMMENT,NA_UNKNOWN} LigneNature68k;
+typedef enum OperandeNature68k {OP_DIRECT,OP_INDIRECT,OP_INDEXE,OP_ENTIER,OP_FLOAT,OP_CHAINE,OP_ETIQ} OperandeNature68k;
+typedef enum size_op68k{ SZ_UNKNOWN=-1,SZ_NA=-2,SZ_B=1,SZ_W=2,SZ_L=4,SZ_F=10 } size_op68k;
 
 
 
@@ -59,7 +59,7 @@ typedef enum InsOpEnum68k{
 	SLT,
 
 	RTS,
-};
+} InsOpEnum68k;
 
 struct Operande68k {
 	OperandeNature68k nat;
@@ -95,7 +95,7 @@ struct LigneCode68k{
 	union{
 		InstrIL* instr;
 		char* etiq;
-		char* comment;
+		const char* comment;
 	} val;
 	LigneCode68k* next;
 };
@@ -123,7 +123,7 @@ public:
 
 	void SetStream(std::ofstream* bStream) {mStream= bStream; }
 
-	InsOpEnum68k asm68kCoder::NodeToOp(CNoeud* bNoeud);
+	InsOpEnum68k NodeToOp(CNoeud* bNoeud);
 
 	Operande68k* createOp(reg_id bRegDirect);
 	Operande68k* createOp(int bDep,reg_id bRegBase);
@@ -139,7 +139,7 @@ public:
 	void Add(InsOpEnum68k bOp,Operande68k* bOp1,Operande68k* bOp2,size_op68k bSize);
 	void Add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize);
 	void Add(InsOpEnum68k bOp);
-	void Add(char* bComment);
+	void Add(const char* bComment);
 	void AddEtiq(char* bEtiq);
 
 

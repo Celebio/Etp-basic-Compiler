@@ -22,7 +22,7 @@
 #include <math.h>
 
 #include <fstream>
-#include <string> 
+#include <string>
 #include <iostream>
 
 #include "asmz80Coder.h"
@@ -31,7 +31,7 @@
 #include "InstructionETPB.h"
 
 
-typedef enum NatureOpz80{NOz80_REG,NOz80_DVAL,NOz80_DADR};
+typedef enum NatureOpz80{NOz80_REG,NOz80_DVAL,NOz80_DADR}NatureOpz80;
 
 
 
@@ -41,7 +41,7 @@ private:
 	Collection* VariablesPublic;
 	Collection* Types;
 	Collection* Fonctions;
-	
+
 	char outputFileName[300];
 	asmz80Coder ILcoder;
 	//VirtStackz80 Stack;
@@ -53,15 +53,15 @@ private:
 
 	int NbRegArith(CNoeud* bNoeud,NatureOpz80 bNat);
 	int NbRegObjet(CNoeud* bNoeud,NatureOpz80 bNat);
-	
+
 //	void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operandez80** Op);
 //	void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operandez80** Op);
 
 public:
 	Genz80(void);
-	Genz80(char *oFileName);
+	Genz80(const char *oFileName);
 	~Genz80(void);
-	
+
 	void TestGenerate();
 	void GenerCode();
 

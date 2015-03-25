@@ -25,9 +25,9 @@
 #include "noeud.h"
 
 
-typedef enum LigneNaturez80 {NAz80_ETIQ,NAz80_INST,NAz80_COMMENT,NAz80_UNKNOWN};
-typedef enum OperandeNaturez80 {OPz80_DIRECT,OPz80_INDIRECT,OPz80_INDEXE,OPz80_ENTIER,OPz80_FLOAT,OPz80_CHAINE,OPz80_ETIQ};
-typedef enum size_opz80{ SZz80_UNKNOWN=-1,SZz80_B=1,SZz80_W=2,SZz80_L=4,SZz80_F=10 };
+typedef enum LigneNaturez80 {NAz80_ETIQ,NAz80_INST,NAz80_COMMENT,NAz80_UNKNOWN} LigneNaturez80;
+typedef enum OperandeNaturez80 {OPz80_DIRECT,OPz80_INDIRECT,OPz80_INDEXE,OPz80_ENTIER,OPz80_FLOAT,OPz80_CHAINE,OPz80_ETIQ} OperandeNaturez80;
+typedef enum size_opz80{ SZz80_UNKNOWN=-1,SZz80_B=1,SZz80_W=2,SZz80_L=4,SZz80_F=10 } size_opz80;
 
 typedef enum InsOpEnumz80{
 	z80_OPB,		// unknown opbin
@@ -36,7 +36,7 @@ typedef enum InsOpEnumz80{
 	z80_SUB,
 	z80_JR,
 	z80_RTS,
-};
+} InsOpEnumz80;
 
 struct Operandez80 {
 	OperandeNaturez80 nat;

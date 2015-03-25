@@ -17,7 +17,7 @@
 #ifndef _LECTUREFICHIER_H_1
 //#define _LECTUREFICHIER_H_1
 
-extern void AfficheContenu(void *BText);
+//extern void AfficheContenu(void *BText);
 extern void Quit();
 extern long FileSize;
 

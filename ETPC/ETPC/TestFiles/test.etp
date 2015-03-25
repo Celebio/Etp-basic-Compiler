@@ -2,17 +2,19 @@
 
 
 procedure main:
-    
+
         local a as integer
+        local b as integer
+        local c as integer
         'local byter as byte
         local gdf as long
 
-        a = 32*5+b/c-sqrt(474)
-        
+        a = 32*5+b/c    '-sqrt(474)
+
         'a=0
         'byter=10
         'dispbyte(byter)
-        
+
         'for byter=255 to 0 step -1
          '   dispbyte(byter)
         'next

@@ -30,9 +30,9 @@ typedef enum VarTypeEnum {
 	TP_LIST,
 	TP_BYTE,
 	TP_USER,		// user-defined type, dans ce cas, regarder le champs Expr
-	TP_VOID,		// le type retourné par une procédure
+	TP_VOID,		// le type retourn? par une proc?dure
 	TP_UNKNOWN
-};
+} VarTypeEnum;
 
 
 

@@ -32,14 +32,14 @@ typedef enum NatureNoeud{
 	NOEUD_OPERANDE_VARIABLE,
 	NOEUD_OPERANDE_FONCTION,
 	NOEUD_OPERANDE_ARRAY
-};
+} NatureNoeud;
 
 
-typedef enum natureOperator {NOTOP,OPBIN,OPUNG,OPUND};
+typedef enum natureOperator {NOTOP,OPBIN,OPUNG,OPUND} natureOperator;
 
-// les opérateurs dans l'ordre de priorité
+// les op?rateurs dans l'ordre de priorit?
 typedef enum TypeOptor{
-	
+
 	// c'est pas un operateur
 	OPTOR_UNKNOWN,
 	// operateur virtuel '('
@@ -52,8 +52,8 @@ typedef enum TypeOptor{
 	OPTOR_EXCLAM,
 	//OPTOR_NOT,		 NOT doit etre apres INF,INFEQ,etc...
 	OPTOR_MOINSUNAIRE,
-	// opérations arithmétiques
-	
+	// op?rations arithm?tiques
+
 	OPTOR_DIV,
 	OPTOR_MULT,
 	OPTOR_SUB,
@@ -63,7 +63,7 @@ typedef enum TypeOptor{
 	OPTOR_ARI_OR,
 	OPTOR_ARI_XOR,
 
-	// opérations sur les strings
+	// op?rations sur les strings
 	OPTOR_CONCAT,
 	// comparateurs
 	OPTOR_INF,
@@ -75,27 +75,27 @@ typedef enum TypeOptor{
 
 	OPTOR_NOT,		// un autre operateur unaire de negation logique ou arithmetique
 
-	// opérateurs logiques
+	// op?rateurs logiques
 	OPTOR_CMP_AND, // ..AND pour le comparaison
 	OPTOR_CMP_OR,
 	OPTOR_CMP_XOR,
 
 	// le modulo
 	OPTOR_MOD
-};
+} TypeOptor;
 
 
 extern TypeOptor GiveOperatorType(enumTokenType bToken);
 
 class CNoeud :
-	public ColItem	
+	public ColItem
 {
 private:
 	NatureNoeud mNature;
 	CNoeud* mFilsG;
 	CNoeud* mFilsD;
 	CNoeud* Successeur[30];	// pour les arbres non-binaires
-	
+
 	CNoeud* mParent;
 	TAG* mTAG;
 
@@ -103,7 +103,7 @@ private:
 	VarTypeType mType;
 	natureOperator mOperType;
 
-	int nbReg;		// nombre de registre nécessaire
+	int nbReg;		// nombre de registre n?cessaire
 	int valConstInt;
 	float valConstFloat;
 	bool valConstBool;
@@ -111,7 +111,7 @@ private:
 
 	natureOperator GetOperType(TAG* bTag);
 public:
-	
+
 	CNoeud(void);
 	CNoeud(TAG* bTAG);
 	~CNoeud(void);
@@ -124,7 +124,7 @@ public:
 	void Afficher();
 	void Afficher(int indent);
 	char *ImageNoeud();
-	
+
 	void DestroyArbre();
 	void SetFilsG(CNoeud* bNoeud);
 	void SetFilsD(CNoeud* bNoeud);

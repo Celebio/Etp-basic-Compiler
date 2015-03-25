@@ -22,7 +22,7 @@
 #include <math.h>
 
 #include <fstream>
-#include <string> 
+#include <string>
 #include <iostream>
 
 #include "asm68kCoder.h"
@@ -31,7 +31,7 @@
 #include "PileRegTemp68k.h"
 
 
-typedef enum NatureOp{NO_REG,NO_DVAL,NO_DADR};
+typedef enum NatureOp{NO_REG,NO_DVAL,NO_DADR}NatureOp;
 
 
 
@@ -41,9 +41,9 @@ private:
 	Collection* VariablesPublic;
 	Collection* Types;
 	Collection* Fonctions;
-	
+
 	char outputFileName[300];
-	
+
 	asm68kCoder ILcoder;
 	VirtStack68k Stack;
 	PileRegTemp68k* RegPile;
@@ -67,9 +67,9 @@ private:
 
 public:
 	Gen68k(void);
-	Gen68k(char *oFileName);
+	Gen68k(const char *oFileName);
 	~Gen68k(void);
-	
+
 	void TestGenerate();
 	void GenerCode();
 
@@ -77,7 +77,7 @@ public:
 							Collection* BVariablesPublic,
 							Collection* BTypes,
 							Collection* BFonctions);
-	
+
 };
 
 #endif

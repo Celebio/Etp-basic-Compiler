@@ -21,9 +21,9 @@
 
 
 
-typedef enum regz80_id {A, B, C, D, E, F, H, L,IX ,UNDEFZ80REG};
+typedef enum regz80_id {A, B, C, D, E, F, H, L,IX ,UNDEFZ80REG} regz80_id;
 
-#define SP IX			
+#define SP IX
 
 struct VirtStackElemz80{
 	int deepth;

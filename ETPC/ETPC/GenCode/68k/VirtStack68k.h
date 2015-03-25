@@ -21,7 +21,7 @@
 
 
 
-typedef enum reg_id {A0,A1,A2,A3,A4,A5,A6,A7, D0,D1,D2,D3,D4,D5,D6,D7 ,UNDEFREG};
+typedef enum reg_id {A0,A1,A2,A3,A4,A5,A6,A7, D0,D1,D2,D3,D4,D5,D6,D7 ,UNDEFREG} reg_id;
 
 #define SP_REG A7
 

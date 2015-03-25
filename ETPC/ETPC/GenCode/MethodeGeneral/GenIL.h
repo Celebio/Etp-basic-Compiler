@@ -10,7 +10,7 @@
 #include "InstructionETPB.h"
 #include "PileRegTemp.h"
 
-typedef enum NatureOp{NO_REG,NO_DVAL,NO_DADR};
+typedef enum NatureOp{NO_REG,NO_DVAL,NO_DADR}NatureOp;
 
 
 class GenIL{
@@ -28,14 +28,14 @@ private:
 
 	int NbRegArith(CNoeud* bNoeud,NatureOp bNat);
 	int NbRegObjet(CNoeud* bNoeud,NatureOp bNat);
-	
+
 	void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** Op);
 	void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** Op);
 
 public:
 	GenIL(void);
 	~GenIL(void);
-	
+
 	void TestGenerate();
 	void GenerCode();
 

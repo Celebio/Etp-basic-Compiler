@@ -20,7 +20,7 @@
 
 using namespace std;
 
-char* ImageOp68k[]={
+const char* ImageOp68k[]={
 	"???",
 	"MOVE",
 	"ADD",
@@ -105,9 +105,9 @@ InsOpEnum68k asm68kCoder::NodeToOp(CNoeud* bNoeud)
 	case OPTOR_INFEQ:
 		return BLE;
 		break;
-	
+
 	}
-	
+
 	return OPB;
 }
 
@@ -265,7 +265,7 @@ void asm68kCoder::Add(InsOpEnum68k bOp,Operande68k* bOp1,Operande68k* bOp2,size_
 	aux1->op2=new Operande68k(*bOp2);
 	aux1->Size=bSize;
 	aux->val.instr=aux1;
-	
+
 	if (generatedCode==NULL){
 		generatedCode=aux;
 		lastAdded=generatedCode;
@@ -287,7 +287,7 @@ void asm68kCoder::Add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize){
 	aux1->op2=NULL;
 	aux1->Size=bSize;
 	aux->val.instr=aux1;
-	
+
 	if (generatedCode==NULL){
 		generatedCode=aux;
 		lastAdded=generatedCode;
@@ -309,7 +309,7 @@ void asm68kCoder::Add(InsOpEnum68k bOp){
 	aux1->op2=NULL;
 	aux1->Size=SZ_NA;
 	aux->val.instr=aux1;
-	
+
 	if (generatedCode==NULL){
 		generatedCode=aux;
 		lastAdded=generatedCode;
@@ -322,11 +322,11 @@ void asm68kCoder::Add(InsOpEnum68k bOp){
 	Afficher();
 #endif
 }
-void asm68kCoder::Add(char* bComment){
+void asm68kCoder::Add(const char* bComment){
 	LigneCode68k* aux=new LigneCode68k();
 	aux->nat=NA_COMMENT;
 	aux->val.comment=bComment;
-	
+
 	if (generatedCode==NULL){
 		generatedCode=aux;
 		lastAdded=generatedCode;
@@ -334,7 +334,7 @@ void asm68kCoder::Add(char* bComment){
 	else{
 		lastAdded->next=aux;
 		lastAdded=aux;
-	}	
+	}
 #ifdef AFF_EACH_INST
 	Afficher();
 #endif
@@ -344,7 +344,7 @@ void asm68kCoder::AddEtiq(char* bEtiq){
 	LigneCode68k* aux=new LigneCode68k();
 	aux->nat=NA_ETIQ;
 	aux->val.etiq=bEtiq;
-	
+
 	if (generatedCode==NULL){
 		generatedCode=aux;
 		lastAdded=generatedCode;
@@ -433,7 +433,7 @@ Operande68k* asm68kCoder::createOpEtiq(char* bvalEtiq){
 
 Operande68k* asm68kCoder::createOpEtiq(){
 	Operande68k* aux=new Operande68k();
-	// génération automatique des étiquettes distinctes
+	// g?n?ration automatique des ?tiquettes distinctes
 	// to do: a transformer en string de stdlib
 	char* newString = (char*)malloc(300);
 	sprintf(newString,"%s%i",".sysetiq",etiqNo);

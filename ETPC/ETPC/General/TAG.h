@@ -23,7 +23,7 @@
 
 #define TABSIZE 4		// le nombre d'espaces dans un TAB
 
-extern char *ReservedWords[];		// les chaines de caractere correspondants au type enumeré suivant:
+extern char *ReservedWords[];		// les chaines de caractere correspondants au type enumer? suivant:
 typedef enum enumTokenType {TOKEN_RETURN,
 	TOKEN_MAIN,
 	TOKEN_AS,
@@ -75,7 +75,7 @@ typedef enum enumTokenType {TOKEN_RETURN,
 	TOKEN_DIFFERENT,
 	TOKEN_SUPERIEUR,
 	TOKEN_SUPEQUAL1,
-	TOKEN_SUPEQUAL2,	
+	TOKEN_SUPEQUAL2,
 	TOKEN_DEUXPOINTS,
 	TOKEN_MOD,
 	TOKEN_PLUS,
@@ -91,7 +91,7 @@ typedef enum enumTokenType {TOKEN_RETURN,
 	TOKEN_IDENTIF,
 	TOKEN_NOMBRE,
 	TOKEN_STRINGCONSTANT,
-	TOKEN_UNKNOWN};
+	TOKEN_UNKNOWN} enumTokenType;
 
 class TAG
 {
@@ -100,7 +100,7 @@ private:
 	char Identif[200];
 	int Col;
 	int Ligne;
-	char *fileName;
+	const char *fileName;
 	bool isPredefFileTAG;
 	TAG* Next;
 public:
@@ -112,7 +112,7 @@ public:
 	char* GetIdentif() {return Identif;}
 	int GetCol() {return Col;}
 	int GetLigne() {return Ligne;}
-	char* GetFileName() {return fileName;}
+	const char* GetFileName() {return fileName;}
 	bool GetisPredefFileTAG() {return isPredefFileTAG;}
 	TAG* GetNext() {return Next;}
 
@@ -121,7 +121,7 @@ public:
 	void SetIdentif(char* bIdentif);
 	void SetCol(int bCol) {Col=bCol;}
 	void SetLigne(int bLigne) {Ligne=bLigne;}
-	void SetFileName(char* bFileName) {fileName=bFileName; }
+	void SetFileName(const char* bFileName) {fileName=bFileName; }
 	void SetisPredefFileTAG(bool bPredef) {isPredefFileTAG=bPredef;}
 	void SetNext(TAG* bNext) {Next=bNext;}
 

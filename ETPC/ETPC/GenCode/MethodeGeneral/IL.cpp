@@ -154,7 +154,7 @@ void IL::Add(InsOpEnum bOp,Operande* bOp1,Operande* bOp2,size_op bSize){
 	aux1->op2=new Operande(*bOp2);
 	aux1->Size=bSize;
 	aux->val.instr=aux1;
-	
+
 	if (generatedCode==NULL){
 		generatedCode=aux;
 		lastAdded=generatedCode;
@@ -173,7 +173,7 @@ void IL::Add(InsOpEnum bOp,Operande* bOp1,size_op bSize){
 	aux1->op2=NULL;
 	aux1->Size=bSize;
 	aux->val.instr=aux1;
-	
+
 	if (generatedCode==NULL){
 		generatedCode=aux;
 		lastAdded=generatedCode;
@@ -192,7 +192,7 @@ void IL::Add(InsOpEnum bOp){
 	aux1->op2=NULL;
 	aux1->Size=SZ_UNKNOWN;
 	aux->val.instr=aux1;
-	
+
 	if (generatedCode==NULL){
 		generatedCode=aux;
 		lastAdded=generatedCode;
@@ -202,11 +202,11 @@ void IL::Add(InsOpEnum bOp){
 		lastAdded=aux;
 	}
 }
-void IL::Add(char* bComment){
+void IL::Add(const char* bComment){
 	LigneCode* aux=new LigneCode();
 	aux->nat=NA_COMMENT;
 	aux->val.comment=bComment;
-	
+
 	if (generatedCode==NULL){
 		generatedCode=aux;
 		lastAdded=generatedCode;
@@ -214,14 +214,14 @@ void IL::Add(char* bComment){
 	else{
 		lastAdded->next=aux;
 		lastAdded=aux;
-	}	
+	}
 }
 
 void IL::AddEtiq(char* bEtiq){
 	LigneCode* aux=new LigneCode();
 	aux->nat=NA_ETIQ;
 	aux->val.etiq=bEtiq;
-	
+
 	if (generatedCode==NULL){
 		generatedCode=aux;
 		lastAdded=generatedCode;
@@ -229,7 +229,7 @@ void IL::AddEtiq(char* bEtiq){
 	else{
 		lastAdded->next=aux;
 		lastAdded=aux;
-	}		
+	}
 }
 
 

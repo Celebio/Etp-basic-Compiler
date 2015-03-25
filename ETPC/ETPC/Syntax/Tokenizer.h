@@ -25,7 +25,7 @@ typedef enum errorIsNumeric {
 	ISINTEGER,
 	ISFLOAT,
 	ISNOTNUMERIC
-};
+} errorIsNumeric;
 
 class Tokenizer
 {
@@ -36,22 +36,22 @@ private:
 
 	char *programBuffer;
 	char *Fin;
-	char *CourFileName;
+	const char *CourFileName;
 	errorIsNumeric IsNumeric(TAG* bTag);
-	
+
 	void AvanceTokenPtr(char **pText);
 	TAG GetToken(char **Btext,int* Col);
 	char GiveLowerCase(char *bC);
-	
+
 	bool isPredefFile;
 public:
 	Tokenizer(void);
-	
+
 	~Tokenizer(void);
 
 	errorIsNumeric IsNumeric(char *ch);
-	
-	void Tokenize(char *pCour,char *pFin,char *fileName);
+
+	void Tokenize(char *pCour,char *pFin,const char *fileName);
 	TAG* getTagListe() {return pListe;}
 	void Afficher(void);
 	void SetIsPredefFile(bool predef) {isPredefFile=predef;}

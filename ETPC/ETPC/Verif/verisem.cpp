@@ -18,10 +18,10 @@
 
 /*********************************************************************************\
 	VeriSem.cpp
-	
-	Ce fichier permet d'analyser la sémantique. Il prend en entrée des structures
-	de données qui ont été généré par l'analyse syntaxique. Les fonctions inclus
-	dans ce fichier vont permettre de vérifier le sens de ces données.
+
+	Ce fichier permet d'analyser la s?mantique. Il prend en entr?e des structures
+	de donn?es qui ont ?t? g?n?r? par l'analyse syntaxique. Les fonctions inclus
+	dans ce fichier vont permettre de v?rifier le sens de ces donn?es.
 
 \*********************************************************************************/
 
@@ -38,7 +38,7 @@ bool VeriSem::TypeExiste(VariableItem* bVariable)
 	ColIterator iter1;
 	TypeItem* Type1;
 	bool Found=false;
-	
+
 	if (bVariable->GetType().Type!=TP_USER && bVariable->GetType().Type!=TP_UNKNOWN)
 	{
 		Found=true;
@@ -48,7 +48,7 @@ bool VeriSem::TypeExiste(VariableItem* bVariable)
 	}
 	else
 	{
-		
+
 		Types->bindIterator(&iter1);
 		while(iter1.elemExists() && !Found){
 			Type1 = (TypeItem*)iter1.getNext();
@@ -108,19 +108,21 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 #endif
 	switch(expr->GetNature())
 	{
+	case NOEUD_UNKNOWN:
+		break;
 	case NOEUD_OPERATOR:
 		bOp=expr->GetOperator();
-		if (bOp==OPTOR_POINT)	// operateur d'accès
+		if (bOp==OPTOR_POINT)	// operateur d'acc?s
 		{
 			VarTypeType bType;
 			bType=GetTypeExpression(expr->GetFilsG(),unknownVal,foncEnCours);
 			#ifdef _DEBUGSEM
-				
+
 				printf("on dirait un ");
 				bType.Afficher();
 				printf(" a gauche\n");
 			#endif
-			if (bType.Type==TP_USER)	// cest un user define type à gauche du token_point
+			if (bType.Type==TP_USER)	// cest un user define type ? gauche du token_point
 			{
 				Types->bindIterator(&pTypeListe);
 				while (pTypeListe.elemExists()){
@@ -136,7 +138,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 								#ifdef _DEBUGSEM
 									printf("le champs %s existe dans le type %s\n",Var1->GetTagNom()->GetIdentif(),bType.Expr);
 								#endif
-								// verification eventuelle pour la taille du tableau 
+								// verification eventuelle pour la taille du tableau
 								Var1->GetDimListe()->bindIterator(&pDimListe);
 								i=0;
 								while (pDimListe.elemExists()){
@@ -167,8 +169,8 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 			}
 			else if (bType.Type!=TP_UNKNOWN)
 			{
-				// traitement des types prédéfinis avec champs..
-				// possibilité d'ajouter myString.champ 
+				// traitement des types pr?d?finis avec champs..
+				// possibilit? d'ajouter myString.champ
 				// mais en attendant : ...
 				sprintf(bufferErrDescr,"Impossible de trouver le champs %s ",expr->GetFilsD()->GetTAG()->GetIdentif());
 				errListe->Add(bufferErrDescr,expr->GetFilsD()->GetTAG());
@@ -178,7 +180,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 		}
 		else if (bOp==OPTOR_EXCLAM)
 		{
-			
+
 			VarTypeType bType;
 			bType=GetTypeExpression(expr->GetFilsG(),unknownVal,foncEnCours);
 			if (bType.Type!=TP_INTEGER && bType.Type!=TP_LONG)
@@ -241,11 +243,11 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 			{
 				typeG=GetTypeExpression(expr->GetFilsD(),longVal,foncEnCours);
 			}
-			
+
 			/* tout importe sur unknown	*/
-			if (typeG!=unknownVal && typeD==unknownVal){	
+			if (typeG!=unknownVal && typeD==unknownVal){
 				typeD=GetTypeExpression(expr->GetFilsD(),typeG,foncEnCours);
-			 } else if (typeG==unknownVal && typeD!=unknownVal){	
+			 } else if (typeG==unknownVal && typeD!=unknownVal){
 				typeG=GetTypeExpression(expr->GetFilsG(),typeD,foncEnCours);
 			}
 
@@ -272,7 +274,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 			}
 			else if (bOp==OPTOR_EQUAL || bOp==OPTOR_DIFFERENT)
 			{
-				// il faut que typeG==typeD, deja vérifié précedemment
+				// il faut que typeG==typeD, deja v?rifi? pr?cedemment
 				retVal=boolVal;
 			}
 			else if (bOp==OPTOR_CMP_AND || bOp==OPTOR_CMP_OR || bOp==OPTOR_CMP_XOR)
@@ -284,13 +286,13 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 					errListe->Add(bufferErrDescr,expr->GetTAG());
 					break;
 				}
-				// il faut que typeG==typeD, deja vérifié précedemment
+				// il faut que typeG==typeD, deja v?rifi? pr?cedemment
 				if (bOp==OPTOR_CMP_XOR && typeG.Type!=TP_BOOLEAN){
 					errListe->Add("Impossible d'appliquer un XOR sur des booleens",expr->GetTAG());
 					break;
 				}
 				if (typeG.Type==TP_BYTE || typeG.Type==TP_INTEGER || typeG.Type==TP_LONG){
-					// C'est en fait un opérateur arithmétique
+					// C'est en fait un op?rateur arithm?tique
 					expr->SetOperatorArith();
 					bOp=expr->GetOperator();
 					retVal = typeG;
@@ -302,7 +304,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 
 
 		//if (expr->GetFilsD())
-		
+
 		break;
 	case NOEUD_OPERANDE_CTE:
 		#ifdef _DEBUGSEM
@@ -425,7 +427,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 			printf("c'est pas un parametre de la fonction \n");
 		#endif
 
-		
+
 
 		// EST-CE une variable PUBLIQUE ???
 		VariablesPublic->bindIterator(&pVarListe);
@@ -492,7 +494,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 		}
 		#ifdef _DEBUGSEM
 			printf("utilisateur a entre %i arguments et la fonction en attend %i\n",expr->GetSuccNmbr(),i);
-		#endif		
+		#endif
 		if (expr->GetSuccNmbr()!=i)
 		{
 			sprintf(bufferErrDescr,"Nombre d'arguments incorrect:il y a %i argument(s) et la fonction en attend %i",expr->GetSuccNmbr(),i);
@@ -500,8 +502,8 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 			break;
 		}
 		Fonc1->GetArguListe()->bindIterator(&pVarListe);
-		
-		// il faut verifier à l'envers, car la liste des arguments est inversée
+
+		// il faut verifier ? l'envers, car la liste des arguments est invers?e
 		for (i=0;i<expr->GetSuccNmbr();i++)
 		{
 			Var1=(VariableItem*)pVarListe.getElem();
@@ -577,7 +579,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 	retVal.Afficher();
 	printf("\n");
 #endif
-	if (retVal.Type==TP_UNKNOWN)		// element non declaré
+	if (retVal.Type==TP_UNKNOWN)		// element non declar?
 	{
 		if (expr->GetNature()==NOEUD_OPERANDE_FONCTION)
 			errListe->Add("Fonction non declare",expr->GetTAG());
@@ -587,7 +589,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 			errListe->Add("Tableau non declare",expr->GetTAG());
 		else if (expr->GetNature()==NOEUD_OPERATOR)
 			;
-		else 
+		else
 			errListe->Add("Element non declare",expr->GetTAG());
 		expr->SetType(retVal);
 		return retVal;
@@ -609,7 +611,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 		//return retVal;
 	}
 	expr->SetType(retVal);
-	return retVal;	
+	return retVal;
 
 }
 void VeriSem::VerifSemInstr(Collection *bInstrListe,FonctionItem* foncEnCours){
@@ -634,6 +636,8 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
 
 	switch(bInstr->getNat())
 	{
+	case INS_UNKNOWN:
+		break;
 	case INS_DECLARATION:
 		//printf("Declaration\n");
 		break;
@@ -734,7 +738,7 @@ void VeriSem::VerifSem(){
 
 	// Verification des types, des declarations circulaires
 
-	// double déclaration des types et existance du type de chaque champs de chaque type
+	// double d?claration des types et existance du type de chaque champs de chaque type
 	Types->bindIterator(&iter1);
 	while(iter1.elemExists()){
 		iter2.initHead(iter1.getCour()->next);
@@ -760,8 +764,8 @@ void VeriSem::VerifSem(){
 		UpdateVarSize(NULL,fooType,false);
 	}
 
-	
-	
+
+
 
 	// Verification de double definition des variables publiques
 	// ainsi que l'existence des types
@@ -796,12 +800,12 @@ void VeriSem::VerifSem(){
 			}
 			if(TypeExiste(Var1))
 			{
-				// les parametres sont updatés avec UDasPtr = true parce que le passage en argument
+				// les parametres sont updat?s avec UDasPtr = true parce que le passage en argument
 				// d'un user-defined type doit etre de type pointeur
 				UpdateVarSize(Var1,Var1->GetType(),true);
 			}
 		}
-		
+
 		// Verification de double definition des variables locales
 		Fonc1->GetVarListe()->bindIterator(&iter2);
 		while (iter2.elemExists()){
@@ -823,17 +827,17 @@ void VeriSem::VerifSem(){
 					errListe->Add(errMsgBuf,Var2->GetTagNom());
 				}
 			}
-			
+
 			if(TypeExiste(Var1))
 			{
-				// on a UDasPtr = false pour pouvoir créer un nouvel element local
+				// on a UDasPtr = false pour pouvoir cr?er un nouvel element local
 				UpdateVarSize(Var1,Var1->GetType(),false);
 			}
 		}
 
 		// verification des expressions contenus dans les instructions
 		VerifSemInstr(Fonc1->GetInstrListe(),Fonc1);
-		
+
 	}
 
 	/*

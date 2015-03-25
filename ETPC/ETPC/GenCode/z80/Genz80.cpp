@@ -19,13 +19,13 @@
 #include "Genz80.h"
 
 #include <fstream>
-#include <string.h> 
+#include <string.h>
 #include <cstdlib>
 
 
 Genz80::Genz80(void){
 }
-Genz80::Genz80(char *oFileName){
+Genz80::Genz80(const char *oFileName){
 	sprintf(outputFileName,"%s%s",oFileName,".z80");
 }
 
@@ -63,7 +63,7 @@ int Genz80::NbRegArith(CNoeud* bNoeud,NatureOpz80 bNat){
 
 /*
 size_opz80 Genz80::GetSize(CNoeud* bNoeud){
-	
+
 }
 */
 

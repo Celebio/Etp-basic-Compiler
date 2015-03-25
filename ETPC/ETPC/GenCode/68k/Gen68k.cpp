@@ -19,7 +19,7 @@
 #include "Gen68k.h"
 
 #include <fstream>
-#include <string.h> 
+#include <string.h>
 #include <cstdlib>
 
 
@@ -30,7 +30,7 @@
 Gen68k::Gen68k(void){
 	RegPile=new PileRegTemp68k(&ILcoder,&Stack);
 }
-Gen68k::Gen68k(char *oFileName){
+Gen68k::Gen68k(const char *oFileName){
 	sprintf(outputFileName,"%s%s",oFileName,".asm");
 	RegPile=new PileRegTemp68k(&ILcoder,&Stack);
 }
@@ -87,13 +87,13 @@ int Gen68k::NbRegBool(CNoeud* bNoeud){
 		val = NbRegBool(bNoeud->GetFilsD());
 	}
 	else if (operaTOR == OPTOR_UNKNOWN){
-		if (bNoeud->GetNature()== NOEUD_OPERANDE_CTE && bNoeud->GetTAG()->GetToken() ==TOKEN_TRUE 
-			|| bNoeud->GetNature()== NOEUD_OPERANDE_CTE && bNoeud->GetTAG()->GetToken() ==TOKEN_FALSE){
-			val=1;	// TO DO : à voir
+		if ((bNoeud->GetNature()== NOEUD_OPERANDE_CTE && bNoeud->GetTAG()->GetToken() ==TOKEN_TRUE)
+			|| (bNoeud->GetNature()== NOEUD_OPERANDE_CTE && bNoeud->GetTAG()->GetToken() ==TOKEN_FALSE)){
+			val=1;	// TO DO : ? voir
 		}
 		// TO DO : autre objets...
 	}
-	else if (operaTOR == OPTOR_INF || operaTOR == OPTOR_INFEQ || operaTOR == OPTOR_EQUAL || 
+	else if (operaTOR == OPTOR_INF || operaTOR == OPTOR_INFEQ || operaTOR == OPTOR_EQUAL ||
 		operaTOR == OPTOR_DIFFERENT || operaTOR == OPTOR_SUP || operaTOR == OPTOR_SUPEQ ) {
 		int n1 = NbRegArith(bNoeud->GetFilsG(),NO_REG);
 		int n2 = NbRegArith(bNoeud->GetFilsD(),NO_DVAL);
@@ -104,7 +104,6 @@ int Gen68k::NbRegBool(CNoeud* bNoeud){
 		}
 	}
 	else{
-		operaTOR;
 		printf("je suis la nbregbool\n");
 	}
 	bNoeud->SetNbReg(val);
@@ -135,7 +134,7 @@ int Gen68k::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
 		val=max(1,NbRegArith(bNoeud,bNat));
 	}
 	//else if (NatureArbre==NOEUD_OPERATOR && bNoeud->GetOperType()==OPBIN
-	
+
 	else if (NatureArbre==NOEUD_OPERATOR && bNoeud->GetOperType()==OPBIN)
 	{
 		n1=NbRegArith(bNoeud->GetFilsG(),NO_REG);
@@ -158,7 +157,7 @@ int Gen68k::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
 		}
 		val=nMax;
 	}
-	
+
 	bNoeud->SetNbReg(val);
 	return val;
 }
@@ -205,11 +204,11 @@ void Gen68k::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op){
 			if (bNoeud->GetTAG()->GetToken()==TOKEN_NOMBRE)
 			{
 				ILcoder.Add(MOVE,ILcoder.createOpVal(atoi(bNoeud->GetTAG()->GetIdentif())),RegPile->Sommet(),Size);
-				
+
 			}
 			else if (bNoeud->GetTAG()->GetToken()==TOKEN_STRINGCONSTANT)
 			{
-				// pas encore géré
+				// pas encore g?r?
 			}
 			else if (bNoeud->GetTAG()->GetToken()==TOKEN_TRUE)
 			{
@@ -233,7 +232,7 @@ void Gen68k::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op){
 			}
 			else if (bNoeud->GetTAG()->GetToken()==TOKEN_STRINGCONSTANT)
 			{
-				// pas encore géré
+				// pas encore g?r?
 			}
 			else if (bNoeud->GetTAG()->GetToken()==TOKEN_TRUE)
 			{
@@ -264,7 +263,7 @@ void Gen68k::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op){
 	// A = A1 opbin A2 et op_bin commutatif et A1 est litteral ou objet
 	// et A2 n'est ni litteral ni objet
 	else if (NatureArbre==NOEUD_OPERATOR && bNoeud->GetOperType()==OPBIN &&
-			bNoeud->EstCommutatif() && 
+			bNoeud->EstCommutatif() &&
 			 (bNoeud->GetFilsG()->GetNature()==NOEUD_OPERANDE_CTE ||
 			 bNoeud->GetFilsG()->GetNature()==NOEUD_OPERANDE_VARIABLE)
 			 &&
@@ -276,7 +275,7 @@ void Gen68k::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op){
 		bNoeud->SetFilsG(aux);
 		CodeArith(bNoeud, bNat, Op);
 	}
-	
+
 	else if (NatureArbre==NOEUD_OPERATOR && bNoeud->GetOperType()==OPBIN)
 	{
 		int n1,n2;
@@ -318,7 +317,7 @@ void Gen68k::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op){
 	// A = f(A1,A2, ... , An)
 	else if (NatureArbre==NOEUD_OPERANDE_FONCTION)
 	{
-		int somme=0;		// la somme des tailles de ce qui est poussé dans la pile
+		int somme=0;		// la somme des tailles de ce qui est pouss? dans la pile
 		size_op68k SizeOfArgument;
 		for (int i=bNoeud->GetSuccNmbr()-1;i>=0;i--){
 			SizeOfArgument=GetSize(*bNoeud->GetSuccPtr(i));
@@ -329,7 +328,7 @@ void Gen68k::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op){
 		}
 		ILcoder.Add(BSR,ILcoder.createOpEtiq(bNoeud->GetTAG()->GetIdentif()),SZ_NA);
 		ILcoder.Add(ADD,ILcoder.createOpVal(somme),ILcoder.createOp(SP_REG),SZ_L);
-		
+
 		//Stack.Afficher();
 		for (int i=bNoeud->GetSuccNmbr()-1;i>=0;i--){
 			Stack.Pop();
@@ -344,7 +343,7 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
 	//printf("Entree dans COdeBOOl\n");
 	//printf("expression booleenne:\n");
 	//bNoeud->Afficher();
-	
+
 	size_op68k Size=GetSize(bNoeud);
 	Operande68k* T;
 
@@ -352,7 +351,6 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
 	Operande68k* Etiq1 = ILcoder.createOpEtiq();
 	//Operande68k* Etiq2 = ILcoder.createOpEtiq();
 
-	bNoeud;
 	TypeOptor operaTOR = bNoeud->GetOperator();
 
 	if (operaTOR == OPTOR_CMP_AND){
@@ -395,7 +393,6 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
 		CodeBool(bNoeud->GetFilsD(),AvecSaut,!ValSaut,etiqSaut,DansReg,!ValReg);
 	}
 	else if (operaTOR == OPTOR_UNKNOWN){
-		bNoeud;
 		if (bNoeud->GetNature()== NOEUD_OPERANDE_CTE && bNoeud->GetTAG()->GetToken() ==TOKEN_TRUE){
 			Operande68k* ValRegOp;
 			ValRegOp = ILcoder.createOpVal( ValReg ? 1 : 0 );
@@ -418,7 +415,7 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
 			}
 		}
 	}
-	else if (operaTOR == OPTOR_INF || operaTOR == OPTOR_INFEQ || operaTOR == OPTOR_EQUAL || 
+	else if (operaTOR == OPTOR_INF || operaTOR == OPTOR_INFEQ || operaTOR == OPTOR_EQUAL ||
 		operaTOR == OPTOR_DIFFERENT || operaTOR == OPTOR_SUP || operaTOR == OPTOR_SUPEQ ) {
 		int n1 = NbRegArith(bNoeud->GetFilsG(),NO_REG);
 		int n2 = NbRegArith(bNoeud->GetFilsD(),NO_DVAL);
@@ -450,19 +447,19 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
 			RegPile->EchangeD();
 			ILcoder.Add(CMP,Op2,Op1,GetSize(bNoeud->GetFilsD()));
 		}
-		
+
 		if (AvecSaut){
 			// Scc
 			/*
 			if (ValReg==true){
 				ILcoder.Add((InsOpEnum68k)(ILcoder.NodeToOp(bNoeud)+(SEQ-BEQ)),Op1,Size);
-			} else {		// sinon l'opposé
+			} else {		// sinon l'oppos?
 				ILcoder.Add((InsOpEnum68k)(ILcoder.getOppBra(ILcoder.NodeToOp(bNoeud))+(SEQ-BEQ)),Op1,Size);
 			}*/
 			// Bcc
 			if (ValSaut==true){
 				ILcoder.Add(ILcoder.NodeToOp(bNoeud),etiqSaut,SZ_NA);
-			} else {		// sinon l'opposé
+			} else {		// sinon l'oppos?
 				ILcoder.Add(ILcoder.getOppBra(ILcoder.NodeToOp(bNoeud)),etiqSaut,SZ_NA);
 			}
 
@@ -471,13 +468,12 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
 			/*
 			if (ValReg==true){
 				ILcoder.Add((InsOpEnum68k)(ILcoder.NodeToOp(bNoeud)+(SEQ-BEQ)),Op1,Size);
-			} else {		// sinon l'opposé
+			} else {		// sinon l'oppos?
 				ILcoder.Add((InsOpEnum68k)(ILcoder.getOppBra(ILcoder.NodeToOp(bNoeud))+(SEQ-BEQ)),Op1,Size);
 			}*/
 		}
 	}
 	else{
-		operaTOR;
 		printf("je suis la\n");
 	}
 
@@ -496,18 +492,22 @@ void Gen68k::CodeInstr(Collection* bInstrSuite){
 }
 void Gen68k::CodeInstr(InstructionETPB* bInstr){
 
-	
+
 
 	RegPile->Init();
 	switch(bInstr->getNat()){
+	case INS_DECLARATION:
+		break;
+	case INS_UNKNOWN:
+		break;
 	case INS_AFFECTATION:
 		Operande68k* ExprArbrAff;	//=RegPile->Sommet();
 		Operande68k* ExprArbrAffected;
 		int nG,nD;
-		
+
 		nG=NbRegArith(bInstr->GetAffectExprAssigned(),NO_REG);
 		nD=NbRegArith(bInstr->GetAffectExprArbre(),NO_REG);
-		
+
 		if (nD >= nG){
 			CodeArith(bInstr->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
 			RegPile->Allouer(ExprArbrAff);
@@ -520,7 +520,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 			RegPile->Allouer(ExprArbrAffected);
 			CodeArith(bInstr->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
 			RegPile->Liberer(ExprArbrAffected);
-			ILcoder.Add(MOVE,ExprArbrAff,ExprArbrAffected,GetSize(bInstr->GetAffectExprAssigned()));							
+			ILcoder.Add(MOVE,ExprArbrAff,ExprArbrAffected,GetSize(bInstr->GetAffectExprAssigned()));
 		}
 		break;
 	case INS_RETURN:
@@ -535,7 +535,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 		int somme;
 		CNoeud* CallNoeud;
 
-		somme=0;		// la somme des tailles de ce qui est poussé dans la pile
+		somme=0;		// la somme des tailles de ce qui est pouss? dans la pile
 		size_op68k SizeOfArgument;
 		CallNoeud=bInstr->GetCallExpr();
 		Operande68k* Op2;
@@ -565,7 +565,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 		size_op68k SizeVarIter;
 		Operande68k* TexpTO;
 		Collection* CorpsFor;
-		
+
 		initExpr = bInstr->GetFORExprArbreINIT();
 		finExpr = bInstr->GetFORExprArbreTO();
 		stepExpr = bInstr->GetFORExprArbreSTEP();
@@ -580,7 +580,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 		// ---------------------------------------------------
 		nG=NbRegArith(varExpr,NO_REG);
 		nD=NbRegArith(initExpr,NO_REG);
-		
+
 		if (nD >= nG){
 			CodeArith(initExpr,NO_REG,&ExprArbrAff);
 			RegPile->Allouer(ExprArbrAff);
@@ -593,14 +593,14 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 			RegPile->Allouer(ExprArbrAffected);
 			CodeArith(initExpr,NO_REG,&ExprArbrAff);
 			RegPile->Liberer(ExprArbrAffected);
-			ILcoder.Add(MOVE,ExprArbrAff,ExprArbrAffected,SizeVarIter);							
+			ILcoder.Add(MOVE,ExprArbrAff,ExprArbrAffected,SizeVarIter);
 		}
 
 		// ---------------------------------------------------
-		// Evaluation de l'expression d'arrivée
+		// Evaluation de l'expression d'arriv?e
 		// ---------------------------------------------------
-		
-		// temporaire sur la pile qui va contenir la valeur de l'expression d'arrivée TO
+
+		// temporaire sur la pile qui va contenir la valeur de l'expression d'arriv?e TO
 		TexpTO=RegPile->AllouerTemp(SizeVarIter);
 		CodeArith(finExpr,NO_REG,&ExprArbrAff);
 		//RegPile->Allouer(ExprArbrAff);
@@ -609,10 +609,10 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 
 
 		// ---------------------------------------------------
-		// Test de la condition d'arrivé
+		// Test de la condition d'arriv?
 		// ---------------------------------------------------
 		ILcoder.AddEtiq(EtiqForDebTest->val.valEtiq);
-		
+
 		// cas 1: pas de step
 		if (stepExpr == NULL){
 			CodeArith(varExpr,NO_REG,&ExprArbrAffected);
@@ -639,7 +639,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 			CodeInstr(CorpsFor);
 			// iterateur = iterateur+cte sous entendu
 			CodeArith(varExpr,NO_DADR,&ExprArbrAffected);
-			ILcoder.Add(ADD,ILcoder.createOpVal(constStepVal),ExprArbrAffected,SizeVarIter);				
+			ILcoder.Add(ADD,ILcoder.createOpVal(constStepVal),ExprArbrAffected,SizeVarIter);
 			ILcoder.Add(BRA,EtiqForDebTest,SZ_NA);
 
 		}
@@ -648,7 +648,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 			//Operande68k* EtiqNegStep;
 			//Operande68k* EtiqForDebCorps;
 			//EtiqForFin = ILcoder.createOpEtiq();
-			
+
 		}
 		ILcoder.AddEtiq(EtiqForFin->val.valEtiq);
 		RegPile->LibererTemp(TexpTO,SizeVarIter);	// on libere le temporaire qui contient l'expression de fin
@@ -680,7 +680,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 		CodeInstr(CorpsWhile);
 		ILcoder.AddEtiq(EtiqWhileFin->val.valEtiq);
 		CodeBool(exprWhile,true,true,EtiqWhileDebut,false,false);
-		
+
 		break;
 	case INS_IF:
 		CNoeud* exprIf;
@@ -691,15 +691,15 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 
 		Operande68k* EtiqFinCorpsIF = ILcoder.createOpEtiq();
 		Operande68k* EtiqFinLocalCorpsElseIf;
-		Operande68k* EtiqDebutElse=NULL;	// utilisé s'il y a des elseIf et un else
+		Operande68k* EtiqDebutElse=NULL;	// utilis? s'il y a des elseIf et un else
 		Operande68k* EtiqFinBloc;
-		
+
 
 		Collection* InstrCorpsIf = bInstr->GetIFIfCorps();
 		Collection* InstrCorpsElse = bInstr->GetIFElseCorps();
 		Collection* listExprElseIf = bInstr->GetIFExprElseIf();
 		Collection* listCorpsElseIf = bInstr->GetIFElseIfCorps();
-		
+
 		ColIterator iterExprElseIf;
 		ColIterator iterCorpsElseIf;
 
@@ -719,12 +719,12 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 		CodeInstr(InstrCorpsIf);
 		if (!InstrCorpsElse->estVide() || !listExprElseIf->estVide() ){
 			EtiqFinBloc = ILcoder.createOpEtiq();
-			ILcoder.Add(BRA,EtiqFinBloc,SZ_NA);		// on ajoute un saut à tout à la fin s'il y a un else ou des elseif
+			ILcoder.Add(BRA,EtiqFinBloc,SZ_NA);		// on ajoute un saut ? tout ? la fin s'il y a un else ou des elseif
 		}
 		// -------------------------------------------------------
 		//		etiq fin corps If
 		// -------------------------------------------------------
-		ILcoder.AddEtiq(EtiqFinCorpsIF->val.valEtiq);	
+		ILcoder.AddEtiq(EtiqFinCorpsIF->val.valEtiq);
 
 
 		// -------------------------------------------------------
@@ -743,39 +743,40 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 
 			// -------------------------------------------------------
 			// Codage de expression de ElseIF
-			// -------------------------------------------------------		
+			// -------------------------------------------------------
 			CodeBool(exprElseIf,true,false,EtiqFinLocalCorpsElseIf,false,false);
 
 			// -------------------------------------------------------
 			// Codage de corps de ElseIF
-			// -------------------------------------------------------	
+			// -------------------------------------------------------
 			CodeInstr(InstrCorpsElseIf);
 
-			if (!InstrCorpsElse->estVide()){			// il existe un Else, il ne faut pas executer son corps, donc saut à la fin
+			if (!InstrCorpsElse->estVide()){			// il existe un Else, il ne faut pas executer son corps, donc saut ? la fin
 				ILcoder.Add(BRA,EtiqFinBloc,SZ_NA);
 			}
-			if (iterExprElseIf.elemExists()) {	// le suivant ElseIf existe, on avait crée une nouvelle étiquette
+			if (iterExprElseIf.elemExists()) {	// le suivant ElseIf existe, on avait cr?e une nouvelle ?tiquette
 				ILcoder.AddEtiq(EtiqFinLocalCorpsElseIf->val.valEtiq);	// etiq fin corps ElseIf
 			}
 		}
-		
+
 		// -------------------------------------------------------
 		// Codage de corps de ELSE
 		// -------------------------------------------------------
-		if (EtiqDebutElse) {	// un elseif a crée une étiquette debut Else
+		if (EtiqDebutElse) {	// un elseif a cr?e une ?tiquette debut Else
 			ILcoder.AddEtiq(EtiqDebutElse->val.valEtiq);	// etiq fin corps ElseIf
 		}
 		CodeInstr(InstrCorpsElse);
-		
+
 		// -------------------------------------------------------
 		//		etiq fin Global
 		// -------------------------------------------------------
 		if (!InstrCorpsElse->estVide() || !listExprElseIf->estVide()){
 			ILcoder.AddEtiq(EtiqFinBloc->val.valEtiq);	// etiq fin corps Else
 		}
-		
+
 
 		break;
+
 	}
 }
 
@@ -785,23 +786,23 @@ void Gen68k::GenerCode(){
 	ColIterator iter2;
 	FonctionItem* Fonc1;
 	VariableItem* Var1;
-	
+
 	std::ofstream file(outputFileName);
 	ILcoder.SetStream(&file);
-	
+
 	mNbRegMax=8;
 	ILcoder.AfficherLeDebut();
 
-	
+
 	int tailleVarLocales;
 	Fonctions->bindIterator(&iter1);
 	while(iter1.elemExists()){
 		Fonc1=(FonctionItem*)iter1.getNext();
 		if (Fonc1->GetUsed()){
-			
-			
+
+
 			if (Fonc1->GetIsAssembler() ){
-				
+
 			}
 			else {
 				ILcoder.AddEtiq(Fonc1->GetNom());
@@ -815,7 +816,7 @@ void Gen68k::GenerCode(){
 				}
 				Stack.PushToStack(4);	// l'adresse de retour de la fonction
 				//Stack.Afficher();
-				
+
 				tailleVarLocales=0;
 				Fonc1->GetVarListe()->bindIterator(&iter2);
 				while (iter2.elemExists()){
@@ -826,13 +827,13 @@ void Gen68k::GenerCode(){
 				}
 				if (tailleVarLocales)
 					ILcoder.Add(SUB,ILcoder.createOpVal(tailleVarLocales),ILcoder.createOp(SP_REG),SZ_L);
-				
+
 				Stack.Afficher();
 
 				Collection* InstrListe = Fonc1->GetInstrListe();
 				CodeInstr(InstrListe);
 
-				
+
 				Stack.ClearStack();
 				if (tailleVarLocales)
 					ILcoder.Add(ADD,ILcoder.createOpVal(tailleVarLocales),ILcoder.createOp(SP_REG),SZ_L);

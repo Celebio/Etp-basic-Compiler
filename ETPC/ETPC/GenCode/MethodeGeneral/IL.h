@@ -92,7 +92,7 @@ public:
 	void Add(InsOpEnum bOp,Operande* bOp1,Operande* bOp2,size_op bSize);
 	void Add(InsOpEnum bOp,Operande* bOp1,size_op bSize);
 	void Add(InsOpEnum bOp);
-	void Add(char* bComment);
+	void Add(const char* bComment);
 	void AddEtiq(char* bEtiq);
 
 };

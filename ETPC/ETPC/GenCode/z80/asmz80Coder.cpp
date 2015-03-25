@@ -17,7 +17,7 @@
 
 #include "asmz80Coder.h"
 
-char* ImageOpz80[]={
+const char* ImageOpz80[]={
 	"???",
 	"LD",
 	"ADD",

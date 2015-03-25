@@ -25,13 +25,13 @@ Tokenizer::~Tokenizer(void)
 {
 }
 
-void Tokenizer::Tokenize(char *textDeb,char *pFin,char *fileName)
+void Tokenizer::Tokenize(char *textDeb,char *pFin,const char *fileName)
 {
 	programBuffer=textDeb;
 	Fin=pFin;
 	CourFileName=fileName;
 
-	// Prend un text en entrée et fourni un pointeur vers une liste chainée de TAG
+	// Prend un text en entr?e et fourni un pointeur vers une liste chain?e de TAG
 	TAG CourTAG;
 	TAG* precpListeCr;
 	char *pCour=programBuffer;
@@ -69,7 +69,7 @@ void Tokenizer::Tokenize(char *textDeb,char *pFin,char *fileName)
 			pListeCr = new TAG();
 			pListe = pListeCr;
 		}
-		
+
 		*pListeCr = CourTAG;
 		pListeCr->SetLigne(CourLigne);
 		pListeCr->SetFileName(CourFileName);
@@ -94,7 +94,7 @@ void Tokenizer::Tokenize(char *textDeb,char *pFin,char *fileName)
 	pListeCr->SetFileName(CourFileName);
 	pListeCr->SetisPredefFileTAG(isPredefFile);
 	//pListeCr->SetNext(NULL);
-	
+
 	pListeCr->SetNext(new TAG());
 	pListeCr =pListeCr->GetNext();
 	pListeCr->SetCol(0);
@@ -103,7 +103,7 @@ void Tokenizer::Tokenize(char *textDeb,char *pFin,char *fileName)
 	pListeCr->SetFileName(CourFileName);
 	pListeCr->SetisPredefFileTAG(isPredefFile);
 	pListeCr->SetNext(NULL);
-	
+
 
 }
 
@@ -129,7 +129,7 @@ void Tokenizer::AvanceTokenPtr(char **pText)
 				jk== ')' || jk == '[' || jk == ']'  ||
 				jk== ':' || jk == 39  || jk == ','  ||
 				jk== '.' || jk ==0	  || jk == '!'  ||
-				jk== 34 ) && (!InAString) || (InAString && jk==13) ));	// les caractères qui peuvent faire arreter un token
+				jk== 34 ) && (!InAString) || (InAString && jk==13) ));	// les caract?res qui peuvent faire arreter un token
 }
 
 TAG Tokenizer::GetToken(char **Btext,int* Col)
@@ -147,7 +147,7 @@ TAG Tokenizer::GetToken(char **Btext,int* Col)
 	else if (**Btext == 32	|| **Btext == 9)	//espace
 	{
 		//avancer jusqu'a ne plus trouver d'espace
-		
+
 		while (**Btext ==32 || **Btext == 9)
 		{
 			if (**Btext == 9)
@@ -283,10 +283,10 @@ TAG Tokenizer::GetToken(char **Btext,int* Col)
 		char *cPtr;
 		char *RW;
 		AvanceTokenPtr(Btext);
-		
+
 		int Found=0;
 		int i=0;
-		
+
 		// comparer *cPtr avec ReservedWords[i] pour 0 =< i =<51
 		while (!(Found || i>60))
 		{
@@ -296,11 +296,11 @@ TAG Tokenizer::GetToken(char **Btext,int* Col)
 			while ((*RW || cPtr!=(*Btext)) && Found)
 			{
 				if (GiveLowerCase(RW)!=GiveLowerCase(cPtr))  // ou bien..  if ((*RW)!=(*cPtr))  pour respecter la casse
-					Found = 0;	// un caractère est différent.. donc c'est pas lui..
+					Found = 0;	// un caract?re est diff?rent.. donc c'est pas lui..
 				else
 				{
 					RW++;
-					cPtr++;				
+					cPtr++;
 				}
 			}
 			i++;

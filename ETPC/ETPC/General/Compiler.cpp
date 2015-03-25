@@ -81,9 +81,9 @@ void Compiler::DisplayUDTypes(){
 void Compiler::DisplayFonctions(){
 	printf("fonctions et leurs corps:\n");
 	printf("----------------------------------------------\n");
-	mFonctions->Afficher(); 
+	mFonctions->Afficher();
 }
-void Compiler::AddSourceFile(char* fileName){
+void Compiler::AddSourceFile(const char* fileName){
 
 	FILE *fp;
 	char* TextString;
@@ -115,9 +115,9 @@ void Compiler::AddSourceFile(char* fileName){
 			*p=(char)(getc(fp)&0x00FF);
 			p++;
 		}
-		*p = 0;	p++;	
+		*p = 0;	p++;
 		*p = 0;
-		
+
 		mTokenizer.Tokenize(pCour,p-2,fileName);
 		moduleCtr++;
 	}
@@ -134,22 +134,22 @@ void Compiler::VerifSyntax(){
 	mVarPublic = Syntax->GetVariablesPublicPtr();
 	mUDTypes = Syntax->GetTypesPtr();
 	mFonctions = Syntax->GetFonctionsPtr();
-	
+
 }
 void Compiler::VerifSemantik(){
 	Semantique = new VeriSem();
 	Semantique->SetEnvironnement(&errListe,mVarPublic,mUDTypes,mFonctions);
-	Semantique->VerifSem();	
+	Semantique->VerifSem();
 }
 
-void Compiler::Gener68k(char* outputFileName){
+void Compiler::Gener68k(const char* outputFileName){
 	if (!errListe.estVide()) return;
 	Gen68k generator(outputFileName);
 	//generator.TestGenerate();
 	generator.SetEnvironnement(&errListe,mVarPublic,mUDTypes,mFonctions);
 	generator.GenerCode();
 }
-void Compiler::Generz80(char* outputFileName){
+void Compiler::Generz80(const char* outputFileName){
 	if (!errListe.estVide()) return;
 	Genz80 generz80(outputFileName);
 	generz80.SetEnvironnement(&errListe,mVarPublic,mUDTypes,mFonctions);

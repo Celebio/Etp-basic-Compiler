@@ -28,8 +28,8 @@ typedef enum VarPortEnum {
 	VR_PUBLIC,
 	VR_LOCAL,
 	VR_MEMBER,	// pour les variables d'un type
-	VR_ARGU		// argument d'une fonction ou procédure
-};
+	VR_ARGU		// argument d'une fonction ou proc?dure
+} VarPortEnum;
 
 
 class VariableItem:
@@ -40,7 +40,7 @@ private:
 	TAG* bTAGNom;			// le TAG dont le champ Identif contient le nom de la variable
 	Collection DimListe;	// Liste des expressions des dimensions
 	VarTypeType Type;	// Integer,Float,User-defined,etc..
-	TAG* bTAGType;		// le TAG dont le champ Identif donne définit le type
+	TAG* bTAGType;		// le TAG dont le champ Identif donne d?finit le type
 	FonctionItem* Func;		// La fonction qui la contient (pour les variables locales)
 	int Size;			// taille en octet
 	bool Pointed;

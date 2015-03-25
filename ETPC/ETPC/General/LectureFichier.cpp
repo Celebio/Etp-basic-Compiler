@@ -16,14 +16,14 @@
 */
 
 /***************** E T P B A S I C - C O M P I L E R **************\
-	Author: Onur CELEBI
-	2004/2007
+    Author: Onur CELEBI
+    2004/2007
 \******************************************************************/
 /******************************************************\
-	LectureFichier.cpp
-	
-	ouvre le fichier TEST et appelle les différentes
-	fonctions, tokeniser, verificateur syntaxique...
+    LectureFichier.cpp
+
+    ouvre le fichier TEST et appelle les diff?rentes
+    fonctions, tokeniser, verificateur syntaxique...
 
 \*******************************************************/
 
@@ -43,85 +43,85 @@
 
 
 
-typedef enum OptReadStateType {INPUT_FILE, OUTPUT_FILE };
+typedef enum OptReadStateType {INPUT_FILE, OUTPUT_FILE } OptReadStateType;
 
 
-int main(int argc, char *argv[])
+int main(int argc, const char *argv[])
 {
-	int i;
-	ETPC::Compiler ETPBCompiler(EN_GENER);
-	int srcFileCtr=0;
-	
-	
-	char* defOutputFileName="outetp";
-	char* outputFile=defOutputFileName;
-	OptReadStateType State=INPUT_FILE;
-	
-	for (i = 1; i < argc; i++) {
-		if (argv[i][0] != '-') {
-			if (State==INPUT_FILE){
-				ETPBCompiler.AddSourceFile(argv[i]);
-				srcFileCtr++;
-			} else {
-				outputFile=argv[i];
-			}
-		}
-		else {
+    int i;
+    ETPC::Compiler ETPBCompiler(EN_GENER);
+    int srcFileCtr=0;
 
-			if (!strcmp(argv[i]+1,"v")){
-				ETPBCompiler.SetVerbose(true);
-			} else if (!strcmp(argv[i]+1,"h")){
-				ETPBCompiler.SetHelp(true);
-			} else if (!strcmp(argv[i]+1,"nologo")){
-				ETPBCompiler.SetNoLogo(true);
-			} else {
-				printf("Option inconnue:%s\n",argv[i]);
-			}
-		}
-	}
 
-	if (!srcFileCtr)
-	{
-		printf("Pas de fichier en entree\n");
-		Quit();
-	}
-	// {{{ Fetching predefined functions and UD-types
-	ETPBCompiler.AddSourceFile("etplib.elib");
-	// }}}
+    const char* defOutputFileName="outetp";
+    const char* outputFile=defOutputFileName;
+    OptReadStateType State=INPUT_FILE;
 
-	//ETPBCompiler.DisplayTokens();
-	ETPBCompiler.VerifSyntax();
-	ETPBCompiler.VerifSemantik();
-	
-	//ETPBCompiler.DisplayFonctions();
-	ETPBCompiler.DisplayErrors();
-	
-	
-	ETPBCompiler.Gener68k(outputFile);
+    for (i = 1; i < argc; i++) {
+        if (argv[i][0] != '-') {
+            if (State==INPUT_FILE){
+                ETPBCompiler.AddSourceFile(argv[i]);
+                srcFileCtr++;
+            } else {
+                outputFile=argv[i];
+            }
+        }
+        else {
 
-	
+            if (!strcmp(argv[i]+1,"v")){
+                ETPBCompiler.SetVerbose(true);
+            } else if (!strcmp(argv[i]+1,"h")){
+                ETPBCompiler.SetHelp(true);
+            } else if (!strcmp(argv[i]+1,"nologo")){
+                ETPBCompiler.SetNoLogo(true);
+            } else {
+                printf("Option inconnue:%s\n",argv[i]);
+            }
+        }
+    }
+
+    if (!srcFileCtr)
+    {
+        printf("Pas de fichier en entree\n");
+        Quit();
+    }
+    // {{{ Fetching predefined functions and UD-types
+    ETPBCompiler.AddSourceFile("etplib.elib");
+    // }}}
+
+    //ETPBCompiler.DisplayTokens();
+    ETPBCompiler.VerifSyntax();
+    ETPBCompiler.VerifSemantik();
+
+    //ETPBCompiler.DisplayFonctions();
+    ETPBCompiler.DisplayErrors();
+
+
+    ETPBCompiler.Gener68k(outputFile);
 
 
 
-	Quit();
+
+
+    Quit();
 
 }
 
 void Quit(){
-	//exit(1);
-	#ifdef _WIN32
-		char rien[30];
-		printf("Appuyez sur Entree pour terminer..");
-		scanf("%c",rien);
-	#endif
-	exit(1);
+    //exit(1);
+    #ifdef _WIN32
+        char rien[30];
+        printf("Appuyez sur Entree pour terminer..");
+        scanf("%c",rien);
+    #endif
+    exit(1);
 }
 
 
-void AfficheContenu(void *BText)
-{
-	printf("Affichage du contenu... \n");
-	printf((char *)BText);
-	printf("\n");
-}
+// void AfficheContenu(void *BText)
+// {
+//  printf("Affichage du contenu... \n");
+//  printf((const char *)BText);
+//  printf("\n");
+// }
 

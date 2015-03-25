@@ -34,7 +34,7 @@
 #ifdef _WIN32
 	#define get_os_name() "Windows"
 	#define OS 1
-	
+
 
 #else
 	#include <sys/utsname.h>
@@ -48,21 +48,21 @@
 #endif
 
 
-typedef enum End_Etape {EN_VERIF_SYN,EN_VERIF_SEM, EN_GENER};
+typedef enum End_Etape {EN_VERIF_SYN,EN_VERIF_SEM, EN_GENER} End_Etape;
 
 
 namespace ETPC{
-#ifdef True
-public class Compiler{
-#else
+// #ifdef True
+// public class Compiler{
+// #else
 class Compiler{
-#endif
+//#endif
 private:
 	End_Etape fin;
 
 	Tokenizer mTokenizer;
 	TAG* liste;
-	
+
 	VeriSyn* Syntax;
 	VeriSem* Semantique;
 	Collection errListe;
@@ -76,9 +76,9 @@ private:
 	Collection* mUDTypes;
 	Collection* mFonctions;
 
-	
+
 	void DisplayLogo();
-	
+
 public:
 
 	Compiler(void);
@@ -93,13 +93,13 @@ public:
 	void DisplayUDTypes();
 	void DisplayFonctions();
 
-	void AddSourceFile(char* fileName);
-	
+	void AddSourceFile(const char* fileName);
+
 	void Tokenize();
 	void VerifSyntax();
 	void VerifSemantik();
-	void Gener68k(char* outputFileName);
-	void Generz80(char* outputFileName);
+	void Gener68k(const char* outputFileName);
+	void Generz80(const char* outputFileName);
 
 	void SetVerbose(bool bVerbose) {mVerbose =bVerbose;}
 	void SetHelp(bool bHelp) {mHelp =bHelp;}
