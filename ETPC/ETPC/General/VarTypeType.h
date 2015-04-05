@@ -45,7 +45,7 @@ public:
 	VarTypeType(void);
 	VarTypeType(VarTypeEnum bTy);
 	~VarTypeType(void);
-	char *VarTypeTypeImage();
+	const char *VarTypeTypeImage();
 	void Afficher();
 
 	bool operator ==(VarTypeType &b){

@@ -41,7 +41,7 @@ private:
 
 	void AvanceTokenPtr(char **pText);
 	TAG GetToken(char **Btext,int* Col);
-	char GiveLowerCase(char *bC);
+	char GiveLowerCase(const char *bC);
 
 	bool isPredefFile;
 public:

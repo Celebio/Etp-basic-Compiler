@@ -94,7 +94,7 @@ struct LigneCode68k{
 	LigneNature68k nat;
 	union{
 		InstrIL* instr;
-		char* etiq;
+		const char* etiq;
 		const char* comment;
 	} val;
 	LigneCode68k* next;
@@ -140,7 +140,7 @@ public:
 	void Add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize);
 	void Add(InsOpEnum68k bOp);
 	void Add(const char* bComment);
-	void AddEtiq(char* bEtiq);
+	void AddEtiq(const char* bEtiq);
 
 
 	InsOpEnum68k getOppBra(InsOpEnum68k bOp);

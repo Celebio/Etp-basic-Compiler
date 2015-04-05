@@ -36,7 +36,7 @@ VarTypeType::~VarTypeType(void)
 {
 }
 
-char *VarTypeType::VarTypeTypeImage(){
+const char *VarTypeType::VarTypeTypeImage(){
 	switch(Type)
 	{
 	case TP_INTEGER:
@@ -61,6 +61,8 @@ char *VarTypeType::VarTypeTypeImage(){
 		return "Non-type";
 	case TP_UNKNOWN:
 		return "(Inconnu!)";
+	default:
+		break;
 	}
 	return "(Inconnu!)";
 }
@@ -91,6 +93,8 @@ void VarTypeType::Afficher()
 			printf("TP_VOID");	break;
 		case TP_UNKNOWN:
 			printf("TP_UNKNOWN");	break;
+		default:
+			break;
 		}
 	}
 	else

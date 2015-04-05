@@ -217,7 +217,7 @@ void IL::Add(const char* bComment){
 	}
 }
 
-void IL::AddEtiq(char* bEtiq){
+void IL::AddEtiq(const char* bEtiq){
 	LigneCode* aux=new LigneCode();
 	aux->nat=NA_ETIQ;
 	aux->val.etiq=bEtiq;

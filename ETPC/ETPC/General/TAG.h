@@ -23,7 +23,7 @@
 
 #define TABSIZE 4		// le nombre d'espaces dans un TAB
 
-extern char *ReservedWords[];		// les chaines de caractere correspondants au type enumer? suivant:
+extern const char *ReservedWords[];		// les chaines de caractere correspondants au type enumer? suivant:
 typedef enum enumTokenType {TOKEN_RETURN,
 	TOKEN_MAIN,
 	TOKEN_AS,

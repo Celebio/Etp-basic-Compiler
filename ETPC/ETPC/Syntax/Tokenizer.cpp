@@ -18,7 +18,7 @@
 
 Tokenizer::Tokenizer(void)
 {
-	pListe=NULL;
+    pListe=NULL;
 }
 
 Tokenizer::~Tokenizer(void)
@@ -27,373 +27,373 @@ Tokenizer::~Tokenizer(void)
 
 void Tokenizer::Tokenize(char *textDeb,char *pFin,const char *fileName)
 {
-	programBuffer=textDeb;
-	Fin=pFin;
-	CourFileName=fileName;
+    programBuffer=textDeb;
+    Fin=pFin;
+    CourFileName=fileName;
 
-	// Prend un text en entr?e et fourni un pointeur vers une liste chain?e de TAG
-	TAG CourTAG;
-	TAG* precpListeCr;
-	char *pCour=programBuffer;
-	int CourCol=0;
-	int CourLigne=1;
-	int precCol;
+    // Prend un text en entr?e et fourni un pointeur vers une liste chain?e de TAG
+    TAG CourTAG;
+    TAG* precpListeCr;
+    char *pCour=programBuffer;
+    int CourCol=0;
+    int CourLigne=1;
+    int precCol;
 
-	pListeCr=pListe;
-	precpListeCr=pListeCr;
+    pListeCr=pListe;
+    precpListeCr=pListeCr;
 
-	while (pListeCr)
-	{
-		precpListeCr=pListeCr;
-		pListeCr=pListeCr->GetNext();
-	}
-	pListeCr=precpListeCr;
+    while (pListeCr)
+    {
+        precpListeCr=pListeCr;
+        pListeCr=pListeCr->GetNext();
+    }
+    pListeCr=precpListeCr;
 
-	while (pCour<Fin && *pCour)
-	{
-		do
-		{
-		precCol = CourCol;
-		CourTAG = GetToken(&pCour,&CourCol);
-		} while (CourTAG.GetToken() == TOKEN_ESPACE || CourTAG.GetToken() == TOKEN_COMMENT);
+    while (pCour<Fin && *pCour)
+    {
+        do
+        {
+        precCol = CourCol;
+        CourTAG = GetToken(&pCour,&CourCol);
+        } while (CourTAG.GetToken() == TOKEN_ESPACE || CourTAG.GetToken() == TOKEN_COMMENT);
 
-		if (CourTAG.GetToken()==TOKEN_UNKNOWN) continue;
+        if (CourTAG.GetToken()==TOKEN_UNKNOWN) continue;
 
-		if (pListeCr)
-		{
-			pListeCr->SetNext(new TAG());
-			pListeCr = pListeCr->GetNext();
-		}
-		else
-		{
-			pListeCr = new TAG();
-			pListe = pListeCr;
-		}
+        if (pListeCr)
+        {
+            pListeCr->SetNext(new TAG());
+            pListeCr = pListeCr->GetNext();
+        }
+        else
+        {
+            pListeCr = new TAG();
+            pListe = pListeCr;
+        }
 
-		*pListeCr = CourTAG;
-		pListeCr->SetLigne(CourLigne);
-		pListeCr->SetFileName(CourFileName);
-		pListeCr->SetisPredefFileTAG(isPredefFile);
-		pListeCr->SetCol(precCol);
+        *pListeCr = CourTAG;
+        pListeCr->SetLigne(CourLigne);
+        pListeCr->SetFileName(CourFileName);
+        pListeCr->SetisPredefFileTAG(isPredefFile);
+        pListeCr->SetCol(precCol);
 
-		if (CourTAG.GetToken() == TOKEN_CRLF)
-		{
-			CourCol=0;
-			CourLigne++;
-		}
-	}
-	if (!pListeCr){
-		pListeCr = new TAG();
-	} else {
-		pListeCr->SetNext(new TAG());
-		pListeCr =pListeCr->GetNext();
-	}
-	pListeCr->SetCol(CourCol);
-	pListeCr->SetLigne(0);
-	pListeCr->SetToken(TOKEN_CRLF);
-	pListeCr->SetFileName(CourFileName);
-	pListeCr->SetisPredefFileTAG(isPredefFile);
-	//pListeCr->SetNext(NULL);
+        if (CourTAG.GetToken() == TOKEN_CRLF)
+        {
+            CourCol=0;
+            CourLigne++;
+        }
+    }
+    if (!pListeCr){
+        pListeCr = new TAG();
+    } else {
+        pListeCr->SetNext(new TAG());
+        pListeCr =pListeCr->GetNext();
+    }
+    pListeCr->SetCol(CourCol);
+    pListeCr->SetLigne(0);
+    pListeCr->SetToken(TOKEN_CRLF);
+    pListeCr->SetFileName(CourFileName);
+    pListeCr->SetisPredefFileTAG(isPredefFile);
+    //pListeCr->SetNext(NULL);
 
-	pListeCr->SetNext(new TAG());
-	pListeCr =pListeCr->GetNext();
-	pListeCr->SetCol(0);
-	pListeCr->SetLigne(0);
-	pListeCr->SetToken(TOKEN_ENDOFMODULE);
-	pListeCr->SetFileName(CourFileName);
-	pListeCr->SetisPredefFileTAG(isPredefFile);
-	pListeCr->SetNext(NULL);
+    pListeCr->SetNext(new TAG());
+    pListeCr =pListeCr->GetNext();
+    pListeCr->SetCol(0);
+    pListeCr->SetLigne(0);
+    pListeCr->SetToken(TOKEN_ENDOFMODULE);
+    pListeCr->SetFileName(CourFileName);
+    pListeCr->SetisPredefFileTAG(isPredefFile);
+    pListeCr->SetNext(NULL);
 
 
 }
 
 void Tokenizer::AvanceTokenPtr(char **pText)
 {
-	char jk;
-	char InAString=0;
-	jk = **pText;
+    char jk;
+    char InAString=0;
+    jk = **pText;
 
-	do
-	{
-		if (jk==34)
-			InAString = (!InAString);
-		(*pText)++;
-		jk = **pText;
-		if (jk=='.' && *((*pText)+1)>='0' && *((*pText)+1)<='9')
-			AvanceTokenPtr(pText);
+    do
+    {
+        if (jk==34)
+            InAString = (!InAString);
+        (*pText)++;
+        jk = **pText;
+        if (jk=='.' && *((*pText)+1)>='0' && *((*pText)+1)<='9')
+            AvanceTokenPtr(pText);
 
-	} while (!((jk== ' ' || jk == 9	  || jk == 13   ||
-				jk== '+' || jk == '-' || jk == '*'  ||
-				jk== '/' || jk == '&' || jk == '<'  ||
-				jk== '=' || jk == '>' || jk == '('  ||
-				jk== ')' || jk == '[' || jk == ']'  ||
-				jk== ':' || jk == 39  || jk == ','  ||
-				jk== '.' || jk ==0	  || jk == '!'  ||
-				jk== 34 ) && (!InAString) || (InAString && jk==13) ));	// les caract?res qui peuvent faire arreter un token
+    } while (!(((jk== ' ' || jk == 9   || jk == 13   ||
+                 jk== '+' || jk == '-' || jk == '*'  ||
+                 jk== '/' || jk == '&' || jk == '<'  ||
+                 jk== '=' || jk == '>' || jk == '('  ||
+                 jk== ')' || jk == '[' || jk == ']'  ||
+                 jk== ':' || jk == 39  || jk == ','  ||
+                 jk== '.' || jk ==0   || jk == '!'  ||
+                 jk== 34 ) && (!InAString)) || (InAString && jk==13) ));    // les caract?res qui peuvent faire arreter un token
 }
 
 TAG Tokenizer::GetToken(char **Btext,int* Col)
 {
-	TAG perTAG;
-	perTAG.SetIdentif(NULL);
-	//perTAG.Identif[0] = 0;
-	char* deb=*Btext;
-	if (**Btext == 13)
-	{
-		(*Btext)++;	// il faut sauter le chr(10)
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_CRLF);
-	}
-	else if (**Btext == 32	|| **Btext == 9)	//espace
-	{
-		//avancer jusqu'a ne plus trouver d'espace
+    TAG perTAG;
+    perTAG.SetIdentif(NULL);
+    //perTAG.Identif[0] = 0;
+    char* deb=*Btext;
+    if (**Btext == 13)
+    {
+        (*Btext)++; // il faut sauter le chr(10)
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_CRLF);
+    }
+    else if (**Btext == 32  || **Btext == 9)    //espace
+    {
+        //avancer jusqu'a ne plus trouver d'espace
 
-		while (**Btext ==32 || **Btext == 9)
-		{
-			if (**Btext == 9)
-				*Col += TABSIZE;
-			else if (**Btext == 32)
-				(*Col)++;
-			(*Btext)++;
-		}
-		perTAG.SetToken(TOKEN_ESPACE);
-	}
-	else if (**Btext == 39)	// commentaire
-	{
-		//avancer jusqu'au retour de ligne
-		while (**Btext !=13 && **Btext!=0)
-			(*Btext)++;
-		perTAG.SetToken(TOKEN_COMMENT);
-	}
-	else if (**Btext == ':')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_DEUXPOINTS);
-	}
-	else if (**Btext == '.')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_POINT);
-	}
-	else if (**Btext == '+')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_PLUS);
-	}
-	else if (**Btext == '-')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_MOINS);
-	}
-	else if (**Btext == '*')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_MULT);
-	}
-	else if (**Btext == '/')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_DIV);
-	}
-	else if (**Btext == '&')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_CONCAT);
-	}
-	else if (**Btext == '!')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_EXCLAM);
-	}
-	else if (**Btext == '(')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_OPENPAR);
-	}
-	else if (**Btext == ')')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_CLOSEPAR);
-	}
-	else if (**Btext == '[')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_OPENCRO);
-	}
-	else if (**Btext == ']')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_CLOSECRO);
-	}
-	else if (**Btext == ',')
-	{
-		(*Btext)++;
-		perTAG.SetToken(TOKEN_VIRGULE);
-	}
+        while (**Btext ==32 || **Btext == 9)
+        {
+            if (**Btext == 9)
+                *Col += TABSIZE;
+            else if (**Btext == 32)
+                (*Col)++;
+            (*Btext)++;
+        }
+        perTAG.SetToken(TOKEN_ESPACE);
+    }
+    else if (**Btext == 39) // commentaire
+    {
+        //avancer jusqu'au retour de ligne
+        while (**Btext !=13 && **Btext!=0)
+            (*Btext)++;
+        perTAG.SetToken(TOKEN_COMMENT);
+    }
+    else if (**Btext == ':')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_DEUXPOINTS);
+    }
+    else if (**Btext == '.')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_POINT);
+    }
+    else if (**Btext == '+')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_PLUS);
+    }
+    else if (**Btext == '-')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_MOINS);
+    }
+    else if (**Btext == '*')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_MULT);
+    }
+    else if (**Btext == '/')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_DIV);
+    }
+    else if (**Btext == '&')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_CONCAT);
+    }
+    else if (**Btext == '!')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_EXCLAM);
+    }
+    else if (**Btext == '(')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_OPENPAR);
+    }
+    else if (**Btext == ')')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_CLOSEPAR);
+    }
+    else if (**Btext == '[')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_OPENCRO);
+    }
+    else if (**Btext == ']')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_CLOSECRO);
+    }
+    else if (**Btext == ',')
+    {
+        (*Btext)++;
+        perTAG.SetToken(TOKEN_VIRGULE);
+    }
 
-	else if (**Btext == '>')
-	{
-		(*Btext)++;
-		if (**Btext == '=')
-		{
-			(*Btext)++;
-			perTAG.SetToken(TOKEN_SUPEQUAL1);
-		}
-		else
-			perTAG.SetToken(TOKEN_SUPERIEUR);
-	}
-	else if (**Btext == '<')
-	{
-		(*Btext)++;
-		if (**Btext == '=')
-		{
-			(*Btext)++;
-			perTAG.SetToken(TOKEN_INFEQ1);
-		}
-		else if (**Btext == '>')
-		{
-			(*Btext)++;
-			perTAG.SetToken(TOKEN_DIFFERENT);
-		}
-		else
-			perTAG.SetToken(TOKEN_INF);
-	}
-	else if (**Btext == '=')
-	{
-		(*Btext)++;
-		if (**Btext == '<')
-		{
-			(*Btext)++;
-			// en toute rigeur: perTAG.Token = TOKEN_INFEQ2;
-			perTAG.SetToken(TOKEN_INFEQ1);
-		}
-		else if (**Btext == '>')
-		{
-			(*Btext)++;
-			// en toute rigeur: perTAG.Token = TOKEN_SUPEQUAL2;
-			perTAG.SetToken(TOKEN_SUPEQUAL1);
-		}
-		else
-			perTAG.SetToken(TOKEN_EQUAL);
-	}
-	else
-	{
-		//Voyons si c'est un reserved word
-		char *deb=*Btext;
-		char *cPtr;
-		char *RW;
-		AvanceTokenPtr(Btext);
+    else if (**Btext == '>')
+    {
+        (*Btext)++;
+        if (**Btext == '=')
+        {
+            (*Btext)++;
+            perTAG.SetToken(TOKEN_SUPEQUAL1);
+        }
+        else
+            perTAG.SetToken(TOKEN_SUPERIEUR);
+    }
+    else if (**Btext == '<')
+    {
+        (*Btext)++;
+        if (**Btext == '=')
+        {
+            (*Btext)++;
+            perTAG.SetToken(TOKEN_INFEQ1);
+        }
+        else if (**Btext == '>')
+        {
+            (*Btext)++;
+            perTAG.SetToken(TOKEN_DIFFERENT);
+        }
+        else
+            perTAG.SetToken(TOKEN_INF);
+    }
+    else if (**Btext == '=')
+    {
+        (*Btext)++;
+        if (**Btext == '<')
+        {
+            (*Btext)++;
+            // en toute rigeur: perTAG.Token = TOKEN_INFEQ2;
+            perTAG.SetToken(TOKEN_INFEQ1);
+        }
+        else if (**Btext == '>')
+        {
+            (*Btext)++;
+            // en toute rigeur: perTAG.Token = TOKEN_SUPEQUAL2;
+            perTAG.SetToken(TOKEN_SUPEQUAL1);
+        }
+        else
+            perTAG.SetToken(TOKEN_EQUAL);
+    }
+    else
+    {
+        //Voyons si c'est un reserved word
+        char *deb=*Btext;
+        char *cPtr;
+        const char *RW;
+        AvanceTokenPtr(Btext);
 
-		int Found=0;
-		int i=0;
+        int Found=0;
+        int i=0;
 
-		// comparer *cPtr avec ReservedWords[i] pour 0 =< i =<51
-		while (!(Found || i>60))
-		{
-			RW=ReservedWords[i];
-			Found = 1;
-			cPtr=deb;	// rembobiner la cassette
-			while ((*RW || cPtr!=(*Btext)) && Found)
-			{
-				if (GiveLowerCase(RW)!=GiveLowerCase(cPtr))  // ou bien..  if ((*RW)!=(*cPtr))  pour respecter la casse
-					Found = 0;	// un caract?re est diff?rent.. donc c'est pas lui..
-				else
-				{
-					RW++;
-					cPtr++;
-				}
-			}
-			i++;
-		}
+        // comparer *cPtr avec ReservedWords[i] pour 0 =< i =<51
+        while (!(Found || i>60))
+        {
+            RW=ReservedWords[i];
+            Found = 1;
+            cPtr=deb;   // rembobiner la cassette
+            while ((*RW || cPtr!=(*Btext)) && Found)
+            {
+                if (GiveLowerCase(RW)!=GiveLowerCase(cPtr))  // ou bien..  if ((*RW)!=(*cPtr))  pour respecter la casse
+                    Found = 0;  // un caract?re est diff?rent.. donc c'est pas lui..
+                else
+                {
+                    RW++;
+                    cPtr++;
+                }
+            }
+            i++;
+        }
 
 
-		if (Found)
-			perTAG.SetToken(  (enumTokenType) (i-1) );
-		else	// sinon ca fait pas partie des tokens, c'est donc un nombre ou un identifiant
-		{
-			//perTAG.SetIdentif((char *)malloc((size_t)((*Btext)-deb)+1));
-			//strncpy(perTAG.Identif,deb,(*Btext)-deb);
-			//memcpy(perTAG.GetIdentif(),deb,(*Btext)-deb);
-			char *aux = (char *)malloc((size_t)((*Btext)-deb)+1);
-			memcpy(aux,deb,(*Btext)-deb);
-			aux[(*Btext)-deb]=0;
-			perTAG.SetIdentif(aux);
-			free(aux);
+        if (Found)
+            perTAG.SetToken(  (enumTokenType) (i-1) );
+        else    // sinon ca fait pas partie des tokens, c'est donc un nombre ou un identifiant
+        {
+            //perTAG.SetIdentif((char *)malloc((size_t)((*Btext)-deb)+1));
+            //strncpy(perTAG.Identif,deb,(*Btext)-deb);
+            //memcpy(perTAG.GetIdentif(),deb,(*Btext)-deb);
+            char *aux = (char *)malloc((size_t)((*Btext)-deb)+1);
+            memcpy(aux,deb,(*Btext)-deb);
+            aux[(*Btext)-deb]=0;
+            perTAG.SetIdentif(aux);
+            free(aux);
 
-			//perTAG.GetIdentif()[(*Btext)-deb]=0;
-			if (IsNumeric(perTAG.GetIdentif())!=ISNOTNUMERIC){
-				if (perTAG.GetIdentif()[0] == 0){
-					perTAG.SetToken(TOKEN_UNKNOWN);
-				} else {
-					perTAG.SetToken(TOKEN_NOMBRE);
-				}
-			}
-			else
-			{
-				if (*deb==34)
-				{
-					perTAG.SetToken(TOKEN_STRINGCONSTANT);
-				}
-				else
-				{
-					perTAG.SetToken(TOKEN_IDENTIF);
-					cPtr=perTAG.GetIdentif();
-					while (*cPtr)	// transformation en miniscule
-					{
-						*cPtr = GiveLowerCase(cPtr);
-						cPtr++;
-					}
-				}
-			}
-		}
-	}
-	if (perTAG.GetToken() != TOKEN_ESPACE)
-		*Col += (int)((*Btext)-deb);
-	return perTAG;
+            //perTAG.GetIdentif()[(*Btext)-deb]=0;
+            if (IsNumeric(perTAG.GetIdentif())!=ISNOTNUMERIC){
+                if (perTAG.GetIdentif()[0] == 0){
+                    perTAG.SetToken(TOKEN_UNKNOWN);
+                } else {
+                    perTAG.SetToken(TOKEN_NOMBRE);
+                }
+            }
+            else
+            {
+                if (*deb==34)
+                {
+                    perTAG.SetToken(TOKEN_STRINGCONSTANT);
+                }
+                else
+                {
+                    perTAG.SetToken(TOKEN_IDENTIF);
+                    cPtr=perTAG.GetIdentif();
+                    while (*cPtr)   // transformation en miniscule
+                    {
+                        *cPtr = GiveLowerCase(cPtr);
+                        cPtr++;
+                    }
+                }
+            }
+        }
+    }
+    if (perTAG.GetToken() != TOKEN_ESPACE)
+        *Col += (int)((*Btext)-deb);
+    return perTAG;
 }
-char Tokenizer::GiveLowerCase(char *bC)
+char Tokenizer::GiveLowerCase(const char *bC)
 {
-	if (*bC>=65 && *bC<=90)	// compris entre A et Z
-		return *bC + 32;
-	else
-		return *bC;
+    if (*bC>=65 && *bC<=90) // compris entre A et Z
+        return *bC + 32;
+    else
+        return *bC;
 }
 
 errorIsNumeric Tokenizer::IsNumeric(char *ch)
 {
-	char *Btext = ch;
-	char PointNb = 0;
-	while (*Btext)	// en principe on ne recoit pas de string =""
-	{
-		if (!(*Btext>='0' && *Btext<='9'))
-		{
-			if (*Btext == '.')
-				PointNb++;
-			else
-				PointNb=2;	// pour qu'on retourne un ISNOTNUMERIC
-		}
-		Btext++;
-	}
-	if (PointNb==0)
-		return ISINTEGER;
-	else if (PointNb==1)
-		return ISFLOAT;
-	else
-		return ISNOTNUMERIC;
+    char *Btext = ch;
+    char PointNb = 0;
+    while (*Btext)  // en principe on ne recoit pas de string =""
+    {
+        if (!(*Btext>='0' && *Btext<='9'))
+        {
+            if (*Btext == '.')
+                PointNb++;
+            else
+                PointNb=2;  // pour qu'on retourne un ISNOTNUMERIC
+        }
+        Btext++;
+    }
+    if (PointNb==0)
+        return ISINTEGER;
+    else if (PointNb==1)
+        return ISFLOAT;
+    else
+        return ISNOTNUMERIC;
 }
 errorIsNumeric Tokenizer::IsNumeric(TAG* bTag)
 {
-	if (bTag->GetToken() != TOKEN_NOMBRE)
-		return ISNOTNUMERIC;
-	return IsNumeric(bTag->GetIdentif());
+    if (bTag->GetToken() != TOKEN_NOMBRE)
+        return ISNOTNUMERIC;
+    return IsNumeric(bTag->GetIdentif());
 }
 void Tokenizer::Afficher(void)
 {
-	TAG* debut = pListe;
-	while (debut)
-	{
-		debut->Afficher();
-		debut=debut->GetNext();
-	}
+    TAG* debut = pListe;
+    while (debut)
+    {
+        debut->Afficher();
+        debut=debut->GetNext();
+    }
 }
 

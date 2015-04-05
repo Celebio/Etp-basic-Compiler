@@ -109,7 +109,7 @@ void Compiler::AddSourceFile(const char* fileName){
 		TextString = (char *)malloc(FileSize+2);
 		char *p=TextString;
 		char *pCour=TextString;
-		if (mVerbose) printf("FileSize: %li \n",FileSize);
+		if (mVerbose) printf("FileSize: %i \n",FileSize);
 		for (int k=0;k<FileSize;k++)
 		{
 			*p=(char)(getc(fp)&0x00FF);

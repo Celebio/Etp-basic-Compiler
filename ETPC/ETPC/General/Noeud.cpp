@@ -18,8 +18,8 @@
 #include "noeud.h"
 //#include <iostream.h>
 
-char *ImageOperator[]={
-	// TO DO: à refaire car TypeOptor a changé
+const char *ImageOperator[]={
+	// TO DO: ? refaire car TypeOptor a chang?
 	"NOT",
 	"!",
 	"/",
@@ -47,7 +47,7 @@ char *ImageOperator[]={
 CNoeud::CNoeud(void)
 {
 	mNature=NOEUD_UNKNOWN;
-	mType.Type=TP_UNKNOWN;	// on ne connait pas le type de cet élément
+	mType.Type=TP_UNKNOWN;	// on ne connait pas le type de cet ?l?ment
 	mType.Expr=NULL;		// '	'	'	'	'	'	'	'	'
 	mFilsG=NULL;
 	mFilsD=NULL;
@@ -59,14 +59,14 @@ CNoeud::CNoeud(TAG* bTAG)
 {
 	//CNoeud();
 	mNature=NOEUD_UNKNOWN;
-	mType.Type=TP_UNKNOWN;	// on ne connait pas le type de cet élément
+	mType.Type=TP_UNKNOWN;	// on ne connait pas le type de cet ?l?ment
 	mType.Expr=NULL;		// '	'	'	'	'	'	'	'	'
 	mFilsG=NULL;
 	mFilsD=NULL;
 	for(int i=0;i<30;i++)
 		Successeur[i]=NULL;
 	mTAG =bTAG;
-	// faut faire des trucs du style... (pour la génération de code)
+	// faut faire des trucs du style... (pour la g?n?ration de code)
 	//if (bTAG->Token ==
 	mOperator=GiveOperatorType(bTAG->GetToken());
 	mOperType=GetOperType(bTAG);
@@ -117,7 +117,7 @@ void CNoeud::DestroyArbre(){
 		}
 }
 
-char *CNoeud::ImageNoeud(){
+const char *CNoeud::ImageNoeud(){
 	if (mOperator==OPTOR_MOINSUNAIRE)
 		return "-U";
 	if (!(mTAG->GetToken() ==TOKEN_IDENTIF || mTAG->GetToken() ==TOKEN_NOMBRE || mTAG->GetToken() ==TOKEN_STRINGCONSTANT))
@@ -128,7 +128,7 @@ char *CNoeud::ImageNoeud(){
 
 
 
-void CNoeud::Afficher(char *S,char *SD,char *SG){
+void CNoeud::Afficher(const char *S,const char *SD,const char *SG){
 	char str1[300];
 	char str2[300];
 	char str3[300];
@@ -408,7 +408,7 @@ void CNoeud::SimplifyConstantExpression(){
 		if (mOperType==OPBIN){
 			mFilsG->SimplifyConstantExpression();
 			mFilsD->SimplifyConstantExpression();
-			
+
 			if (mFilsG->EstConstant() && mFilsD->EstConstant()){
 				this->GetType();
 				courIdentif1=mFilsG->GetTAG()->GetIdentif();
@@ -482,7 +482,7 @@ void CNoeud::SimplifyConstantExpression(){
 					}
 				}
 			}
-			
+
 		}
 		else if (mOperType==OPUND){
 			if (mOperator==OPTOR_MOINSUNAIRE){
@@ -502,16 +502,18 @@ void CNoeud::SimplifyConstantExpression(){
 		}
 		break;
 	case NOEUD_OPERANDE_CTE:
-		//rien à faire
+		//rien ? faire
 		break;
 	case NOEUD_OPERANDE_VARIABLE:
-		//rien à faire
+		//rien ? faire
 		break;
 	case NOEUD_OPERANDE_FONCTION:
-		//rien à faire
+		//rien ? faire
 		break;
 	case NOEUD_OPERANDE_ARRAY:
-		//rien à faire
+		//rien ? faire
+		break;
+	default:
 		break;
 	}
 	printf("apres simplification:\n");

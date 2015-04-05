@@ -62,6 +62,8 @@ InstructionETPB::InstructionETPB(InstrTypeEnum bNat){
 	case INS_RETURN:
 		val.ReturnExpr =NULL;
 		break;
+	default:
+		break;
 	}
 }
 InstructionETPB::~InstructionETPB(void){}
@@ -194,6 +196,8 @@ void InstructionETPB::Afficher()
 	case INS_RETURN:
 		printf("Return\n");
 		val.ReturnExpr->Afficher();
+		break;
+	default:
 		break;
 	}
 

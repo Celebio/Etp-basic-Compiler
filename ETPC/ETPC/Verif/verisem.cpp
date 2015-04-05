@@ -738,7 +738,7 @@ void VeriSem::VerifSem(){
 
 	// Verification des types, des declarations circulaires
 
-	// double d?claration des types et existance du type de chaque champs de chaque type
+	// double déclaration des types et existance du type de chaque champs de chaque type
 	Types->bindIterator(&iter1);
 	while(iter1.elemExists()){
 		iter2.initHead(iter1.getCour()->next);

@@ -25,7 +25,7 @@ class FonctionItem :
 	public ColItem
 {
 private:
-	char* Nom;
+	const char* Nom;
 	int Ligne;
 	Collection ArguListe;	// liste des arguments
 	Collection VarListe;	// liste des variables locales
@@ -44,7 +44,7 @@ public:
 	void Afficher();
 
 	// Get
-	char* GetNom() {return Nom;}
+	const char* GetNom() {return Nom;}
 	int GetLigne() {return Ligne;}
 	Collection* GetArguListe() {return &ArguListe;}
 	Collection* GetVarListe() {return &VarListe;}
@@ -57,7 +57,7 @@ public:
 	// Set
 	void SetLigne(int bLigne){Ligne=bLigne;}
 	void SetRetType(VarTypeType bType){RetType=bType;}
-	void SetNom(char* bNom){Nom=bNom;}
+	void SetNom(const char* bNom){Nom=bNom;}
 	void SetUsed(){Used=true;}
 	void SetIsAssembler(){IsAssembler=true;}
 	void SetasmCode(asm68kCoder* bCode){asmCode=bCode;}

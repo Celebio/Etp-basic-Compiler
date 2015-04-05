@@ -105,7 +105,8 @@ InsOpEnum68k asm68kCoder::NodeToOp(CNoeud* bNoeud)
 	case OPTOR_INFEQ:
 		return BLE;
 		break;
-
+	default:
+		break;
 	}
 
 	return OPB;
@@ -340,7 +341,7 @@ void asm68kCoder::Add(const char* bComment){
 #endif
 }
 
-void asm68kCoder::AddEtiq(char* bEtiq){
+void asm68kCoder::AddEtiq(const char* bEtiq){
 	LigneCode68k* aux=new LigneCode68k();
 	aux->nat=NA_ETIQ;
 	aux->val.etiq=bEtiq;

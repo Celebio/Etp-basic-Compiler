@@ -90,7 +90,7 @@ ColItem* Collection::Add(ColItem* bElem)
 ColItem* Collection::AddDebut(ColItem* bElem)
 // pareil que Add, mais ajoute en debut de liste
 // sert uniquement pour avoir une liste dans l'autre sens pour les arguments d'une fonction
-// ne pas utiliser AddDebut et Add pour une meme instance de Collection, last n'est pas mis à jour
+// ne pas utiliser AddDebut et Add pour une meme instance de Collection, last n'est pas mis ? jour
 {
 	if (!buffer)
 	{
@@ -108,7 +108,7 @@ ColItem* Collection::AddDebut(ColItem* bElem)
 	}
 	return bElem;
 }
-void Collection::Add(char* bDesc,TAG* bTag)
+void Collection::Add(const char* bDesc,TAG* bTag)
 {
 	errorC *bErr=new errorC();
 	strcpy(bErr->Descr,bDesc);

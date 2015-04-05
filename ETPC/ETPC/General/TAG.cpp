@@ -17,7 +17,7 @@
 #include "TAG.h"
 
 
-char *ReservedWords[] = {
+const char *ReservedWords[] = {
 	"Return",
 	"MAIN",
 	"as",
@@ -76,8 +76,8 @@ char *ReservedWords[] = {
 	"-",
 	"*",
 	"/",
-	"&",	// concat  
-	"!",	
+	"&",	// concat
+	"!",
 	"'",	// commentaire .. tout ce qui suit cest juste pour avoir un tableau de meme taille que le tableau de token
 	" ",	// espace
 	" ",	// END OF MODULE
@@ -100,7 +100,7 @@ TAG::~TAG(void)
 
 void TAG::Afficher(void)
 {
-char* bT[] = {"TK_RETURN",
+const char* bT[] = {"TK_RETURN",
 				"TK_MAIN",
 				"TK_AS",
 				"TK_PROCEDURE",
@@ -179,7 +179,7 @@ char* bT[] = {"TK_RETURN",
 		if (isPredefFileTAG) {
 			printf("PREDEF\n");
 		}
-	
+
 }
 void TAG::SetIdentif(char* bIdentif){
 	if (!bIdentif){

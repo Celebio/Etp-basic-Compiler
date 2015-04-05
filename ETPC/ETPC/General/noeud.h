@@ -120,10 +120,10 @@ public:
 	CNoeud* AddFilsG(TAG* bTAG);
 	CNoeud* AddFilsD(TAG* bTAG);
 
-	void Afficher(char *S,char *SD,char *SG);
+	void Afficher(const char *S,const char *SD,const char *SG);
 	void Afficher();
 	void Afficher(int indent);
-	char *ImageNoeud();
+	const char *ImageNoeud();
 
 	void DestroyArbre();
 	void SetFilsG(CNoeud* bNoeud);

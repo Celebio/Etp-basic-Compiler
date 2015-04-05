@@ -28,7 +28,7 @@
 Types->bindIterator(&iter1);
 while(iter1.elemExists()){
 		Type1 = (TypeItem*)iter1.getNext();
-		
+
 }
 
 */
@@ -40,8 +40,8 @@ while(iter1.elemExists()){
 #define for_each(itemName, itemType, iteratorName, collectionName)			\
 		collectionName->bindIterator(&iteratorName);						\
 		for (itemName = (itemType*)iteratorName.getElem();iteratorName.elemExists();itemName = (itemType*)iteratorName.getNext())					\
-*/			
-	
+*/
+
 
 
 /* DEFINITION DE LA CLASSE COLLECTION GENERIQUE
@@ -62,18 +62,18 @@ public:
 	// constructeurs
 	Collection();
 	~Collection();
-	
+
 	//fonctions
 	ColItem* Add(ColItem* bElem);
 	ColItem* AddDebut(ColItem* bElem);
-	void Add(char* bDesc,TAG* bTag);
+	void Add(const char* bDesc,TAG* bTag);
 	void Clear();
 	void Afficher();
 	bool estVide();
-	
+
 	// iterators:
 	void bindIterator(ColIterator* bIter);
-	
+
 };
 
 
