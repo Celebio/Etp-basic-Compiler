@@ -37,46 +37,46 @@ typedef enum NatureOp{NO_REG,NO_DVAL,NO_DADR}NatureOp;
 
 class Gen68k{
 private:
-	Collection* errListe;
-	Collection* VariablesPublic;
-	Collection* Types;
-	Collection* Fonctions;
+    Collection* errListe;
+    Collection* VariablesPublic;
+    Collection* Types;
+    Collection* Fonctions;
 
-	char outputFileName[300];
+    char outputFileName[300];
 
-	asm68kCoder ILcoder;
-	VirtStack68k Stack;
-	PileRegTemp68k* RegPile;
+    asm68kCoder ILcoder;
+    VirtStack68k Stack;
+    PileRegTemp68k* RegPile;
 
-	int mNbRegMax;
+    int mNbRegMax;
 
-	size_op68k GetSize(CNoeud* bNoeud);
+    size_op68k GetSize(CNoeud* bNoeud);
 
-	int NbRegArith(CNoeud* bNoeud,NatureOp bNat);
-	int NbRegObjet(CNoeud* bNoeud,NatureOp bNat);
-	int NbRegBool(CNoeud* bNoeud);
+    int NbRegArith(CNoeud* bNoeud,NatureOp bNat);
+    int NbRegObjet(CNoeud* bNoeud,NatureOp bNat);
+    int NbRegBool(CNoeud* bNoeud);
 
 
 
-	void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op);
-	void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op);
-	void CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg);
+    void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op);
+    void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op);
+    void CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg);
 
-	void CodeInstr(InstructionETPB* bInstr);
-	void CodeInstr(Collection* bInstrSuite);
+    void CodeInstr(InstructionETPB* bInstr);
+    void CodeInstr(Collection* bInstrSuite);
 
 public:
-	Gen68k(void);
-	Gen68k(const char *oFileName);
-	~Gen68k(void);
+    Gen68k(void);
+    Gen68k(const char *oFileName);
+    ~Gen68k(void);
 
-	void TestGenerate();
-	void GenerCode();
+    void TestGenerate();
+    void GenerCode();
 
-	void SetEnvironnement(Collection* BerrListe,
-							Collection* BVariablesPublic,
-							Collection* BTypes,
-							Collection* BFonctions);
+    void SetEnvironnement(Collection* BerrListe,
+                            Collection* BVariablesPublic,
+                            Collection* BTypes,
+                            Collection* BFonctions);
 
 };
 

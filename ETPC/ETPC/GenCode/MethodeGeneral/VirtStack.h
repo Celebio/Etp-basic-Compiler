@@ -3,29 +3,29 @@
 
 #include "VariableItem.h"
 
-#define SP_REG -1			// le registre SP a l'index -1
+#define SP_REG -1           // le registre SP a l'index -1
 typedef int reg_id;
 
 struct VirtStackElem{
-	int deepth;
-	VariableItem* var;
-	VirtStackElem* next;
+    int deepth;
+    VariableItem* var;
+    VirtStackElem* next;
 };
 
 class VirtStack{
 private:
-	VirtStackElem* VirtualStackBuffer;
+    VirtStackElem* VirtualStackBuffer;
 public:
-	VirtStack(void);
-	~VirtStack(void);
+    VirtStack(void);
+    ~VirtStack(void);
 
-	void PushToStack(VariableItem* bVar);
-	VariableItem* Pop();
+    void PushToStack(VariableItem* bVar);
+    VariableItem* Pop();
 
-	void ClearStack();
+    void ClearStack();
 
-	int GetStackPos(char* VarNom);
-	void Afficher();
+    int GetStackPos(char* VarNom);
+    void Afficher();
 };
 
 

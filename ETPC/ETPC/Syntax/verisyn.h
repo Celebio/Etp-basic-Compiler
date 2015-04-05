@@ -31,62 +31,62 @@
 
 
 typedef enum enumETAT { ST_DEHORS,ST_INTRA,
-			ST_P00,ST_P01,ST_P02,ST_P05,ST_P06,ST_P07,ST_P08,
-			ST_T00,ST_T01,ST_T02,ST_T03,ST_T04,ST_T07,ST_T08,ST_T09,ST_T10,ST_T11,ST_T12,
-			ST_PROC00,ST_PROC01,ST_PROC02,ST_PROC03,ST_PROC04,ST_PROC05,ST_PROC06,ST_PROC07,ST_PROC08,
-			ST_FUNC00,ST_FUNC01,ST_FUNC02,ST_FUNC03,ST_FUNC04,ST_FUNC05,ST_FUNC06,ST_FUNC07,ST_FUNC08,
-			ST_FUNC09,ST_FUNC10
-			} enumETAT;
+            ST_P00,ST_P01,ST_P02,ST_P05,ST_P06,ST_P07,ST_P08,
+            ST_T00,ST_T01,ST_T02,ST_T03,ST_T04,ST_T07,ST_T08,ST_T09,ST_T10,ST_T11,ST_T12,
+            ST_PROC00,ST_PROC01,ST_PROC02,ST_PROC03,ST_PROC04,ST_PROC05,ST_PROC06,ST_PROC07,ST_PROC08,
+            ST_FUNC00,ST_FUNC01,ST_FUNC02,ST_FUNC03,ST_FUNC04,ST_FUNC05,ST_FUNC06,ST_FUNC07,ST_FUNC08,
+            ST_FUNC09,ST_FUNC10
+            } enumETAT;
 typedef enum enumETATInstr {INST_00,INST_IDENTIF,INST_IDOPENPAR,INST_IDCLOSEPAR,
-			INST_AFFECT,INST_IDOPENCRO,INST_IDCLOSECRO,INST_IDDEBPAR,INST_IDPOINT,
-			INST_RET00,
-			INST_FOR00,INST_FOR01,INST_FOR02,INST_FOR03,INST_FOR04,INST_FOR05,
-			INST_FOR06,INST_FOR07,INST_FOR08,INST_FOR09,
-			INST_DO01,INST_DO02,INST_DO03,INST_DO04,INST_DO05,INST_DO06,INST_DO07,
-			INST_LOCAL00,INST_LOCAL01,INST_LOCAL02,INST_LOCAL03,INST_LOCAL04,
-			INST_LOCAL05,INST_LOCAL06,INST_LOCAL07,
-			INST_IF00,INST_IF01,INST_IF02,INST_IF03,INST_IF04,INST_IF05,INST_IF06,
-			INST_IF07,INST_IF08,INST_IF09,INST_IF10
-			} enumETATInstr;
+            INST_AFFECT,INST_IDOPENCRO,INST_IDCLOSECRO,INST_IDDEBPAR,INST_IDPOINT,
+            INST_RET00,
+            INST_FOR00,INST_FOR01,INST_FOR02,INST_FOR03,INST_FOR04,INST_FOR05,
+            INST_FOR06,INST_FOR07,INST_FOR08,INST_FOR09,
+            INST_DO01,INST_DO02,INST_DO03,INST_DO04,INST_DO05,INST_DO06,INST_DO07,
+            INST_LOCAL00,INST_LOCAL01,INST_LOCAL02,INST_LOCAL03,INST_LOCAL04,
+            INST_LOCAL05,INST_LOCAL06,INST_LOCAL07,
+            INST_IF00,INST_IF01,INST_IF02,INST_IF03,INST_IF04,INST_IF05,INST_IF06,
+            INST_IF07,INST_IF08,INST_IF09,INST_IF10
+            } enumETATInstr;
 
 typedef enum enumETATExpr {EXST_00,EXST_01,EXST_02,EXST_03,EXST_04,EXST_05,
-			EXST_06,EXST_07,EXST_08,EXST_09,EXST_10,EXST_11,EXST_12,EXST_13,
-			EXST_14,EXST_15,EXST_16,EXST_17,EXST_FIN,EXST_FIN2} enumETATExpr;
+            EXST_06,EXST_07,EXST_08,EXST_09,EXST_10,EXST_11,EXST_12,EXST_13,
+            EXST_14,EXST_15,EXST_16,EXST_17,EXST_FIN,EXST_FIN2} enumETATExpr;
 
 class VeriSyn
 {
 private:
-	TAG* tagListe;
-	Collection* errListe;
-	Collection VariablesPublic;
-	Collection Types;
-	Collection Fonctions;
+    TAG* tagListe;
+    Collection* errListe;
+    Collection VariablesPublic;
+    Collection Types;
+    Collection Fonctions;
 
-	bool readingPredef;
+    bool readingPredef;
 
-	void AvanceNextLigne(TAG** bTAG);
-	bool IsAType(TAG* bTag);
-	VarTypeType GetVarType(TAG* bTag);
-	void NetoyerArbreParentheses(CNoeud *CurNoeud);
-	bool VerifyExpression(bool requis,
-					  TAG* debTag,
-					  TAG* finTag,
-					  bool moinsPermis,
-					  CNoeud** ArbreExpress);
-	void VerifyInstruction(TAG* debTag,
-					   TAG* finTag,
-					   FonctionItem* pFunc,
-					   Collection* instrCollect);
+    void AvanceNextLigne(TAG** bTAG);
+    bool IsAType(TAG* bTag);
+    VarTypeType GetVarType(TAG* bTag);
+    void NetoyerArbreParentheses(CNoeud *CurNoeud);
+    bool VerifyExpression(bool requis,
+                      TAG* debTag,
+                      TAG* finTag,
+                      bool moinsPermis,
+                      CNoeud** ArbreExpress);
+    void VerifyInstruction(TAG* debTag,
+                       TAG* finTag,
+                       FonctionItem* pFunc,
+                       Collection* instrCollect);
 
 public:
 
-	VeriSyn(TAG* bListe,Collection* bErrListe);
-	~VeriSyn(void);
-	void VerifSyntax();
+    VeriSyn(TAG* bListe,Collection* bErrListe);
+    ~VeriSyn(void);
+    void VerifSyntax();
 
-	Collection* GetVariablesPublicPtr(){return &VariablesPublic;}
-	Collection* GetTypesPtr(){return &Types;}
-	Collection* GetFonctionsPtr(){return &Fonctions;}
+    Collection* GetVariablesPublicPtr(){return &VariablesPublic;}
+    Collection* GetTypesPtr(){return &Types;}
+    Collection* GetFonctionsPtr(){return &Fonctions;}
 };
 
 

@@ -32,19 +32,19 @@
 
 
 #ifdef _WIN32
-	#define get_os_name() "Windows"
-	#define OS 1
+    #define get_os_name() "Windows"
+    #define OS 1
 
 
 #else
-	#include <sys/utsname.h>
-	#define OS 2
-	static inline const char *get_os_name(void)
-	{
-		static struct utsname osname;
-		uname(&osname);
-		return osname.sysname;
-	}
+    #include <sys/utsname.h>
+    #define OS 2
+    static inline const char *get_os_name(void)
+    {
+        static struct utsname osname;
+        uname(&osname);
+        return osname.sysname;
+    }
 #endif
 
 
@@ -58,52 +58,52 @@ namespace ETPC{
 class Compiler{
 //#endif
 private:
-	End_Etape fin;
+    End_Etape fin;
 
-	Tokenizer mTokenizer;
-	TAG* liste;
+    Tokenizer mTokenizer;
+    TAG* liste;
 
-	VeriSyn* Syntax;
-	VeriSem* Semantique;
-	Collection errListe;
-	bool mVerbose;
-	bool mNoLogo;
-	bool mHelp;
-	bool logoDisplayed;
-	int moduleCtr;
+    VeriSyn* Syntax;
+    VeriSem* Semantique;
+    Collection errListe;
+    bool mVerbose;
+    bool mNoLogo;
+    bool mHelp;
+    bool logoDisplayed;
+    int moduleCtr;
 
-	Collection* mVarPublic;
-	Collection* mUDTypes;
-	Collection* mFonctions;
+    Collection* mVarPublic;
+    Collection* mUDTypes;
+    Collection* mFonctions;
 
 
-	void DisplayLogo();
+    void DisplayLogo();
 
 public:
 
-	Compiler(void);
-	Compiler(End_Etape bFin);
+    Compiler(void);
+    Compiler(End_Etape bFin);
 
-	~Compiler(void);
+    ~Compiler(void);
 
-	void DisplayHelp();
-	void DisplayTokens();
-	void DisplayErrors();
-	void DisplayVarPublic();
-	void DisplayUDTypes();
-	void DisplayFonctions();
+    void DisplayHelp();
+    void DisplayTokens();
+    void DisplayErrors();
+    void DisplayVarPublic();
+    void DisplayUDTypes();
+    void DisplayFonctions();
 
-	void AddSourceFile(const char* fileName);
+    void AddSourceFile(const char* fileName);
 
-	void Tokenize();
-	void VerifSyntax();
-	void VerifSemantik();
-	void Gener68k(const char* outputFileName);
-	void Generz80(const char* outputFileName);
+    void Tokenize();
+    void VerifSyntax();
+    void VerifSemantik();
+    void Gener68k(const char* outputFileName);
+    void Generz80(const char* outputFileName);
 
-	void SetVerbose(bool bVerbose) {mVerbose =bVerbose;}
-	void SetHelp(bool bHelp) {mHelp =bHelp;}
-	void SetNoLogo(bool bNoLogo) {mNoLogo =bNoLogo;}
+    void SetVerbose(bool bVerbose) {mVerbose =bVerbose;}
+    void SetHelp(bool bHelp) {mHelp =bHelp;}
+    void SetNoLogo(bool bNoLogo) {mNoLogo =bNoLogo;}
 };
 
 }

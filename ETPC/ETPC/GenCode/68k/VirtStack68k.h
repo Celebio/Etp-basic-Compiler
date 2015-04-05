@@ -26,27 +26,27 @@ typedef enum reg_id {A0,A1,A2,A3,A4,A5,A6,A7, D0,D1,D2,D3,D4,D5,D6,D7 ,UNDEFREG}
 #define SP_REG A7
 
 struct VirtStackElem68k{
-	int deepth;
-	VariableItem* var;
-	VirtStackElem68k* next;
+    int deepth;
+    VariableItem* var;
+    VirtStackElem68k* next;
 };
 
 class VirtStack68k{
 private:
-	VirtStackElem68k* VirtualStackBuffer;
-	int mTempCtr;
+    VirtStackElem68k* VirtualStackBuffer;
+    int mTempCtr;
 public:
-	VirtStack68k(void);
-	~VirtStack68k(void);
+    VirtStack68k(void);
+    ~VirtStack68k(void);
 
-	void PushToStack(VariableItem* bVar);
-	void PushToStack(int taille);
-	VariableItem* Pop();
+    void PushToStack(VariableItem* bVar);
+    void PushToStack(int taille);
+    VariableItem* Pop();
 
-	void ClearStack();
+    void ClearStack();
 
-	int GetStackPos(char* VarNom);
-	void Afficher();
+    int GetStackPos(char* VarNom);
+    void Afficher();
 };
 
 

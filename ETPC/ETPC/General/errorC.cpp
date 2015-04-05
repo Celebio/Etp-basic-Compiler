@@ -26,11 +26,11 @@ errorC::~errorC(void)
 }
 void errorC::Detruir()
 {
-	// rien de particulier
+    // rien de particulier
 }
 void errorC::Afficher()
 {
-	printf("%s  ligne: %i  %s  ",Tag->GetFileName(),Tag->GetLigne(),Descr);
-	if (Tag)
-		Tag->Afficher();
+    printf("%s  ligne: %i  %s  ",Tag->GetFileName(),Tag->GetLigne(),Descr);
+    if (Tag)
+        Tag->Afficher();
 }

@@ -23,30 +23,30 @@
 
 class PileRegTemp68k{
 private:
-	reg_id PileD[TAILLE_PILED];
-	reg_id PileA[TAILLE_PILEA];
+    reg_id PileD[TAILLE_PILED];
+    reg_id PileA[TAILLE_PILEA];
 
-	void DepilerD(void);
-	void EmpilerD(reg_id R);
-	int nb_reg;
-	asm68kCoder* mIL;
-	VirtStack68k* mStack;
-	int mTempCtr;
+    void DepilerD(void);
+    void EmpilerD(reg_id R);
+    int nb_reg;
+    asm68kCoder* mIL;
+    VirtStack68k* mStack;
+    int mTempCtr;
 public:
-	PileRegTemp68k(void);
-	PileRegTemp68k(asm68kCoder* bIL,VirtStack68k* bStack);
-	~PileRegTemp68k(void);
-	
-	void Init();
-	void EchangeD(void);
+    PileRegTemp68k(void);
+    PileRegTemp68k(asm68kCoder* bIL,VirtStack68k* bStack);
+    ~PileRegTemp68k(void);
 
-	Operande68k* Sommet();
+    void Init();
+    void EchangeD(void);
 
-	void Allouer(Operande68k* M);
-	void Liberer(Operande68k* M);
-	
-	Operande68k* AllouerTemp(int taille);
-	void LibererTemp(Operande68k* T,int taille);
+    Operande68k* Sommet();
+
+    void Allouer(Operande68k* M);
+    void Liberer(Operande68k* M);
+
+    Operande68k* AllouerTemp(int taille);
+    void LibererTemp(Operande68k* T,int taille);
 };
 
 #endif

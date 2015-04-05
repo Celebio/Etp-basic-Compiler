@@ -23,16 +23,16 @@
 class ColItem
 {
 public:
-	ColItem(void);
-	~ColItem(void);
-	virtual void Detruir();		// virtual pour le late-binding
-	virtual void Afficher();
+    ColItem(void);
+    ~ColItem(void);
+    virtual void Detruir();     // virtual pour le late-binding
+    virtual void Afficher();
 
 };
 
 struct ArrayElem{
-	ColItem* Elem;
-	ArrayElem* next;
+    ColItem* Elem;
+    ArrayElem* next;
 };
 
 #endif

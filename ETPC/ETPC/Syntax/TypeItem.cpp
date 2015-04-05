@@ -29,13 +29,13 @@ void TypeItem::Detruir()
 
 void TypeItem::Afficher()
 {
-	printf("Type:%s \n",Nom);
-	printf("les champs:\n");
-	ChampListe.Afficher();
+    printf("Type:%s \n",Nom);
+    printf("les champs:\n");
+    ChampListe.Afficher();
 }
 
 void TypeItem::SetTagNom(TAG* bTag)
 {
-	bTAGNom=bTag;
-	Nom=bTag->GetIdentif();
+    bTAGNom=bTag;
+    Nom=bTag->GetIdentif();
 }

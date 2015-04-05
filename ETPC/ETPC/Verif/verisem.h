@@ -24,35 +24,35 @@
 #include "InstructionETPB.h"
 #include "Tokenizer.h"
 
-class VeriSem 
+class VeriSem
 {
 private:
-	Collection* errListe;
-	Collection* VariablesPublic;
-	Collection* Types;
-	Collection* Fonctions;
+    Collection* errListe;
+    Collection* VariablesPublic;
+    Collection* Types;
+    Collection* Fonctions;
 
-	int UpdateVarSize(VariableItem* bVar,VarTypeType bType,bool UDasPtr);
-	bool TypeExiste(VariableItem* bVariable);
+    int UpdateVarSize(VariableItem* bVar,VarTypeType bType,bool UDasPtr);
+    bool TypeExiste(VariableItem* bVariable);
 
-	VarTypeType GetTypeExpression(CNoeud *expr,
-								VarTypeType typeAttendu,
-								FonctionItem* foncEnCours);
+    VarTypeType GetTypeExpression(CNoeud *expr,
+                                VarTypeType typeAttendu,
+                                FonctionItem* foncEnCours);
 
-	void VerifSemInstr(Collection *bInstrListe,FonctionItem* foncEnCours);
+    void VerifSemInstr(Collection *bInstrListe,FonctionItem* foncEnCours);
 
-	void VerifSemInstr(InstructionETPB *bInstr,
-				   FonctionItem* foncEnCours);
+    void VerifSemInstr(InstructionETPB *bInstr,
+                   FonctionItem* foncEnCours);
 public:
-	VeriSem(void);
-	~VeriSem(void);
-	
-	void VerifSem();
-	void SetEnvironnement(Collection* BerrListe,
-							Collection* BVariablesPublic,
-							Collection* BTypes,
-							Collection* BFonctions);
-	
+    VeriSem(void);
+    ~VeriSem(void);
+
+    void VerifSem();
+    void SetEnvironnement(Collection* BerrListe,
+                            Collection* BVariablesPublic,
+                            Collection* BTypes,
+                            Collection* BFonctions);
+
 };
 
 #endif

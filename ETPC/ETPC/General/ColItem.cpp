@@ -30,5 +30,5 @@ void ColItem::Detruir()
 }
 void ColItem::Afficher()
 {
-	printf("Affichage non implemente pour cet objet\n");
+    printf("Affichage non implemente pour cet objet\n");
 }

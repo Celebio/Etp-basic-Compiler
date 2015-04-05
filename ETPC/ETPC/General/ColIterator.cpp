@@ -23,34 +23,34 @@
 ColIterator::ColIterator(void){
 }
 ColIterator::ColIterator(ArrayElem* head){
-	mHead=head;
-	mCour=mHead;
+    mHead=head;
+    mCour=mHead;
 }
 ColIterator::~ColIterator(void){
 }
 
 ColItem* ColIterator::getNext(){
-	if (!mCour) return NULL;
+    if (!mCour) return NULL;
 
-	ColItem* res=mCour->Elem;
-	mCour=mCour->next;
-	return res;
+    ColItem* res=mCour->Elem;
+    mCour=mCour->next;
+    return res;
 }
 ColItem* ColIterator::getElem(){
-	return mCour->Elem;
+    return mCour->Elem;
 }
 bool ColIterator::elemExists(){
-	return (mCour!=NULL);
+    return (mCour!=NULL);
 }
 
 void ColIterator::gotoHead(){
-	mCour=mHead;
+    mCour=mHead;
 }
 void ColIterator::initHead(ArrayElem* head){
-	mHead=head;
-	mCour=mHead;
+    mHead=head;
+    mCour=mHead;
 }
 
 ArrayElem* ColIterator::getCour(){
-	return mCour;
+    return mCour;
 }

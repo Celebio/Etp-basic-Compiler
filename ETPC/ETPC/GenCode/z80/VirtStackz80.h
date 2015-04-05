@@ -26,27 +26,27 @@ typedef enum regz80_id {A, B, C, D, E, F, H, L,IX ,UNDEFZ80REG} regz80_id;
 #define SP IX
 
 struct VirtStackElemz80{
-	int deepth;
-	VariableItem* var;
-	VirtStackElemz80* next;
+    int deepth;
+    VariableItem* var;
+    VirtStackElemz80* next;
 };
 
 class VirtStackz80{
 private:
-	VirtStackElemz80* VirtualStackBuffer;
-	int mTempCtr;
+    VirtStackElemz80* VirtualStackBuffer;
+    int mTempCtr;
 public:
-	VirtStackz80(void);
-	~VirtStackz80(void);
+    VirtStackz80(void);
+    ~VirtStackz80(void);
 
-	void PushToStack(VariableItem* bVar);
-	void PushToStack(int taille);
-	VariableItem* Pop();
+    void PushToStack(VariableItem* bVar);
+    void PushToStack(int taille);
+    VariableItem* Pop();
 
-	void ClearStack();
+    void ClearStack();
 
-	int GetStackPos(char* VarNom);
-	void Afficher();
+    int GetStackPos(char* VarNom);
+    void Afficher();
 };
 
 

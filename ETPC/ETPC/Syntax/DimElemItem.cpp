@@ -23,9 +23,9 @@ DimElemItem::~DimElemItem(void){}
 
 void DimElemItem::Detruir()
 {
-	expr->DestroyArbre();
+    expr->DestroyArbre();
 }
 void DimElemItem::Afficher()
 {
-	expr->Afficher();
+    expr->Afficher();
 }

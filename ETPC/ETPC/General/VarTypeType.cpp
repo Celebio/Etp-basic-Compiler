@@ -22,13 +22,13 @@
 
 VarTypeType::VarTypeType(void)
 {
-	Type=TP_UNKNOWN;
-	Expr=NULL;
+    Type=TP_UNKNOWN;
+    Expr=NULL;
 }
 VarTypeType::VarTypeType(VarTypeEnum bTy)
 {
-	Type=bTy;
-	Expr=NULL;
+    Type=bTy;
+    Expr=NULL;
 }
 
 
@@ -37,66 +37,66 @@ VarTypeType::~VarTypeType(void)
 }
 
 const char *VarTypeType::VarTypeTypeImage(){
-	switch(Type)
-	{
-	case TP_INTEGER:
-		return "Integer";
-	case TP_FLOAT:
-		return "Float";
-	case TP_LONG:
-		return "Long";
-	case TP_STRING:
-		return "String";
-	case TP_BOOLEAN:
-		return "Boolean";
-	case TP_FILE:
-		return "File";
-	case TP_LIST:
-		return "List";
-	case TP_BYTE:
-		return "Byte";
-	case TP_USER:
-		return Expr;
-	case TP_VOID:
-		return "Non-type";
-	case TP_UNKNOWN:
-		return "(Inconnu!)";
-	default:
-		break;
-	}
-	return "(Inconnu!)";
+    switch(Type)
+    {
+    case TP_INTEGER:
+        return "Integer";
+    case TP_FLOAT:
+        return "Float";
+    case TP_LONG:
+        return "Long";
+    case TP_STRING:
+        return "String";
+    case TP_BOOLEAN:
+        return "Boolean";
+    case TP_FILE:
+        return "File";
+    case TP_LIST:
+        return "List";
+    case TP_BYTE:
+        return "Byte";
+    case TP_USER:
+        return Expr;
+    case TP_VOID:
+        return "Non-type";
+    case TP_UNKNOWN:
+        return "(Inconnu!)";
+    default:
+        break;
+    }
+    return "(Inconnu!)";
 }
 
 void VarTypeType::Afficher()
 {
-	if (Type!=TP_USER)
-	{
-		switch (Type)
-		{
-		case TP_INTEGER:
-			printf("TP_INTEGER");	break;
-		case TP_FLOAT:
-			printf("TP_FLOAT");	break;
-		case TP_LONG:
-			printf("TP_LONG");	break;
-		case TP_STRING:
-			printf("TP_STRING");	break;
-		case TP_BOOLEAN:
-			printf("TP_BOOLEAN");	break;
-		case TP_FILE:
-			printf("TP_FILE");	break;
-		case TP_LIST:
-			printf("TP_LIST");	break;
-		case TP_BYTE:
-			printf("TP_BYTE");	break;
-		case TP_VOID:
-			printf("TP_VOID");	break;
-		case TP_UNKNOWN:
-			printf("TP_UNKNOWN");	break;
-		default:
-			break;
-		}
-	}
-	else
-		printf("%s",Expr);
+    if (Type!=TP_USER)
+    {
+        switch (Type)
+        {
+        case TP_INTEGER:
+            printf("TP_INTEGER");   break;
+        case TP_FLOAT:
+            printf("TP_FLOAT"); break;
+        case TP_LONG:
+            printf("TP_LONG");  break;
+        case TP_STRING:
+            printf("TP_STRING");    break;
+        case TP_BOOLEAN:
+            printf("TP_BOOLEAN");   break;
+        case TP_FILE:
+            printf("TP_FILE");  break;
+        case TP_LIST:
+            printf("TP_LIST");  break;
+        case TP_BYTE:
+            printf("TP_BYTE");  break;
+        case TP_VOID:
+            printf("TP_VOID");  break;
+        case TP_UNKNOWN:
+            printf("TP_UNKNOWN");   break;
+        default:
+            break;
+        }
+    }
+    else
+        printf("%s",Expr);
 }

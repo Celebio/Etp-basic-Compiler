@@ -20,8 +20,8 @@
 
 FonctionItem::FonctionItem(void)
 {
-	IsAssembler=false;
-	Used=false;
+    IsAssembler=false;
+    Used=false;
 }
 FonctionItem::~FonctionItem(void)
 {
@@ -31,19 +31,19 @@ void FonctionItem::Detruir()
 }
 void FonctionItem::Afficher()
 {
-	printf("Fonction:ligne:%i  nom:%s, arguments:\n",Ligne,Nom);
-	printf("Arguments:\n");
-	ArguListe.Afficher();
-	printf("Variables locales:\n");
-	VarListe.Afficher();
-	
-	if (RetType.Type != TP_VOID)
-	{
-		printf("retourne ");
-		RetType.Afficher();	
-	}	
-	printf("\n");
-	printf("Instructions:\n");
-	InstrListe.Afficher();
+    printf("Fonction:ligne:%i  nom:%s, arguments:\n",Ligne,Nom);
+    printf("Arguments:\n");
+    ArguListe.Afficher();
+    printf("Variables locales:\n");
+    VarListe.Afficher();
+
+    if (RetType.Type != TP_VOID)
+    {
+        printf("retourne ");
+        RetType.Afficher();
+    }
+    printf("\n");
+    printf("Instructions:\n");
+    InstrListe.Afficher();
 }
 

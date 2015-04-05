@@ -21,25 +21,25 @@
 #include "ColItem.h"
 
 class DimElemItem :
-	public ColItem
+    public ColItem
 {
 private:
-	int ConstVal;
-	CNoeud* expr;
+    int ConstVal;
+    CNoeud* expr;
 public:
 
-	DimElemItem(void);
-	~DimElemItem(void);
+    DimElemItem(void);
+    ~DimElemItem(void);
 
-	// les obligés
-	void Detruir();
-	void Afficher();
+    // les oblig?s
+    void Detruir();
+    void Afficher();
 
-	int GetConstVal(){return ConstVal;}
-	CNoeud* GetExpr(){return expr;}
-	CNoeud** GetExprPtr(){return &expr;}
+    int GetConstVal(){return ConstVal;}
+    CNoeud* GetExpr(){return expr;}
+    CNoeud** GetExprPtr(){return &expr;}
 
-	void SetExprNull(){expr=NULL;}
+    void SetExprNull(){expr=NULL;}
 };
 
 #endif

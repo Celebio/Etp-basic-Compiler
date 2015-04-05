@@ -25,53 +25,53 @@
 class FonctionItem;
 
 typedef enum VarPortEnum {
-	VR_PUBLIC,
-	VR_LOCAL,
-	VR_MEMBER,	// pour les variables d'un type
-	VR_ARGU		// argument d'une fonction ou proc?dure
+    VR_PUBLIC,
+    VR_LOCAL,
+    VR_MEMBER,  // pour les variables d'un type
+    VR_ARGU     // argument d'une fonction ou proc?dure
 } VarPortEnum;
 
 
 class VariableItem:
-	public ColItem
+    public ColItem
 {
 private:
-	VarPortEnum Car;	// LOCAL/PUBLIC
-	TAG* bTAGNom;			// le TAG dont le champ Identif contient le nom de la variable
-	Collection DimListe;	// Liste des expressions des dimensions
-	VarTypeType Type;	// Integer,Float,User-defined,etc..
-	TAG* bTAGType;		// le TAG dont le champ Identif donne d?finit le type
-	FonctionItem* Func;		// La fonction qui la contient (pour les variables locales)
-	int Size;			// taille en octet
-	bool Pointed;
+    VarPortEnum Car;    // LOCAL/PUBLIC
+    TAG* bTAGNom;           // le TAG dont le champ Identif contient le nom de la variable
+    Collection DimListe;    // Liste des expressions des dimensions
+    VarTypeType Type;   // Integer,Float,User-defined,etc..
+    TAG* bTAGType;      // le TAG dont le champ Identif donne d?finit le type
+    FonctionItem* Func;     // La fonction qui la contient (pour les variables locales)
+    int Size;           // taille en octet
+    bool Pointed;
 public:
-	// CONSTRUCTEUR/DESTRUCTEUR
-	VariableItem(void);
-	~VariableItem(void);
+    // CONSTRUCTEUR/DESTRUCTEUR
+    VariableItem(void);
+    ~VariableItem(void);
 
-	// reimplemantation des fonctions:
-	void Detruir();
-	void Afficher();
+    // reimplemantation des fonctions:
+    void Detruir();
+    void Afficher();
 
-	// Get
-	VarPortEnum GetCar() {return Car;}
-	TAG* GetTagNom() {return bTAGNom;}
-	Collection* GetDimListe() {return &DimListe;}
-	VarTypeType GetType() {return Type;}
-	TAG* GetTagType() {return bTAGType;}
-	FonctionItem* GetFunc() {return Func;}
-	int GetSize() {return Size;}
-	bool GetPointed() {return Pointed;}
+    // Get
+    VarPortEnum GetCar() {return Car;}
+    TAG* GetTagNom() {return bTAGNom;}
+    Collection* GetDimListe() {return &DimListe;}
+    VarTypeType GetType() {return Type;}
+    TAG* GetTagType() {return bTAGType;}
+    FonctionItem* GetFunc() {return Func;}
+    int GetSize() {return Size;}
+    bool GetPointed() {return Pointed;}
 
-	// Set
-	void SetCar(VarPortEnum bCar) {Car=bCar;}
-	void SetTagNom(TAG* nTAGNom) {bTAGNom=nTAGNom;}
-	void SetDimListe(Collection* bListe) {if (bListe) DimListe=*bListe;}
-	void SetType(VarTypeType bType) {Type=bType;}
-	void SetTagType(TAG* nTAGType) {bTAGType=nTAGType;}
-	void SetFunc(FonctionItem* bFunc) {Func=bFunc;}
-	void SetSize(int bSize) {Size=bSize;}
-	void SetPointed(bool ptd) {Pointed=ptd;}
+    // Set
+    void SetCar(VarPortEnum bCar) {Car=bCar;}
+    void SetTagNom(TAG* nTAGNom) {bTAGNom=nTAGNom;}
+    void SetDimListe(Collection* bListe) {if (bListe) DimListe=*bListe;}
+    void SetType(VarTypeType bType) {Type=bType;}
+    void SetTagType(TAG* nTAGType) {bTAGType=nTAGType;}
+    void SetFunc(FonctionItem* bFunc) {Func=bFunc;}
+    void SetSize(int bSize) {Size=bSize;}
+    void SetPointed(bool ptd) {Pointed=ptd;}
 };
 
 #endif

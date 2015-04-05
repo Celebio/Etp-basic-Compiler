@@ -22,45 +22,45 @@
 #include "asm68kCoder.h"
 
 class FonctionItem :
-	public ColItem
+    public ColItem
 {
 private:
-	const char* Nom;
-	int Ligne;
-	Collection ArguListe;	// liste des arguments
-	Collection VarListe;	// liste des variables locales
-	VarTypeType RetType;
-	Collection InstrListe;	// la suite d'instruction
-	bool IsAssembler;
-	bool Used;
-	asm68kCoder* asmCode;
+    const char* Nom;
+    int Ligne;
+    Collection ArguListe;   // liste des arguments
+    Collection VarListe;    // liste des variables locales
+    VarTypeType RetType;
+    Collection InstrListe;  // la suite d'instruction
+    bool IsAssembler;
+    bool Used;
+    asm68kCoder* asmCode;
 
 public:
-	FonctionItem(void);
-	~FonctionItem(void);
+    FonctionItem(void);
+    ~FonctionItem(void);
 
 
-	void Detruir();
-	void Afficher();
+    void Detruir();
+    void Afficher();
 
-	// Get
-	const char* GetNom() {return Nom;}
-	int GetLigne() {return Ligne;}
-	Collection* GetArguListe() {return &ArguListe;}
-	Collection* GetVarListe() {return &VarListe;}
-	VarTypeType GetRetType() {return RetType;}
-	Collection* GetInstrListe() {return &InstrListe;}
-	bool GetUsed() {return Used;}
-	bool GetIsAssembler() {return IsAssembler;}
-	asm68kCoder* GetasmCode() {return asmCode;}
+    // Get
+    const char* GetNom() {return Nom;}
+    int GetLigne() {return Ligne;}
+    Collection* GetArguListe() {return &ArguListe;}
+    Collection* GetVarListe() {return &VarListe;}
+    VarTypeType GetRetType() {return RetType;}
+    Collection* GetInstrListe() {return &InstrListe;}
+    bool GetUsed() {return Used;}
+    bool GetIsAssembler() {return IsAssembler;}
+    asm68kCoder* GetasmCode() {return asmCode;}
 
-	// Set
-	void SetLigne(int bLigne){Ligne=bLigne;}
-	void SetRetType(VarTypeType bType){RetType=bType;}
-	void SetNom(const char* bNom){Nom=bNom;}
-	void SetUsed(){Used=true;}
-	void SetIsAssembler(){IsAssembler=true;}
-	void SetasmCode(asm68kCoder* bCode){asmCode=bCode;}
+    // Set
+    void SetLigne(int bLigne){Ligne=bLigne;}
+    void SetRetType(VarTypeType bType){RetType=bType;}
+    void SetNom(const char* bNom){Nom=bNom;}
+    void SetUsed(){Used=true;}
+    void SetIsAssembler(){IsAssembler=true;}
+    void SetasmCode(asm68kCoder* bCode){asmCode=bCode;}
 
 };
 

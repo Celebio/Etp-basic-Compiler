@@ -22,39 +22,39 @@
 #include <string.h>
 
 typedef enum errorIsNumeric {
-	ISINTEGER,
-	ISFLOAT,
-	ISNOTNUMERIC
+    ISINTEGER,
+    ISFLOAT,
+    ISNOTNUMERIC
 } errorIsNumeric;
 
 class Tokenizer
 {
 
 private:
-	TAG *pListe;
-	TAG *pListeCr;
+    TAG *pListe;
+    TAG *pListeCr;
 
-	char *programBuffer;
-	char *Fin;
-	const char *CourFileName;
-	errorIsNumeric IsNumeric(TAG* bTag);
+    char *programBuffer;
+    char *Fin;
+    const char *CourFileName;
+    errorIsNumeric IsNumeric(TAG* bTag);
 
-	void AvanceTokenPtr(char **pText);
-	TAG GetToken(char **Btext,int* Col);
-	char GiveLowerCase(const char *bC);
+    void AvanceTokenPtr(char **pText);
+    TAG GetToken(char **Btext,int* Col);
+    char GiveLowerCase(const char *bC);
 
-	bool isPredefFile;
+    bool isPredefFile;
 public:
-	Tokenizer(void);
+    Tokenizer(void);
 
-	~Tokenizer(void);
+    ~Tokenizer(void);
 
-	errorIsNumeric IsNumeric(char *ch);
+    errorIsNumeric IsNumeric(char *ch);
 
-	void Tokenize(char *pCour,char *pFin,const char *fileName);
-	TAG* getTagListe() {return pListe;}
-	void Afficher(void);
-	void SetIsPredefFile(bool predef) {isPredefFile=predef;}
+    void Tokenize(char *pCour,char *pFin,const char *fileName);
+    TAG* getTagListe() {return pListe;}
+    void Afficher(void);
+    void SetIsPredefFile(bool predef) {isPredefFile=predef;}
 };
 
 #endif

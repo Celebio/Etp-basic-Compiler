@@ -21,15 +21,15 @@
 #include "ColItem.h"
 
 class errorC :
-	public ColItem
+    public ColItem
 {
 public:
-	char Descr[300];
-	TAG* Tag;
-	errorC(void);
-	~errorC(void);
-	void Detruir();
-	void Afficher();
+    char Descr[300];
+    TAG* Tag;
+    errorC(void);
+    ~errorC(void);
+    void Detruir();
+    void Afficher();
 };
 
 #endif

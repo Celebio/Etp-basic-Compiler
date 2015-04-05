@@ -6,29 +6,29 @@
 
 class PileRegTemp{
 private:
-	reg_id Pile[TAILLE_PILE];
+    reg_id Pile[TAILLE_PILE];
 
-	void Depiler(void);
-	void Empiler(reg_id R);
-	int nb_reg;
-	IL* mIL;
-	VirtStack* mStack;
-	int mTempCtr;
+    void Depiler(void);
+    void Empiler(reg_id R);
+    int nb_reg;
+    IL* mIL;
+    VirtStack* mStack;
+    int mTempCtr;
 public:
-	PileRegTemp(void);
-	PileRegTemp(IL* bIL,VirtStack* bStack);
-	~PileRegTemp(void);
-	
-	void Init(int nbReg);
-	void Echange(void);
+    PileRegTemp(void);
+    PileRegTemp(IL* bIL,VirtStack* bStack);
+    ~PileRegTemp(void);
 
-	Operande* Sommet();
+    void Init(int nbReg);
+    void Echange(void);
 
-	void Allouer(Operande* M);
-	void Liberer(Operande* M);
-	
-	Operande* AllouerTemp(int taille);
-	void LibererTemp(Operande* T,int taille);
+    Operande* Sommet();
+
+    void Allouer(Operande* M);
+    void Liberer(Operande* M);
+
+    Operande* AllouerTemp(int taille);
+    void LibererTemp(Operande* T,int taille);
 };
 
 #endif

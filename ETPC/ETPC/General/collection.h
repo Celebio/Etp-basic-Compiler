@@ -27,7 +27,7 @@
 /*
 Types->bindIterator(&iter1);
 while(iter1.elemExists()){
-		Type1 = (TypeItem*)iter1.getNext();
+        Type1 = (TypeItem*)iter1.getNext();
 
 }
 
@@ -37,9 +37,9 @@ while(iter1.elemExists()){
 
 // for_each(ColItem*, ColItemDerivedType, ColIterator*, Collection*)
 /*
-#define for_each(itemName, itemType, iteratorName, collectionName)			\
-		collectionName->bindIterator(&iteratorName);						\
-		for (itemName = (itemType*)iteratorName.getElem();iteratorName.elemExists();itemName = (itemType*)iteratorName.getNext())					\
+#define for_each(itemName, itemType, iteratorName, collectionName)          \
+        collectionName->bindIterator(&iteratorName);                        \
+        for (itemName = (itemType*)iteratorName.getElem();iteratorName.elemExists();itemName = (itemType*)iteratorName.getNext())                   \
 */
 
 
@@ -48,31 +48,31 @@ while(iter1.elemExists()){
 ***********************************************************************/
 
 class Collection:
-	public ColItem
+    public ColItem
 {
 
 private:
-	ArrayElem *buffer;
-	ArrayElem *last;
-	ArrayElem *iter1;
-	ArrayElem *iter2;
+    ArrayElem *buffer;
+    ArrayElem *last;
+    ArrayElem *iter1;
+    ArrayElem *iter2;
 
-	void SetBuffer(ArrayElem* tBuff);
+    void SetBuffer(ArrayElem* tBuff);
 public:
-	// constructeurs
-	Collection();
-	~Collection();
+    // constructeurs
+    Collection();
+    ~Collection();
 
-	//fonctions
-	ColItem* Add(ColItem* bElem);
-	ColItem* AddDebut(ColItem* bElem);
-	void Add(const char* bDesc,TAG* bTag);
-	void Clear();
-	void Afficher();
-	bool estVide();
+    //fonctions
+    ColItem* Add(ColItem* bElem);
+    ColItem* AddDebut(ColItem* bElem);
+    void Add(const char* bDesc,TAG* bTag);
+    void Clear();
+    void Afficher();
+    bool estVide();
 
-	// iterators:
-	void bindIterator(ColIterator* bIter);
+    // iterators:
+    void bindIterator(ColIterator* bIter);
 
 };
 

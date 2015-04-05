@@ -26,18 +26,18 @@ void VariableItem::Detruir()
 }
 void VariableItem::Afficher()
 {
-	printf("Variable NOM:%s:\n",bTAGNom->GetIdentif());
-	if (Car ==VR_PUBLIC)
-		printf("PUBLIC ");
-	else if (Car==VR_LOCAL)
-		printf("LOCAL ");
-	else if (Car==VR_MEMBER)
-		printf("MEMBER ");
-	else if (Car==VR_ARGU)
-		printf("ARGUMENT ");
-	printf("Dimensions:\n");
-	DimListe.Afficher();
-	printf("de type:");
-	Type.Afficher();
-	printf("\n");
+    printf("Variable NOM:%s:\n",bTAGNom->GetIdentif());
+    if (Car ==VR_PUBLIC)
+        printf("PUBLIC ");
+    else if (Car==VR_LOCAL)
+        printf("LOCAL ");
+    else if (Car==VR_MEMBER)
+        printf("MEMBER ");
+    else if (Car==VR_ARGU)
+        printf("ARGUMENT ");
+    printf("Dimensions:\n");
+    DimListe.Afficher();
+    printf("de type:");
+    Type.Afficher();
+    printf("\n");
 }

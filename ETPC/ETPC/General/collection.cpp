@@ -22,29 +22,29 @@
 /* CONSTRUCTEURS, DESTRUCTEURS...
 ***********************************************************************/
 Collection::Collection(){
-	buffer=NULL;
+    buffer=NULL;
 }
 Collection::~Collection(){
-	Clear();
+    Clear();
 }
 
 void Collection::SetBuffer(ArrayElem *tBuff){
-	buffer=tBuff;
-	// mise a jour de last
-	last=buffer;
-	if (last)
-	{
-		while (last->next)
-		{
-			last = last->next;
-		}
-	}
+    buffer=tBuff;
+    // mise a jour de last
+    last=buffer;
+    if (last)
+    {
+        while (last->next)
+        {
+            last = last->next;
+        }
+    }
 }
 
 bool Collection::estVide(){
-	if (buffer==NULL)
-		return true;
-	return false;
+    if (buffer==NULL)
+        return true;
+    return false;
 }
 
 /* LIBERATION DE LA MEMOIRE
@@ -52,18 +52,18 @@ bool Collection::estVide(){
 
 
 void Collection::Clear(){
-	ArrayElem *Cour=buffer;
-	ArrayElem *precCour=Cour;
-	while (Cour)
-	{
-		precCour=Cour;
-		Cour=Cour->next;
-		precCour->Elem->Detruir();
-		delete precCour;
-	}
-	buffer=NULL;
-	last = NULL;
-	return;
+    ArrayElem *Cour=buffer;
+    ArrayElem *precCour=Cour;
+    while (Cour)
+    {
+        precCour=Cour;
+        Cour=Cour->next;
+        precCour->Elem->Detruir();
+        delete precCour;
+    }
+    buffer=NULL;
+    last = NULL;
+    return;
 }
 
 
@@ -71,63 +71,63 @@ void Collection::Clear(){
 ***********************************************************************/
 ColItem* Collection::Add(ColItem* bElem)
 {
-	if (!buffer)
-	{
-		buffer= new ArrayElem();
-		buffer->next = NULL;
-		buffer->Elem = bElem;
-		last = buffer;
-	}
-	else
-	{
-		last->next = new ArrayElem();
-		last = last->next;
-		last->Elem = bElem;
-		last->next = NULL;
-	}
-	return bElem;
+    if (!buffer)
+    {
+        buffer= new ArrayElem();
+        buffer->next = NULL;
+        buffer->Elem = bElem;
+        last = buffer;
+    }
+    else
+    {
+        last->next = new ArrayElem();
+        last = last->next;
+        last->Elem = bElem;
+        last->next = NULL;
+    }
+    return bElem;
 }
 ColItem* Collection::AddDebut(ColItem* bElem)
 // pareil que Add, mais ajoute en debut de liste
 // sert uniquement pour avoir une liste dans l'autre sens pour les arguments d'une fonction
 // ne pas utiliser AddDebut et Add pour une meme instance de Collection, last n'est pas mis ? jour
 {
-	if (!buffer)
-	{
-		buffer= new ArrayElem();
-		buffer->next = NULL;
-		buffer->Elem = bElem;
-		last = buffer;
-	}
-	else
-	{
-		ArrayElem* aux = new ArrayElem();
-		aux->Elem = bElem;
-		aux->next = buffer;
-		buffer = aux;
-	}
-	return bElem;
+    if (!buffer)
+    {
+        buffer= new ArrayElem();
+        buffer->next = NULL;
+        buffer->Elem = bElem;
+        last = buffer;
+    }
+    else
+    {
+        ArrayElem* aux = new ArrayElem();
+        aux->Elem = bElem;
+        aux->next = buffer;
+        buffer = aux;
+    }
+    return bElem;
 }
 void Collection::Add(const char* bDesc,TAG* bTag)
 {
-	errorC *bErr=new errorC();
-	strcpy(bErr->Descr,bDesc);
-	bErr->Tag = bTag;
-	Add(bErr);
+    errorC *bErr=new errorC();
+    strcpy(bErr->Descr,bDesc);
+    bErr->Tag = bTag;
+    Add(bErr);
 }
 void Collection::Afficher()
 {
-	ArrayElem *Cour=buffer;
-	while (Cour)
-	{
-		Cour->Elem->Afficher();
-		Cour=Cour->next;
-	}
+    ArrayElem *Cour=buffer;
+    while (Cour)
+    {
+        Cour->Elem->Afficher();
+        Cour=Cour->next;
+    }
 }
 
 
 /* ITERATEURS
 ***********************************************************************/
 void Collection::bindIterator(ColIterator* bIter){
-	bIter->initHead(buffer);
+    bIter->initHead(buffer);
 }

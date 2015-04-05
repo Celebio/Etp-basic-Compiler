@@ -26,7 +26,7 @@
 Genz80::Genz80(void){
 }
 Genz80::Genz80(const char *oFileName){
-	sprintf(outputFileName,"%s%s",oFileName,".z80");
+    sprintf(outputFileName,"%s%s",oFileName,".z80");
 }
 
 Genz80::~Genz80(void){
@@ -35,28 +35,28 @@ Genz80::~Genz80(void){
 #define max(a,b) (a>b?a:b)
 
 void Genz80::TestGenerate(){
-	//ILcoder.Add(LOAD,ILcoder.createOp(2,3),ILcoder.createOp(5),SZ_W);
-	//ILcoder.Afficher();
+    //ILcoder.Add(LOAD,ILcoder.createOp(2,3),ILcoder.createOp(5),SZ_W);
+    //ILcoder.Afficher();
 }
 
 
 void Genz80::SetEnvironnement(Collection* BerrListe,
-							Collection* BVariablesPublic,
-							Collection* BTypes,
-							Collection* BFonctions)
+                            Collection* BVariablesPublic,
+                            Collection* BTypes,
+                            Collection* BFonctions)
 {
-	errListe=BerrListe;
-	VariablesPublic=BVariablesPublic;
-	Types=BTypes;
-	Fonctions=BFonctions;
+    errListe=BerrListe;
+    VariablesPublic=BVariablesPublic;
+    Types=BTypes;
+    Fonctions=BFonctions;
 }
 
 int Genz80::NbRegObjet(CNoeud* bNoeud,NatureOpz80 bNat){
-	return 0;
+    return 0;
 }
 
 int Genz80::NbRegArith(CNoeud* bNoeud,NatureOpz80 bNat){
-	return 0;
+    return 0;
 }
 
 
@@ -70,9 +70,9 @@ size_opz80 Genz80::GetSize(CNoeud* bNoeud){
 
 
 void Genz80::GenerCode(){
-	std::ofstream file(outputFileName);
-	ILcoder.SetStream(&file);
-	ILcoder.AfficherLeDebut();
-	ILcoder.AfficherLaFin();
+    std::ofstream file(outputFileName);
+    ILcoder.SetStream(&file);
+    ILcoder.AfficherLeDebut();
+    ILcoder.AfficherLaFin();
 }
 

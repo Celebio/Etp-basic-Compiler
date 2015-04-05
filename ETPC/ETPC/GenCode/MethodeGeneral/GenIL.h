@@ -15,34 +15,34 @@ typedef enum NatureOp{NO_REG,NO_DVAL,NO_DADR}NatureOp;
 
 class GenIL{
 private:
-	Collection* errListe;
-	Collection* VariablesPublic;
-	Collection* Types;
-	Collection* Fonctions;
+    Collection* errListe;
+    Collection* VariablesPublic;
+    Collection* Types;
+    Collection* Fonctions;
 
-	IL ILcoder;
-	VirtStack Stack;
-	PileRegTemp* RegPile;
+    IL ILcoder;
+    VirtStack Stack;
+    PileRegTemp* RegPile;
 
-	int mNbRegMax;
+    int mNbRegMax;
 
-	int NbRegArith(CNoeud* bNoeud,NatureOp bNat);
-	int NbRegObjet(CNoeud* bNoeud,NatureOp bNat);
+    int NbRegArith(CNoeud* bNoeud,NatureOp bNat);
+    int NbRegObjet(CNoeud* bNoeud,NatureOp bNat);
 
-	void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** Op);
-	void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** Op);
+    void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** Op);
+    void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** Op);
 
 public:
-	GenIL(void);
-	~GenIL(void);
+    GenIL(void);
+    ~GenIL(void);
 
-	void TestGenerate();
-	void GenerCode();
+    void TestGenerate();
+    void GenerCode();
 
-	void SetEnvironnement(Collection* BerrListe,
-							Collection* BVariablesPublic,
-							Collection* BTypes,
-							Collection* BFonctions);
+    void SetEnvironnement(Collection* BerrListe,
+                            Collection* BVariablesPublic,
+                            Collection* BTypes,
+                            Collection* BFonctions);
 };
 
 #endif

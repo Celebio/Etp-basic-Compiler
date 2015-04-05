@@ -30,73 +30,73 @@ typedef enum OperandeNaturez80 {OPz80_DIRECT,OPz80_INDIRECT,OPz80_INDEXE,OPz80_E
 typedef enum size_opz80{ SZz80_UNKNOWN=-1,SZz80_B=1,SZz80_W=2,SZz80_L=4,SZz80_F=10 } size_opz80;
 
 typedef enum InsOpEnumz80{
-	z80_OPB,		// unknown opbin
-	z80_LOAD,
-	z80_ADD,
-	z80_SUB,
-	z80_JR,
-	z80_RTS,
+    z80_OPB,        // unknown opbin
+    z80_LOAD,
+    z80_ADD,
+    z80_SUB,
+    z80_JR,
+    z80_RTS,
 } InsOpEnumz80;
 
 struct Operandez80 {
-	OperandeNaturez80 nat;
-	bool PreDecr;
-	bool PostIncr;
-	union {
-		regz80_id RegDirect;
-		struct {
-			int Dep;
-			regz80_id RegBase;
-		} Indirect;
-		struct {
-			int Dep;
-			regz80_id RegBase;
-			regz80_id RegIndexe;
-		} Indexe;
-		int valInt;
-		float valFloat;
-		char* valChaine;
-		char* valEtiq;
-	}val;
+    OperandeNaturez80 nat;
+    bool PreDecr;
+    bool PostIncr;
+    union {
+        regz80_id RegDirect;
+        struct {
+            int Dep;
+            regz80_id RegBase;
+        } Indirect;
+        struct {
+            int Dep;
+            regz80_id RegBase;
+            regz80_id RegIndexe;
+        } Indexe;
+        int valInt;
+        float valFloat;
+        char* valChaine;
+        char* valEtiq;
+    }val;
 };
 
 struct InstrILz80{
-	InsOpEnumz80 Op;
-	size_opz80 Size;
-	Operandez80* op1;
-	Operandez80* op2;
+    InsOpEnumz80 Op;
+    size_opz80 Size;
+    Operandez80* op1;
+    Operandez80* op2;
 };
 struct LigneCodez80{
-	LigneNaturez80 nat;
-	union{
-		InstrILz80* instr;
-		char* etiq;
-		char* comment;
-	} val;
-	LigneCodez80* next;
+    LigneNaturez80 nat;
+    union{
+        InstrILz80* instr;
+        char* etiq;
+        char* comment;
+    } val;
+    LigneCodez80* next;
 };
 
 
 
 class asmz80Coder{
 private:
-	int nb_regmax;
-	LigneCodez80* generatedCode;
-	LigneCodez80* lastAdded;
-	std::ofstream* mStream;
+    int nb_regmax;
+    LigneCodez80* generatedCode;
+    LigneCodez80* lastAdded;
+    std::ofstream* mStream;
 
-	void Afficher(LigneCodez80* bLigne);
-	void Afficher(regz80_id bReg);
-	void Afficher(Operandez80* bOperande);
+    void Afficher(LigneCodez80* bLigne);
+    void Afficher(regz80_id bReg);
+    void Afficher(Operandez80* bOperande);
 
 public:
-	asmz80Coder();
-	~asmz80Coder();
+    asmz80Coder();
+    ~asmz80Coder();
 
-	void Afficher();
-	void AfficherLeDebut();
-	void AfficherLaFin();
-	void SetStream(std::ofstream* bStream) {mStream= bStream; }
+    void Afficher();
+    void AfficherLeDebut();
+    void AfficherLaFin();
+    void SetStream(std::ofstream* bStream) {mStream= bStream; }
 
 };
 

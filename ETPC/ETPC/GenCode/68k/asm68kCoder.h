@@ -32,118 +32,118 @@ typedef enum size_op68k{ SZ_UNKNOWN=-1,SZ_NA=-2,SZ_B=1,SZ_W=2,SZ_L=4,SZ_F=10 } s
 
 
 typedef enum InsOpEnum68k{
-	OPB,		// unknown opbin
-	MOVE,
-	ADD,
-	SUB,
-	MUL,
-	DIV,
-	CMP,
-	NOT,
-	OPP,
-	BSR,
-	BRA,
+    OPB,        // unknown opbin
+    MOVE,
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    CMP,
+    NOT,
+    OPP,
+    BSR,
+    BRA,
 
-	BEQ,
-	BNE,
-	BGE,
-	BGT,
-	BLE,
-	BLT,
+    BEQ,
+    BNE,
+    BGE,
+    BGT,
+    BLE,
+    BLT,
 
-	SEQ,
-	SNE,
-	SGE,
-	SGT,
-	SLE,
-	SLT,
+    SEQ,
+    SNE,
+    SGE,
+    SGT,
+    SLE,
+    SLT,
 
-	RTS,
+    RTS,
 } InsOpEnum68k;
 
 struct Operande68k {
-	OperandeNature68k nat;
-	bool PreDecr;
-	bool PostIncr;
-	union {
-		reg_id RegDirect;
-		struct {
-			int Dep;
-			reg_id RegBase;
-		} Indirect;
-		struct {
-			int Dep;
-			reg_id RegBase;
-			reg_id RegIndexe;
-		} Indexe;
-		int valInt;
-		float valFloat;
-		char* valChaine;
-		char* valEtiq;
-	}val;
+    OperandeNature68k nat;
+    bool PreDecr;
+    bool PostIncr;
+    union {
+        reg_id RegDirect;
+        struct {
+            int Dep;
+            reg_id RegBase;
+        } Indirect;
+        struct {
+            int Dep;
+            reg_id RegBase;
+            reg_id RegIndexe;
+        } Indexe;
+        int valInt;
+        float valFloat;
+        char* valChaine;
+        char* valEtiq;
+    }val;
 };
 
 struct InstrIL{
-	InsOpEnum68k Op;
-	size_op68k Size;
-	Operande68k* op1;
-	Operande68k* op2;
+    InsOpEnum68k Op;
+    size_op68k Size;
+    Operande68k* op1;
+    Operande68k* op2;
 };
 
 struct LigneCode68k{
-	LigneNature68k nat;
-	union{
-		InstrIL* instr;
-		const char* etiq;
-		const char* comment;
-	} val;
-	LigneCode68k* next;
+    LigneNature68k nat;
+    union{
+        InstrIL* instr;
+        const char* etiq;
+        const char* comment;
+    } val;
+    LigneCode68k* next;
 };
 
 
 class asm68kCoder{
 private:
-	int nb_regmax;
-	int etiqNo;
+    int nb_regmax;
+    int etiqNo;
 
-	LigneCode68k* generatedCode;
-	LigneCode68k* lastAdded;
-	std::ofstream* mStream;
+    LigneCode68k* generatedCode;
+    LigneCode68k* lastAdded;
+    std::ofstream* mStream;
 
-	void Afficher(LigneCode68k* bLigne);
-	void Afficher(reg_id bReg);
-	void Afficher(Operande68k* bOperande);
+    void Afficher(LigneCode68k* bLigne);
+    void Afficher(reg_id bReg);
+    void Afficher(Operande68k* bOperande);
 
 public:
-	asm68kCoder(void);
-	~asm68kCoder(void);
+    asm68kCoder(void);
+    ~asm68kCoder(void);
 
-	void Afficher();
-	void AfficherLeDebut();
+    void Afficher();
+    void AfficherLeDebut();
 
-	void SetStream(std::ofstream* bStream) {mStream= bStream; }
+    void SetStream(std::ofstream* bStream) {mStream= bStream; }
 
-	InsOpEnum68k NodeToOp(CNoeud* bNoeud);
+    InsOpEnum68k NodeToOp(CNoeud* bNoeud);
 
-	Operande68k* createOp(reg_id bRegDirect);
-	Operande68k* createOp(int bDep,reg_id bRegBase);
-	Operande68k* createOp(reg_id bRegBase,bool Pred,bool Posti);
-	Operande68k* createOp(int bDep,reg_id bRegBase,reg_id bRegIndexe);
-	Operande68k* createOpVal(int bvalInt);
-	Operande68k* createOpFloat(float bvalFloat);
-	Operande68k* createOpChaine(char* bvalChaine);
-	Operande68k* createOpEtiq(char* bvalEtiq);
-	Operande68k* createOpEtiq();
-
-
-	void Add(InsOpEnum68k bOp,Operande68k* bOp1,Operande68k* bOp2,size_op68k bSize);
-	void Add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize);
-	void Add(InsOpEnum68k bOp);
-	void Add(const char* bComment);
-	void AddEtiq(const char* bEtiq);
+    Operande68k* createOp(reg_id bRegDirect);
+    Operande68k* createOp(int bDep,reg_id bRegBase);
+    Operande68k* createOp(reg_id bRegBase,bool Pred,bool Posti);
+    Operande68k* createOp(int bDep,reg_id bRegBase,reg_id bRegIndexe);
+    Operande68k* createOpVal(int bvalInt);
+    Operande68k* createOpFloat(float bvalFloat);
+    Operande68k* createOpChaine(char* bvalChaine);
+    Operande68k* createOpEtiq(char* bvalEtiq);
+    Operande68k* createOpEtiq();
 
 
-	InsOpEnum68k getOppBra(InsOpEnum68k bOp);
+    void Add(InsOpEnum68k bOp,Operande68k* bOp1,Operande68k* bOp2,size_op68k bSize);
+    void Add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize);
+    void Add(InsOpEnum68k bOp);
+    void Add(const char* bComment);
+    void AddEtiq(const char* bEtiq);
+
+
+    InsOpEnum68k getOppBra(InsOpEnum68k bOp);
 };
 
 #endif

@@ -21,17 +21,17 @@
 #include <string.h>
 
 typedef enum VarTypeEnum {
-	TP_INTEGER,
-	TP_FLOAT,
-	TP_LONG,
-	TP_STRING,
-	TP_BOOLEAN,
-	TP_FILE,
-	TP_LIST,
-	TP_BYTE,
-	TP_USER,		// user-defined type, dans ce cas, regarder le champs Expr
-	TP_VOID,		// le type retourn? par une proc?dure
-	TP_UNKNOWN
+    TP_INTEGER,
+    TP_FLOAT,
+    TP_LONG,
+    TP_STRING,
+    TP_BOOLEAN,
+    TP_FILE,
+    TP_LIST,
+    TP_BYTE,
+    TP_USER,        // user-defined type, dans ce cas, regarder le champs Expr
+    TP_VOID,        // le type retourn? par une proc?dure
+    TP_UNKNOWN
 } VarTypeEnum;
 
 
@@ -39,29 +39,29 @@ typedef enum VarTypeEnum {
 class VarTypeType
 {
 public:
-	VarTypeEnum Type;
-	char* Expr;		//donne le nom si c'est user-defined type
+    VarTypeEnum Type;
+    char* Expr;     //donne le nom si c'est user-defined type
 public:
-	VarTypeType(void);
-	VarTypeType(VarTypeEnum bTy);
-	~VarTypeType(void);
-	const char *VarTypeTypeImage();
-	void Afficher();
+    VarTypeType(void);
+    VarTypeType(VarTypeEnum bTy);
+    ~VarTypeType(void);
+    const char *VarTypeTypeImage();
+    void Afficher();
 
-	bool operator ==(VarTypeType &b){
-		if (Type==b.Type)
-		{
-			if (Type!=TP_USER)
-				return true;
-			else
-				return !(strcmp(Expr,b.Expr));
-		}
-		else
-			return false;
-	}
-	bool operator !=(VarTypeType &b){
-		return !(*this==b);
-	}
+    bool operator ==(VarTypeType &b){
+        if (Type==b.Type)
+        {
+            if (Type!=TP_USER)
+                return true;
+            else
+                return !(strcmp(Expr,b.Expr));
+        }
+        else
+            return false;
+    }
+    bool operator !=(VarTypeType &b){
+        return !(*this==b);
+    }
 };
 
 

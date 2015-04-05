@@ -25,19 +25,19 @@
 class ColIterator
 {
 private:
-	ArrayElem *mCour;
-	ArrayElem *mHead;
+    ArrayElem *mCour;
+    ArrayElem *mHead;
 public:
-	ColIterator();
-	ColIterator(ArrayElem* head);
-	~ColIterator();
-	
-	ColItem* getNext();
-	ColItem* getElem();
-	ArrayElem* getCour();
-	bool elemExists();
-	void gotoHead();
-	void initHead(ArrayElem* head);
+    ColIterator();
+    ColIterator(ArrayElem* head);
+    ~ColIterator();
+
+    ColItem* getNext();
+    ColItem* getElem();
+    ArrayElem* getCour();
+    bool elemExists();
+    void gotoHead();
+    void initHead(ArrayElem* head);
 };
 
 #endif
