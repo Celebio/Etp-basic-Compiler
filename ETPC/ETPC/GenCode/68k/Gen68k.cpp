@@ -843,6 +843,7 @@ void Gen68k::GenerCode(){
     }// prochaine fonction
 
     ILcoder.Afficher();
+    ILcoder.AfficherLaFin();
     //ILcoder.Afficher("kjdhg");
 }
 

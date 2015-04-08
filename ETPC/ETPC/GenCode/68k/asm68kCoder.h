@@ -109,6 +109,7 @@ private:
     LigneCode68k* generatedCode;
     LigneCode68k* lastAdded;
     std::ofstream* mStream;
+    std::ifstream* iStream;
 
     void Afficher(LigneCode68k* bLigne);
     void Afficher(reg_id bReg);
@@ -120,6 +121,7 @@ public:
 
     void Afficher();
     void AfficherLeDebut();
+    void AfficherLaFin();
 
     void SetStream(std::ofstream* bStream) {mStream= bStream; }
 

@@ -190,6 +190,22 @@ void asm68kCoder::AfficherLeDebut(){
     (*mStream) << ";Made with ETP\n\tinclude \"os.h\"\n\txdef _main\n\txdef _nostub\n\txdef _ti89\n\txdef _ti92plus\n\t\n\n";
 }
 
+void asm68kCoder::AfficherLaFin(){
+    iStream = new ifstream("etplib.asm");
+    string line;
+    if (iStream->is_open())
+    {
+        while ( getline (*iStream,line) )
+        {
+          *mStream << line << '\n';
+        }
+        iStream->close();
+    }
+    delete iStream;
+    //printf(";Made with ETP\n\tinclude \"os.h\"\n\txdef _main\n\txdef _nostub\n\txdef _ti89\n\txdef _ti92plus\n\t\n\n");
+    //(*mStream) << ";Made with ETP\n\tinclude \"os.h\"\n\txdef _main\n\txdef _nostub\n\txdef _ti89\n\txdef _ti92plus\n\t\n\n";
+}
+
 void asm68kCoder::Afficher(){
     LigneCode68k* Cour=generatedCode;
     while (Cour){

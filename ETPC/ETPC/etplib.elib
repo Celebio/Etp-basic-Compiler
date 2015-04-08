@@ -1,10 +1,14 @@
 
 
+procedure clearscreen ()
+
 procedure waitkey ()
 
 procedure dispint (a as integer)
 
 procedure dispbyte (a as byte)
+
+procedure afficheuntruc()
 
 
 

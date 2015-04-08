@@ -3,24 +3,40 @@
 
 procedure main:
 
-        local a as integer
-        local b as integer
-        local c as integer
-        'local byter as byte
-        local gdf as long
+    local a as integer
+    local b as integer
+    local c as integer
+    'local byter as byte
+    'local gdf as long
+    local i as integer
 
-        a = 32*5+b/c    '-sqrt(474)
+    b = 12
+    c = 3
+    a = 32*5+b/c    '-sqrt(474)
 
-        'a=0
-        'byter=10
-        'dispbyte(byter)
+    for i=1 to 5 step 1
+        clearscreen()
+        dispint(i*a)
+        afficheuntruc()
+        waitkey()
+    next
 
-        'for byter=255 to 0 step -1
-         '   dispbyte(byter)
-        'next
-        'do
-        '    dispint(a)
-        '    a = a+(1+2)
-        'loop while a<824
+    'dispint(10)
+    'waitkey()
+
+
+    'dispint(a)
+
+    'a=0
+    'byter=10
+    'dispbyte(byter)
+
+    'for byter=255 to 0 step -1
+     '   dispbyte(byter)
+    'next
+    'do
+    '    dispint(a)
+    '    a = a+(1+2)
+    'loop while a<824
 
 
