@@ -31,7 +31,7 @@
 #include "PileRegTemp68k.h"
 
 
-typedef enum NatureOp{NO_REG,NO_DVAL,NO_DADR}NatureOp;
+typedef enum NatureOp { NO_REG, NO_DVAL, NO_DADR } NatureOp;
 
 
 
@@ -44,9 +44,9 @@ private:
 
     char outputFileName[300];
 
-    asm68kCoder ILcoder;
+    asm68kCoder ilCoder;
     VirtStack68k Stack;
-    PileRegTemp68k* RegPile;
+    PileRegTemp68k* registerStack;
 
     int mNbRegMax;
 
@@ -58,8 +58,8 @@ private:
 
 
 
-    void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op);
-    void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande68k** Op);
+    void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr);
+    void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr);
     void CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg);
 
     void CodeInstr(InstructionETPB* bInstr);

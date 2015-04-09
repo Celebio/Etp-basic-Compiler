@@ -131,13 +131,13 @@ bool VeriSyn::VerifyExpression(bool requis,
     {
         //*ArbreExpress=NULL;
         //return true;
-        errListe->Add("On attend une expression",precCour);
+        errListe->add("On attend une expression",precCour);
         return false;
     }
     while (Cour && Cour!=(finTag))
     {
 #ifdef _DEBUGARBRES
-        Cour->Afficher();
+        Cour->display();
 #endif
 
 
@@ -147,7 +147,7 @@ bool VeriSyn::VerifyExpression(bool requis,
 
         if (aux->GetNature()==NOEUD_UNKNOWN)
         {
-            errListe->Add("Mot reserve non permis dans une expression",Cour);
+            errListe->add("Mot reserve non permis dans une expression",Cour);
             return false;
         }
         if (!Arbre)
@@ -159,7 +159,7 @@ bool VeriSyn::VerifyExpression(bool requis,
             if (aux->GetOperType()==OPBIN || aux->GetOperType()==OPUNG)
             {
                 // on a commenc? par un op?rateur binaire ou unaire_gauche-> faux
-                errListe->Add("Inattendu ici ",Cour);
+                errListe->add("Inattendu ici ",Cour);
                 return false;
             }
             else
@@ -167,7 +167,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                 Arbre = aux;
                 if (Cour->GetToken()==TOKEN_OPENCRO)
                 {
-                    errListe->Add("Crochet non permis ici",Cour);
+                    errListe->add("Crochet non permis ici",Cour);
                     return false;
                 }
                 if (Cour->GetToken()==TOKEN_OPENPAR)
@@ -186,7 +186,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                     }
                     if (CourEnd==finTag)
                     {
-                        errListe->Add("Il manque un ')' ",Cour);
+                        errListe->add("Il manque un ')' ",Cour);
                         return false;
                     }
                     aux=lastAdded->GetFilsD();
@@ -230,14 +230,14 @@ bool VeriSyn::VerifyExpression(bool requis,
                 //if (!(GetOperatorType(lastAdded->GetTAG())==OPBIN || GetOperatorType(lastAdded->GetTAG())==OPUND))
                 if (!(lastAdded->GetOperType()==OPBIN || lastAdded->GetOperType()==OPUND))
                 {
-                    errListe->Add("Operateur mal place ",Cour);
+                    errListe->add("Operateur mal place ",Cour);
                     return false;
                 }
                 if (lastAdded->GetFilsD()==NULL)
                     lastAdded->SetFilsD(aux);
                 else
                 {   // impossible normalement
-                    errListe->Add("Erreur interne ",Cour);
+                    errListe->add("Erreur interne ",Cour);
                     return false;
                 }
             }
@@ -246,7 +246,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                 //if (lastAdded)
                 if (lastAdded->GetTAG()->GetToken()!=TOKEN_OPENPAR && lastAdded->GetOperType()!=OPBIN && lastAdded->GetOperType()!=OPUND && lastAdded->GetOperType()!=NOTOP)
                 {
-                    errListe->Add("Inattendu: Pas d'operateur pour cet operande ",Cour);
+                    errListe->add("Inattendu: Pas d'operateur pour cet operande ",Cour);
                     return false;
                 }
 
@@ -271,7 +271,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                     }
                     if (CourEnd==finTag)
                     {
-                        errListe->Add("Il manque un ')' ",Cour);
+                        errListe->add("Il manque un ')' ",Cour);
                         return false;
                     }
                     aux=lastAdded->GetFilsD();
@@ -313,7 +313,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                     }
                     if (CourEnd==finTag)
                     {
-                        errListe->Add("Il manque un ')' ",Cour);
+                        errListe->add("Il manque un ')' ",Cour);
                         return false;
                     }
                     lastAdded->SetFilsD(NULL);
@@ -321,7 +321,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                     //argCtr=0;
                     //while (lastAdded->Successeur[argCtr])
                     //{
-                    //  lastAdded->Successeur[argCtr]->Afficher();
+                    //  lastAdded->Successeur[argCtr]->display();
                     //  argCtr++;
                     //}
 
@@ -359,7 +359,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                     }
                     if (CourEnd==finTag)
                     {
-                        errListe->Add("Il manque un ']' ",Cour);
+                        errListe->add("Il manque un ']' ",Cour);
                         return false;
                     }
                     lastAdded->SetFilsD(NULL);
@@ -370,7 +370,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                 }
                 else if (Cour->GetToken()==TOKEN_OPENCRO && lastAdded->GetOperType()!=NOTOP)
                 {
-                    errListe->Add("Crochet non permis ici ",Cour);
+                    errListe->add("Crochet non permis ici ",Cour);
                     return false;
                 }
                 else
@@ -380,7 +380,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                     else
                     {
                         // impossible normalement
-                        errListe->Add("Erreur interne1 ",Cour);
+                        errListe->add("Erreur interne1 ",Cour);
                         return false;
                     }
                 }
@@ -391,7 +391,7 @@ bool VeriSyn::VerifyExpression(bool requis,
 
 #ifdef _DEBUGARBRES
         if (Arbre)
-            Arbre->Afficher();
+            Arbre->display();
         printf("\n\n");
 #endif
         precCour = Cour;
@@ -400,13 +400,13 @@ bool VeriSyn::VerifyExpression(bool requis,
 
     //if (GetOperatorType(precCour)==OPBIN || GetOperatorType(precCour)==OPUND)
     //{
-    //  errListe->Add("Un manque un operande pour cet operateur",precCour);
+    //  errListe->add("Un manque un operande pour cet operateur",precCour);
     //  return false;
     //}
     NetoyerArbreParentheses(Arbre);     // il faut absolument mettre ca en dehors du while
 #ifdef _DEBUGARBRES
     if (Arbre)
-        Arbre->Afficher();
+        Arbre->display();
     printf("\n");
 #endif
     *ArbreExpress=Arbre;
@@ -472,13 +472,13 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else if (Cour->GetToken() == TOKEN_PUBLIC)
             {
-                errListe->Add("Declaration publique dans un corps ",Cour);
+                errListe->add("Declaration publique dans un corps ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
             else
             {
-                errListe->Add("Inattendu dans une fonction: ",Cour);
+                errListe->add("Inattendu dans une fonction: ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -488,7 +488,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         // -------------------------------------------------------------------------
         case INST_DO01:
             instrCour = new InstructionETPB(INS_STRUCT_DOLPWH);
-            instrCollect->Add(instrCour);
+            instrCollect->add(instrCour);
             if (Cour->GetToken() == TOKEN_CRLF)
             {
                 State = INST_DO02;
@@ -498,7 +498,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 State = INST_DO05;
             else
             {
-                errListe->Add("Apres 'Do' on attend 'While' ou rien",Cour);
+                errListe->add("Apres 'Do' on attend 'While' ou rien",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -521,7 +521,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             if (CourEnd == finTag)
             {
-                errListe->Add("Il manque 'Loop' (Do) ",debugCour);
+                errListe->add("Il manque 'Loop' (Do) ",debugCour);
                 State = INST_00;
                 Cour = rpCour;
                 break;
@@ -538,7 +538,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 State = INST_DO04;
             else
             {
-                errListe->Add("On attend 'While'",Cour);
+                errListe->add("On attend 'While'",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
                 break;
@@ -547,7 +547,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         case INST_DO04:
             if (Cour->GetToken() == TOKEN_CRLF)
             {
-                errListe->Add("On attend une expression de condition apres 'While'",Cour);
+                errListe->add("On attend une expression de condition apres 'While'",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
                 break;
@@ -568,7 +568,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             instrCour->ChangeNatINS_STRUCT_DOWH();
             if (Cour->GetToken() == TOKEN_CRLF)
             {
-                errListe->Add("On attend une expression de condition apres 'While'",Cour);
+                errListe->add("On attend une expression de condition apres 'While'",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_DO06;
                 break;
@@ -601,7 +601,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             if (CourEnd == finTag)
             {
-                errListe->Add("Il manque 'Loop' (Do) ",debugCour);
+                errListe->add("Il manque 'Loop' (Do) ",debugCour);
                 State = INST_00;
                 Cour = rpCour;
                 break;
@@ -616,7 +616,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         case INST_DO07:
             if (!(Cour->GetToken() == TOKEN_CRLF))
             {
-                errListe->Add("Inattendu apres 'Loop':",Cour);
+                errListe->add("Inattendu apres 'Loop':",Cour);
                 AvanceNextLigne(&Cour);
             }
             State = INST_00;
@@ -629,11 +629,11 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         case INST_LOCAL00:
             /* comment? car pas besoin d'ajouter les déclarations en tant qu'instruction    */
             //instrCour = new InstructionETPB(INS_DECLARATION);
-            //instrCollect->Add(instrCour);
+            //instrCollect->add(instrCour);
             if (Cour->GetToken() == TOKEN_IDENTIF)
             {
                 tmpVar= new VariableItem();
-                pFunc->GetVarListe()->Add(tmpVar);
+                pFunc->GetVarListe()->add(tmpVar);
                 tmpVar->SetCar(VR_PUBLIC);
                 tmpVar->SetFunc(NULL);
                 tmpVar->SetTagNom(Cour);
@@ -642,7 +642,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else
             {
-                errListe->Add("On attend un identifiant:",Cour);
+                errListe->add("On attend un identifiant:",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -654,7 +654,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 State = INST_LOCAL02;
             else
             {
-                errListe->Add("On attend 'as' ou '['",Cour);
+                errListe->add("On attend 'as' ou '['",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -677,7 +677,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             if (Cour == CourEnd)
             {
-                errListe->Add("Vous devez sp?cifier la dimension",Cour);
+                errListe->add("Vous devez sp?cifier la dimension",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
                 break;
@@ -687,7 +687,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->Add(tmpDim);
+                tmpVar->GetDimListe()->add(tmpDim);
                 State= INST_LOCAL05;
                 Cour=CourEnd;
             }
@@ -696,13 +696,13 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->Add(tmpDim);
+                tmpVar->GetDimListe()->add(tmpDim);
                 State= INST_LOCAL02;
                 Cour=CourEnd;
             }
             else
             {
-                errListe->Add("On attend une expression de dimension",Cour);
+                errListe->add("On attend une expression de dimension",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -712,7 +712,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 State = INST_LOCAL06;
             else
             {
-                errListe->Add("On attend 'as' ",Cour);
+                errListe->add("On attend 'as' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
                 break;
@@ -727,7 +727,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else
             {
-                errListe->Add("On attend un type ",Cour);
+                errListe->add("On attend un type ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -742,7 +742,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else
             {
-                errListe->Add("Inattendu ",Cour);
+                errListe->add("Inattendu ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -752,7 +752,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         // -------------------------------------------------------------------------        case INST_FOR00:
         case INST_RET00:
             instrCour = new InstructionETPB(INS_RETURN);
-            instrCollect->Add(instrCour);
+            instrCollect->add(instrCour);
             CourEnd = Cour;
             // il faut avoir une expression puis CRLF
             while (!(CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
@@ -767,11 +767,11 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         // -------------------------------------------------------------------------        case INST_FOR00:
         case INST_FOR00:
             instrCour = new InstructionETPB(INS_STRUCT_FOR);
-            instrCollect->Add(instrCour);
+            instrCollect->add(instrCour);
 
             if (Cour->GetToken() == TOKEN_IDENTIF)
             {
-                debExpression = Cour;   // c'est le premier GetToken() du ExprAssigned
+                debExpression = Cour;   // c'est le premier GetToken() du exprAssigned
                 CourEnd = Cour;
                 // il faut avoir =, sans aller ? la ligne
 
@@ -779,7 +779,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                     CourEnd = CourEnd->GetNext();
                 if (CourEnd->GetToken() != TOKEN_EQUAL)
                 {
-                    errListe->Add("On attend '=' ",Cour);
+                    errListe->add("On attend '=' ",Cour);
                     AvanceNextLigne(&Cour);
                     State = INST_FOR08;
                     break;
@@ -796,14 +796,14 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else if (Cour->GetToken() == TOKEN_EQUAL)
             {
-                errListe->Add("On attend une variable a affecter ",Cour);
+                errListe->add("On attend une variable a affecter ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_FOR08;
                 rpCour = Cour;
             }
             else
             {
-                errListe->Add("On attend une affectation ",Cour);
+                errListe->add("On attend une affectation ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_FOR08;
                 rpCour = Cour;
@@ -819,7 +819,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 CourEnd = CourEnd->GetNext();
             if (CourEnd->GetToken() != TOKEN_TO)
             {
-                errListe->Add("On attend 'To' ",Cour);
+                errListe->add("On attend 'To' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_FOR08;
             }
@@ -840,7 +840,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 CourEnd = CourEnd->GetNext();
             if (CourEnd == finTag)
             {
-                errListe->Add("On attend une expression pour la fin",Cour);
+                errListe->add("On attend une expression pour la fin",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_FOR08;
             }
@@ -865,7 +865,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 CourEnd = CourEnd->GetNext();
             if (CourEnd == finTag)
             {
-                errListe->Add("On attend une expression pour la fin",Cour);
+                errListe->add("On attend une expression pour la fin",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_FOR08;
             }
@@ -896,7 +896,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             if (CourEnd == finTag)
             {
-                errListe->Add("Il manque 'Next' (For) ",debugCour);
+                errListe->add("Il manque 'Next' (For) ",debugCour);
                 State = INST_00;
                 Cour = rpCour;
                 break;
@@ -913,7 +913,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 State = INST_00;
             else
             {
-                errListe->Add("Inattendu apres 'Next' ",Cour);
+                errListe->add("Inattendu apres 'Next' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -925,7 +925,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         case INST_IF00:
 
             instrCour = new InstructionETPB(INS_IF);
-            instrCollect->Add(instrCour);
+            instrCollect->add(instrCour);
 
             CourEnd = Cour;
             // il faut avoir Then, sans aller ? la ligne
@@ -934,7 +934,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 CourEnd = CourEnd->GetNext();
             if (CourEnd->GetToken() != TOKEN_THEN)
             {
-                errListe->Add("On attend 'Then' ",Cour);
+                errListe->add("On attend 'Then' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -954,7 +954,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else
             {
-                errListe->Add("Inattendu apres 'Then' ",Cour);
+                errListe->add("Inattendu apres 'Then' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_IF02;
             }
@@ -991,7 +991,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             if (CourEnd == finTag)
             {
-                errListe->Add("Il manque 'End If'  ",debugCour);
+                errListe->add("Il manque 'End If'  ",debugCour);
                 State = INST_00;
                 Cour = rpCour;
             }
@@ -1005,7 +1005,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 {
                     Collection* CorpsT=new Collection();
                     VerifyInstruction(Cour,CourEnd,pFunc,CorpsT);
-                    instrCour->GetIFElseIfCorps()->Add(CorpsT);
+                    instrCour->GetIFElseIfCorps()->add(CorpsT);
                 }
                 State = INST_IF03;
                 debugCour = CourEnd;
@@ -1021,7 +1021,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 {
                     Collection* CorpsT=new Collection();
                     VerifyInstruction(Cour,CourEnd,pFunc,CorpsT);
-                    instrCour->GetIFElseIfCorps()->Add(CorpsT);
+                    instrCour->GetIFElseIfCorps()->add(CorpsT);
                 }
                 State = INST_IF04;
                 debugCour = CourEnd;
@@ -1037,7 +1037,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 {
                     Collection* CorpsT=new Collection();
                     VerifyInstruction(Cour,precCour,pFunc,CorpsT);
-                    instrCour->GetIFElseIfCorps()->Add(CorpsT);
+                    instrCour->GetIFElseIfCorps()->add(CorpsT);
                 }
                 State = INST_IF05;
                 Cour = CourEnd;
@@ -1051,7 +1051,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 CourEnd = CourEnd->GetNext();
             if (CourEnd->GetToken() != TOKEN_THEN)
             {
-                errListe->Add("On attend 'Then' ",Cour);
+                errListe->add("On attend 'Then' ",Cour);
                 Cour = rpCour;
                 State = INST_00;
                 break;
@@ -1063,7 +1063,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 //VerifyExpression(true,Cour,CourEnd,true,instrCour->GetIFExprArbrePtr());
                 CNoeud* exprElseIf=NULL;
                 VerifyExpression(true,Cour,CourEnd,true,&exprElseIf);
-                instrCour->GetIFExprElseIf()->Add(exprElseIf);
+                instrCour->GetIFExprElseIf()->add(exprElseIf);
                 State = INST_IF01;
             }
             Cour = CourEnd;
@@ -1100,19 +1100,19 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             if (CourEnd == finTag)
             {
-                errListe->Add("Il manque 'End If'  ",debugCour);
+                errListe->add("Il manque 'End If'  ",debugCour);
                 State = INST_00;
                 Cour = rpCour;
             }
             else if (CourEnd->GetToken() == TOKEN_ELSEIF)
             {
-                errListe->Add("Impossible d'avoir 'ElseIf' suite ? 'Else' ",debugCour);
+                errListe->add("Impossible d'avoir 'ElseIf' suite ? 'Else' ",debugCour);
                 State = INST_00;
                 Cour = rpCour;
             }
             else if (CourEnd->GetToken() == TOKEN_ELSE)
             {
-                errListe->Add("Impossible d'avoir 'Else' suite ? 'Else' ",debugCour);
+                errListe->add("Impossible d'avoir 'Else' suite ? 'Else' ",debugCour);
                 State = INST_00;
                 Cour = rpCour;
             }
@@ -1130,7 +1130,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else
             {
-                errListe->Add("Inattendu apres 'End If': ",Cour);
+                errListe->add("Inattendu apres 'End If': ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -1144,7 +1144,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             {   // appel de proc?dure sans argument
 
                 instrCour = new InstructionETPB(INS_CALL);
-                instrCollect->Add(instrCour);
+                instrCollect->add(instrCour);
                 VerifyExpression(true,precCour,Cour,true,instrCour->GetCallExprPtr());
                 State = INST_00;
                 break;
@@ -1187,7 +1187,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             else        // on a trouv? un TOKEN_EQUAL
             {
                 instrCour = new InstructionETPB(INS_AFFECTATION);
-                instrCollect->Add(instrCour);
+                instrCollect->add(instrCour);
 
                 VerifyExpression(true,precCour,CourEnd,true,instrCour->GetAffectExprAssignedPtr());
                 Cour=CourEnd->GetNext();
@@ -1224,21 +1224,21 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             if (CourEnd->GetToken() == TOKEN_CRLF)
             {
-                errListe->Add("Il manque un ')' ",Cour);
+                errListe->add("Il manque un ')' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
                 break;
             }
             if (Cour == CourEnd)
             {
-                errListe->Add("Vous devez sp?cifier l'argument apres une , ",Cour);
+                errListe->add("Vous devez sp?cifier l'argument apres une , ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
                 break;
             }
             // il faut v?rifier l'expression entre les parentheses
             instrCour = new InstructionETPB(INS_CALL);
-            instrCollect->Add(instrCour);
+            instrCollect->add(instrCour);
             if (!(VerifyExpression(true,precCour,CourEnd->GetNext(),true,instrCour->GetCallExprPtr())))
             {
                 AvanceNextLigne(&Cour);
@@ -1259,7 +1259,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else
             {
-                errListe->Add("Inattendu: ",Cour);
+                errListe->add("Inattendu: ",Cour);
                 AvanceNextLigne(&Cour);
                 State = INST_00;
             }
@@ -1356,7 +1356,7 @@ void VeriSyn::VerifSyntax()
                 }
                 if (!Found)
                 {
-                    errListe->Add("'Type' sans 'End Type'",Cour);
+                    errListe->add("'Type' sans 'End Type'",Cour);
                     AvanceNextLigne(&Cour);
                     State = ST_DEHORS;
                 }
@@ -1373,7 +1373,7 @@ void VeriSyn::VerifSyntax()
                 State = ST_DEHORS;
             else
             {
-                errListe->Add("Inattendu (dehors): ",Cour);
+                errListe->add("Inattendu (dehors): ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_DEHORS;
             }
@@ -1387,7 +1387,7 @@ void VeriSyn::VerifSyntax()
             {
 
                 tmpVar= new VariableItem();
-                VariablesPublic.Add(tmpVar);
+                VariablesPublic.add(tmpVar);
                 tmpVar->SetCar(VR_PUBLIC);
                 tmpVar->SetFunc(NULL);
                 tmpVar->SetTagNom(Cour);
@@ -1396,7 +1396,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend un identifiant",Cour);
+                errListe->add("On attend un identifiant",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_DEHORS;
             }
@@ -1410,7 +1410,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend 'as' ou '['",Cour);
+                errListe->add("On attend 'as' ou '['",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_DEHORS;
             }
@@ -1436,7 +1436,7 @@ void VeriSyn::VerifSyntax()
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->Add(tmpDim);
+                tmpVar->GetDimListe()->add(tmpDim);
                 State= ST_P05;
                 Cour=CourEnd;
             }
@@ -1445,13 +1445,13 @@ void VeriSyn::VerifSyntax()
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->Add(tmpDim);
+                tmpVar->GetDimListe()->add(tmpDim);
                 State= ST_P02;
                 Cour=CourEnd;
             }
             else
             {
-                errListe->Add("On attend une expression de dimension",Cour);
+                errListe->add("On attend une expression de dimension",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_DEHORS;
             }
@@ -1461,7 +1461,7 @@ void VeriSyn::VerifSyntax()
                 State = ST_P06;
             else
             {
-                errListe->Add("On attend 'as' ",Cour);
+                errListe->add("On attend 'as' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_DEHORS;
             }
@@ -1475,7 +1475,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend un type ",Cour);
+                errListe->add("On attend un type ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_DEHORS;
             }
@@ -1491,7 +1491,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("Inattendu ",Cour);
+                errListe->add("Inattendu ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_DEHORS;
             }
@@ -1506,13 +1506,13 @@ void VeriSyn::VerifSyntax()
             if (Cour->GetToken() == TOKEN_IDENTIF)
             {
                 tmpType= new TypeItem();
-                Types.Add(tmpType);
+                Types.add(tmpType);
                 tmpType->SetTagNom(Cour);
                 State = ST_T01;
             }
             else
             {
-                errListe->Add("On attend un identifiant ",Cour);
+                errListe->add("On attend un identifiant ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_DEHORS;
             }
@@ -1524,7 +1524,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("Inattendu: ",Cour);
+                errListe->add("Inattendu: ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_DEHORS;
             }
@@ -1533,7 +1533,7 @@ void VeriSyn::VerifSyntax()
             if (Cour->GetToken() == TOKEN_IDENTIF)
             {
                 tmpVar= new VariableItem();
-                tmpType->GetChampListe()->Add(tmpVar);
+                tmpType->GetChampListe()->add(tmpVar);
                 tmpVar->SetTagNom(Cour);
                 State = ST_T03;
             }
@@ -1545,7 +1545,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("Vous devez declarer les champs du type ",Cour);
+                errListe->add("Vous devez declarer les champs du type ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_T02;
             }
@@ -1557,7 +1557,7 @@ void VeriSyn::VerifSyntax()
                 State = ST_T08;
             else
             {
-                errListe->Add("On attend 'as' ou '[' ",Cour);
+                errListe->add("On attend 'as' ou '[' ",Cour);
                 AvanceNextLigne(&Cour);
 
                 State = ST_T02;
@@ -1585,7 +1585,7 @@ void VeriSyn::VerifSyntax()
                 tmpDim=new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->Add(tmpDim);
+                tmpVar->GetDimListe()->add(tmpDim);
                 State=ST_T04;
                 Cour=CourEnd;
             }
@@ -1594,13 +1594,13 @@ void VeriSyn::VerifSyntax()
                 tmpDim=new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->Add(tmpDim);
+                tmpVar->GetDimListe()->add(tmpDim);
                 State=ST_T07;
                 Cour=CourEnd;
             }
             else
             {
-                errListe->Add("On attend une expression pour la dimension",Cour);
+                errListe->add("On attend une expression pour la dimension",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_T02;
             }
@@ -1610,7 +1610,7 @@ void VeriSyn::VerifSyntax()
                 State=ST_T08;
             else
             {
-                errListe->Add("On attend 'as' ",Cour);
+                errListe->add("On attend 'as' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_T02;
             }
@@ -1624,7 +1624,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend un type ",Cour);
+                errListe->add("On attend un type ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_T02;
             }
@@ -1639,7 +1639,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("Inattendu ",Cour);
+                errListe->add("Inattendu ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_T02;
             }
@@ -1649,7 +1649,7 @@ void VeriSyn::VerifSyntax()
                 State = ST_T11;
             else
             {
-                errListe->Add("Inattendu ",Cour);
+                errListe->add("Inattendu ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_T02;
             }
@@ -1662,7 +1662,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("Inattendu ",Cour);
+                errListe->add("Inattendu ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_T02;
             }
@@ -1685,7 +1685,7 @@ void VeriSyn::VerifSyntax()
             {
                 tmpFonc->SetNom(Cour->GetIdentif());
                 State = ST_PROC01;
-                Fonctions.Add(tmpFonc);     // on l'insere tout de suite
+                Fonctions.add(tmpFonc);     // on l'insere tout de suite
             }
             else if (Cour->GetToken() == TOKEN_MAIN){
                 tmpFonc->SetNom("_main");
@@ -1695,11 +1695,11 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend un identifiant",Cour);
+                errListe->add("On attend un identifiant",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
-            //tmpFoncPtr = (Fonction*)foncCollect->Add(tmpFonc);    //tmpFoncPtr pointe sur l'?l?ment qui vient d'etre inser?
+            //tmpFoncPtr = (Fonction*)foncCollect->add(tmpFonc);    //tmpFoncPtr pointe sur l'?l?ment qui vient d'etre inser?
             //pInFunc = tmpFoncPtr;
             break;
         case ST_PROC01:
@@ -1716,7 +1716,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend ':' ou '('",Cour);
+                errListe->add("On attend ':' ou '('",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1733,7 +1733,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("Inattendu. On attend '(' ",Cour);
+                errListe->add("Inattendu. On attend '(' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1752,7 +1752,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend une déclaration d'argument ou ')' ",Cour);
+                errListe->add("On attend une déclaration d'argument ou ')' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1762,7 +1762,7 @@ void VeriSyn::VerifSyntax()
                 State = ST_PROC05;
             else
             {
-                errListe->Add("On attend 'as' ",Cour);
+                errListe->add("On attend 'as' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1780,7 +1780,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend un type ",Cour);
+                errListe->add("On attend un type ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1792,7 +1792,7 @@ void VeriSyn::VerifSyntax()
                 State = ST_PROC08;
             else
             {
-                errListe->Add("On attend ',' ou ')' ",Cour);
+                errListe->add("On attend ',' ou ')' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1807,7 +1807,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend une déclaration d'argument ",Cour);
+                errListe->add("On attend une déclaration d'argument ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1821,7 +1821,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("Inattendu ",Cour);
+                errListe->add("Inattendu ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1832,7 +1832,7 @@ void VeriSyn::VerifSyntax()
             tmpFonc= new FonctionItem();
             tmpFonc->SetLigne(Cour->GetLigne());
             tmpFonc->SetRetType(TP_VOID);   // ... pour l'instant
-            Fonctions.Add(tmpFonc);     // on l'insere tout de suite
+            Fonctions.add(tmpFonc);     // on l'insere tout de suite
             if (readingPredef){
                 tmpFonc->SetIsAssembler();
             }
@@ -1843,11 +1843,11 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend un identifiant",Cour);
+                errListe->add("On attend un identifiant",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
-            //tmpFoncPtr = (Fonction*)foncCollect->Add(tmpFonc);    //tmpFoncPtr pointe sur l'?l?ment qui vient d'etre inser?
+            //tmpFoncPtr = (Fonction*)foncCollect->add(tmpFonc);    //tmpFoncPtr pointe sur l'?l?ment qui vient d'etre inser?
             //pInFunc = tmpFoncPtr;
             break;
         case ST_FUNC01:
@@ -1859,7 +1859,7 @@ void VeriSyn::VerifSyntax()
                 State = ST_FUNC09;
             else
             {
-                errListe->Add("On attend ':' ou '(' ou 'as' ",Cour);
+                errListe->add("On attend ':' ou '(' ou 'as' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1871,7 +1871,7 @@ void VeriSyn::VerifSyntax()
                 State=ST_FUNC03;
             else
             {
-                errListe->Add("On attend ':' ou '(' ou 'as' ",Cour);
+                errListe->add("On attend ':' ou '(' ou 'as' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1890,7 +1890,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend une déclaration d'argument ou ')' ",Cour);
+                errListe->add("On attend une déclaration d'argument ou ')' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1900,7 +1900,7 @@ void VeriSyn::VerifSyntax()
                 State = ST_FUNC05;
             else
             {
-                errListe->Add("On attend 'as' ",Cour);
+                errListe->add("On attend 'as' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1918,7 +1918,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend un type ",Cour);
+                errListe->add("On attend un type ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1930,7 +1930,7 @@ void VeriSyn::VerifSyntax()
                 State = ST_FUNC08;
             else
             {
-                errListe->Add("On attend ',' ou ')' ",Cour);
+                errListe->add("On attend ',' ou ')' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1945,7 +1945,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend une déclaration d'argument ",Cour);
+                errListe->add("On attend une déclaration d'argument ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1955,7 +1955,7 @@ void VeriSyn::VerifSyntax()
                 State = ST_FUNC09;
             else
             {
-                errListe->Add("On attend 'as' ",Cour);
+                errListe->add("On attend 'as' ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1968,7 +1968,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("On attend un type ",Cour);
+                errListe->add("On attend un type ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }
@@ -1981,7 +1981,7 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->Add("Inattendu ",Cour);
+                errListe->add("Inattendu ",Cour);
                 AvanceNextLigne(&Cour);
                 State = ST_INTRA;
             }

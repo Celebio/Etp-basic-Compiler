@@ -60,28 +60,28 @@ void Compiler::DisplayHelp(){
     printf("\t-nologo\tN'affiche pas le logo de depart\n");
 }
 void Compiler::DisplayTokens(){
-    mTokenizer.Afficher();
+    mTokenizer.display();
 }
 void Compiler::DisplayErrors(){
     if (!errListe.estVide()){
         printf("Erreurs:\n--------------------------------------\n");
-        errListe.Afficher();
+        errListe.display();
     }
 }
 void Compiler::DisplayVarPublic(){
     printf("variables publiques crees:\n");
     printf("----------------------------------------------\n");
-    mVarPublic->Afficher();
+    mVarPublic->display();
 }
 void Compiler::DisplayUDTypes(){
     printf("types crees:\n");
     printf("----------------------------------------------\n");
-    mUDTypes->Afficher();
+    mUDTypes->display();
 }
 void Compiler::DisplayFonctions(){
     printf("fonctions et leurs corps:\n");
     printf("----------------------------------------------\n");
-    mFonctions->Afficher();
+    mFonctions->display();
 }
 void Compiler::AddSourceFile(const char* fileName){
 

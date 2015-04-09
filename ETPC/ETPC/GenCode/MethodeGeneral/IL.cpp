@@ -31,7 +31,7 @@ IL::~IL(void){
 /**********************************************************
     UTILE
     *******************************************************************/
-InsOpEnum IL::NodeToOp(CNoeud* bNoeud)
+InsOpEnum IL::nodeToOp(CNoeud* bNoeud)
 {
     switch(bNoeud->GetOperator())
     {
@@ -59,61 +59,61 @@ InsOpEnum IL::NodeToOp(CNoeud* bNoeud)
     AFFICHAGE
     *******************************************************************/
 
-void IL::Afficher(reg_id bReg){
+void IL::display(reg_id bReg){
     if (bReg==SP_REG)
         printf("SP");
     else
         printf("R%i",bReg);
 }
-void IL::Afficher(Operande* bOperande){
+void IL::display(Operande* bOperande){
     if (bOperande==NULL)
         return;
 
-    if (bOperande->nat==OP_ENTIER){
+    if (bOperande->nat==OP_INTEGER){
         printf("#%i",bOperande->val.valInt);
     }
     else if (bOperande->nat==OP_FLOAT){
         printf("#%f",bOperande->val.valFloat);
     }
-    else if (bOperande->nat==OP_CHAINE){
-        printf("#%c%s%c",34,bOperande->val.valChaine,34);
+    else if (bOperande->nat==OP_STRING){
+        printf("#%c%s%c",34,bOperande->val.valString,34);
     }
     else if (bOperande->nat==OP_DIRECT){
-        Afficher(bOperande->val.RegDirect);
+        display(bOperande->val.directRegister);
     }
     else if (bOperande->nat==OP_INDIRECT){
-        printf("%i(",bOperande->val.Indirect.Dep);
-        Afficher(bOperande->val.Indirect.RegBase);
+        printf("%i(",bOperande->val.indirect.dep);
+        display(bOperande->val.indirect.baseRegister);
         printf(")");
     }
     else if (bOperande->nat==OP_INDEXE){
-        Afficher(bOperande->val.Indexe.RegIndexe);
-        printf("%i(",bOperande->val.Indirect.Dep);
-        Afficher(bOperande->val.Indexe.RegBase);
+        display(bOperande->val.indexed.indexRegister);
+        printf("%i(",bOperande->val.indirect.dep);
+        display(bOperande->val.indexed.baseRegister);
         printf(")");
     }
 }
 
-void IL::Afficher(){
+void IL::display(){
     LigneCode* Cour=generatedCode;
     while (Cour){
-        Afficher(Cour);
+        display(Cour);
         Cour=Cour->next;
     }
 }
 
-void IL::Afficher(LigneCode* bLigne){
+void IL::display(LigneCode* bLigne){
     int sz;
     if (bLigne==NULL)
         return;
 
     switch(bLigne->nat){
         case NA_ETIQ:
-            printf("%s:",bLigne->val.etiq);
+            printf("%s:",bLigne->val.label);
             break;
         case NA_INST:
             printf("\t");
-            printf("%s",ImageOp[bLigne->val.instr->Op]);
+            printf("%s",ImageOp[bLigne->val.instr->opertr]);
             printf(".");
             sz=bLigne->val.instr->Size;
             if (sz==SZ_UNKNOWN){
@@ -128,9 +128,9 @@ void IL::Afficher(LigneCode* bLigne){
                 printf("F");
             }
             printf("\t");
-            Afficher(bLigne->val.instr->op1);
+            display(bLigne->val.instr->op1);
             printf(",");
-            Afficher(bLigne->val.instr->op2);
+            display(bLigne->val.instr->op2);
             break;
         case NA_COMMENT:
             printf("\t//%s",bLigne->val.comment);
@@ -145,11 +145,11 @@ void IL::Afficher(LigneCode* bLigne){
     AJOUT D'INSTRUCTION
     *******************************************************************/
 
-void IL::Add(InsOpEnum bOp,Operande* bOp1,Operande* bOp2,size_op bSize){
+void IL::add(InsOpEnum bOp,Operande* bOp1,Operande* bOp2,size_op bSize){
     LigneCode* aux=new LigneCode();
     aux->nat=NA_INST;
     InstrIL* aux1=new InstrIL();
-    aux1->Op=bOp;
+    aux1->opertr=bOp;
     aux1->op1=new Operande(*bOp1);
     aux1->op2=new Operande(*bOp2);
     aux1->Size=bSize;
@@ -164,11 +164,11 @@ void IL::Add(InsOpEnum bOp,Operande* bOp1,Operande* bOp2,size_op bSize){
         lastAdded=aux;
     }
 }
-void IL::Add(InsOpEnum bOp,Operande* bOp1,size_op bSize){
+void IL::add(InsOpEnum bOp,Operande* bOp1,size_op bSize){
     LigneCode* aux=new LigneCode();
     aux->nat=NA_INST;
     InstrIL* aux1=new InstrIL();
-    aux1->Op=bOp;
+    aux1->opertr=bOp;
     aux1->op1=new Operande(*bOp1);
     aux1->op2=NULL;
     aux1->Size=bSize;
@@ -183,11 +183,11 @@ void IL::Add(InsOpEnum bOp,Operande* bOp1,size_op bSize){
         lastAdded=aux;
     }
 }
-void IL::Add(InsOpEnum bOp){
+void IL::add(InsOpEnum bOp){
     LigneCode* aux=new LigneCode();
     aux->nat=NA_INST;
     InstrIL* aux1=new InstrIL();
-    aux1->Op=bOp;
+    aux1->opertr=bOp;
     aux1->op1=NULL;
     aux1->op2=NULL;
     aux1->Size=SZ_UNKNOWN;
@@ -202,7 +202,7 @@ void IL::Add(InsOpEnum bOp){
         lastAdded=aux;
     }
 }
-void IL::Add(const char* bComment){
+void IL::add(const char* bComment){
     LigneCode* aux=new LigneCode();
     aux->nat=NA_COMMENT;
     aux->val.comment=bComment;
@@ -217,10 +217,10 @@ void IL::Add(const char* bComment){
     }
 }
 
-void IL::AddEtiq(const char* bEtiq){
+void IL::addLabel(const char* bEtiq){
     LigneCode* aux=new LigneCode();
     aux->nat=NA_ETIQ;
-    aux->val.etiq=bEtiq;
+    aux->val.label=bEtiq;
 
     if (generatedCode==NULL){
         generatedCode=aux;
@@ -236,30 +236,30 @@ void IL::AddEtiq(const char* bEtiq){
 /**********************************************************
     CREATION OPERANDE
     *******************************************************************/
-Operande* IL::createOp(reg_id bRegDirect){
+Operande* IL::createOp(reg_id bdirectRegister){
     Operande* aux=new Operande();
     aux->nat=OP_DIRECT;
-    aux->val.RegDirect=bRegDirect;
+    aux->val.directRegister=bdirectRegister;
     return aux;
 }
-Operande* IL::createOp(int bDep,reg_id bRegBase){
+Operande* IL::createOp(int bdep,reg_id bRegBase){
     Operande* aux=new Operande();
     aux->nat=OP_INDIRECT;
-    aux->val.Indirect.Dep=bDep;
-    aux->val.Indirect.RegBase=bRegBase;
+    aux->val.indirect.dep=bdep;
+    aux->val.indirect.baseRegister=bRegBase;
     return aux;
 }
-Operande* IL::createOp(int bDep,reg_id bRegBase,reg_id bRegIndexe){
+Operande* IL::createOp(int bdep,reg_id bRegBase,reg_id bRegIndexe){
     Operande* aux=new Operande();
     aux->nat=OP_INDEXE;
-    aux->val.Indexe.Dep=bDep;
-    aux->val.Indexe.RegBase=bRegBase;
-    aux->val.Indexe.RegIndexe=bRegIndexe;
+    aux->val.indexed.dep=bdep;
+    aux->val.indexed.baseRegister=bRegBase;
+    aux->val.indexed.indexRegister=bRegIndexe;
     return aux;
 }
 Operande* IL::createOpVal(int bvalInt){
     Operande* aux=new Operande();
-    aux->nat=OP_ENTIER;
+    aux->nat=OP_INTEGER;
     aux->val.valInt=bvalInt;
     return aux;
 }
@@ -269,16 +269,16 @@ Operande* IL::createOpFloat(float bvalFloat){
     aux->val.valFloat=bvalFloat;
     return aux;
 }
-Operande* IL::createOpChaine(char* bvalChaine){
+Operande* IL::createOpString(char* bvalChaine){
     Operande* aux=new Operande();
-    aux->nat=OP_CHAINE;
-    aux->val.valChaine=bvalChaine;
+    aux->nat=OP_STRING;
+    aux->val.valString=bvalChaine;
     return aux;
 }
-Operande* IL::createOpEtiq(char* bvalEtiq){
+Operande* IL::createOpLabel(char* bvalEtiq){
     Operande* aux=new Operande();
-    aux->nat=OP_ETIQ;
-    aux->val.valEtiq=bvalEtiq;
+    aux->nat=OP_LABEL;
+    aux->val.valLabel=bvalEtiq;
     return aux;
 }
 

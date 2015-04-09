@@ -25,8 +25,8 @@ class ColItem
 public:
     ColItem(void);
     ~ColItem(void);
-    virtual void Detruir();     // virtual pour le late-binding
-    virtual void Afficher();
+    virtual void destroy();     // virtual pour le late-binding
+    virtual void display();
 
 };
 

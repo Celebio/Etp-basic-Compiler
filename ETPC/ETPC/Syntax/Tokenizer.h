@@ -53,7 +53,7 @@ public:
 
     void Tokenize(char *pCour,char *pFin,const char *fileName);
     TAG* getTagListe() {return pListe;}
-    void Afficher(void);
+    void display(void);
     void SetIsPredefFile(bool predef) {isPredefFile=predef;}
 };
 

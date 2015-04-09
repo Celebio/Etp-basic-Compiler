@@ -128,7 +128,7 @@ const char *CNoeud::ImageNoeud(){
 
 
 
-void CNoeud::Afficher(const char *S,const char *SD,const char *SG){
+void CNoeud::display(const char *S,const char *SD,const char *SG){
     char str1[300];
     char str2[300];
     char str3[300];
@@ -142,7 +142,7 @@ void CNoeud::Afficher(const char *S,const char *SD,const char *SG){
     sprintf(str2,"%s%s      ",SD,Ind);
     sprintf(str3,"%s%s     |",SD,Ind);
     if (mFilsD)
-        mFilsD->Afficher(str1,str2,str3);
+        mFilsD->display(str1,str2,str3);
 
     for(j=0;j<30 && !Successeur[j];j++);
 
@@ -166,7 +166,7 @@ void CNoeud::Afficher(const char *S,const char *SD,const char *SG){
     sprintf(str2,"%s%s     |",SG,Ind);
     sprintf(str3,"%s%s      ",SG,Ind);
     if (mFilsG)
-        mFilsG->Afficher(str1,str2,str3);
+        mFilsG->display(str1,str2,str3);
 
     for(j=0;j<30;j++)
     {
@@ -174,29 +174,29 @@ void CNoeud::Afficher(const char *S,const char *SD,const char *SG){
         {
             sprintf(str2,"%s%s     |",SG,Ind);
             sprintf(str3,"%s%s     |",SD,Ind);
-            Successeur[j]->Afficher(str1,str2,str3);
+            Successeur[j]->display(str1,str2,str3);
         }
     }
 }
 
-void CNoeud::Afficher(){
+void CNoeud::display(){
     if (this)
-        Afficher(""," "," ");
+        display(""," "," ");
 
 }
 
-void CNoeud::Afficher(int indent){
+void CNoeud::display(int indent){
     for(int i=0;i<indent;i++)
         printf(" ");
     printf("<%s>\n",ImageNoeud());
     if (mFilsG)
-        mFilsG->Afficher(indent+5);
+        mFilsG->display(indent+5);
     if (mFilsD)
-        mFilsD->Afficher(indent+5);
+        mFilsD->display(indent+5);
     for(int i=0;i<30;i++)
         if (Successeur[i])
         {
-            Successeur[i]->Afficher();
+            Successeur[i]->display();
         }
 }
 
@@ -391,7 +391,7 @@ bool CNoeud::EstConstant(){
 void CNoeud::SimplifyConstantExpression(){
     if (!EstConstant()) return;
     printf("ok on va simplifier\n");
-    this->Afficher();
+    this->display();
     VarTypeType unknownVal(TP_UNKNOWN);
     VarTypeType intVal(TP_INTEGER);
     VarTypeType longVal(TP_LONG);
@@ -517,7 +517,7 @@ void CNoeud::SimplifyConstantExpression(){
         break;
     }
     printf("apres simplification:\n");
-    this->Afficher();
+    this->display();
     printf("\n\n");
 }
 

@@ -12,7 +12,7 @@ PileRegTemp::PileRegTemp(IL* bIL,VirtStack* bStack){
     mStack=bStack;
 }
 
-void PileRegTemp::Depiler(void){
+void PileRegTemp::depiler(void){
     int i;
     for (i=0;i<TAILLE_PILE-1;i++){
         Pile[i]=Pile[i+1];
@@ -49,30 +49,30 @@ Operande* PileRegTemp::Sommet(){
 
 void PileRegTemp::Allouer(Operande* M){
     if (M->nat==OP_DIRECT){
-        Depiler();
+        depiler();
     }
     else if (M->nat==OP_INDIRECT){
-        if (M->val.Indirect.RegBase!=SP_REG){
-            Depiler();
+        if (M->val.indirect.baseRegister!=SP_REG){
+            depiler();
         }
     }
     else if (M->nat==OP_INDEXE){
-        Depiler();
+        depiler();
     }
     else{
     }
 }
 void PileRegTemp::Liberer(Operande* M){
     if (M->nat==OP_DIRECT){
-        Empiler(M->val.RegDirect);
+        Empiler(M->val.directRegister);
     }
     else if (M->nat==OP_INDIRECT){
-        if (M->val.Indirect.RegBase!=SP_REG){
-            Empiler(M->val.Indirect.RegBase);
+        if (M->val.indirect.baseRegister!=SP_REG){
+            Empiler(M->val.indirect.baseRegister);
         }
     }
     else if (M->nat==OP_INDEXE){
-        Empiler(M->val.Indexe.RegIndexe);
+        Empiler(M->val.indexed.indexRegister);
     }
     else{
     }
@@ -88,16 +88,16 @@ Operande* PileRegTemp::AllouerTemp(int taille){
     StackVar->SetTagNom(tagNomVar);
     StackVar->SetSize(taille);
     retVal=mIL->createOp(0,SP_REG);
-    mIL->Add("Creation de temporaire");
-    mIL->Add(SUB,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
+    mIL->add("Creation de temporaire");
+    mIL->add(SUB,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
     mStack->PushToStack(StackVar);
     return retVal;
 }
 void PileRegTemp::LibererTemp(Operande* T,int taille){
     VariableItem* AEffacer;
     AEffacer=mStack->Pop();
-    mIL->Add("Liberation de temporaire");
-    mIL->Add(ADD,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
+    mIL->add("Liberation de temporaire");
+    mIL->add(ADD,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
 
     delete AEffacer->GetTagNom();
 }

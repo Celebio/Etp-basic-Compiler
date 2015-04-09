@@ -98,7 +98,7 @@ TAG::~TAG(void)
 {
 }
 
-void TAG::Afficher(void)
+void TAG::display(void)
 {
 const char* bT[] = {"TK_RETURN",
                 "TK_MAIN",

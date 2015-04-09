@@ -43,9 +43,9 @@ private:
     Collection* Fonctions;
 
     char outputFileName[300];
-    asmz80Coder ILcoder;
+    asmz80Coder ilCoder;
     //VirtStackz80 Stack;
-    //PileRegTempz80* RegPile;
+    //PileRegTempz80* registerStack;
 
     int mNbRegMax;
 
@@ -54,8 +54,8 @@ private:
     int NbRegArith(CNoeud* bNoeud,NatureOpz80 bNat);
     int NbRegObjet(CNoeud* bNoeud,NatureOpz80 bNat);
 
-//  void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operandez80** Op);
-//  void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operandez80** Op);
+//  void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operandez80** opertr);
+//  void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operandez80** opertr);
 
 public:
     Genz80(void);

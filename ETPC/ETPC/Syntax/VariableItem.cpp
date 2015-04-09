@@ -21,10 +21,10 @@
 VariableItem::VariableItem(void){}
 VariableItem::~VariableItem(void){}
 
-void VariableItem::Detruir()
+void VariableItem::destroy()
 {
 }
-void VariableItem::Afficher()
+void VariableItem::display()
 {
     printf("Variable NOM:%s:\n",bTAGNom->GetIdentif());
     if (Car ==VR_PUBLIC)
@@ -36,8 +36,8 @@ void VariableItem::Afficher()
     else if (Car==VR_ARGU)
         printf("ARGUMENT ");
     printf("Dimensions:\n");
-    DimListe.Afficher();
+    DimListe.display();
     printf("de type:");
-    Type.Afficher();
+    Type.display();
     printf("\n");
 }

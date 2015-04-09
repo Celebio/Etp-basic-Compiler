@@ -6,7 +6,7 @@
 #include "noeud.h"
 
 typedef enum LigneNature {NA_ETIQ,NA_INST,NA_COMMENT,NA_UNKNOWN};
-typedef enum OperandeNature {OP_DIRECT,OP_INDIRECT,OP_INDEXE,OP_ENTIER,OP_FLOAT,OP_CHAINE,OP_ETIQ};
+typedef enum OperandeNature {OP_DIRECT,OP_INDIRECT,OP_INDEXE,OP_INTEGER,OP_FLOAT,OP_STRING,OP_LABEL};
 typedef enum size_op{ SZ_UNKNOWN=-1,SZ_B=1,SZ_W=2,SZ_L=4,SZ_F=10 };
 
 
@@ -27,25 +27,25 @@ typedef enum InsOpEnum{
 struct Operande {
     OperandeNature nat;
     union {
-        reg_id RegDirect;
+        reg_id directRegister;
         struct {
-            int Dep;
-            reg_id RegBase;
-        } Indirect;
+            int dep;
+            reg_id baseRegister;
+        } indirect;
         struct {
-            int Dep;
-            reg_id RegBase;
-            reg_id RegIndexe;
-        } Indexe;
+            int dep;
+            reg_id baseRegister;
+            reg_id indexRegister;
+        } indexed;
         int valInt;
         float valFloat;
-        char* valChaine;
-        char* valEtiq;
+        char* valString;
+        char* valLabel;
     }val;
 };
 
 struct InstrIL{
-    InsOpEnum Op;
+    InsOpEnum opertr;
     size_op Size;
     Operande* op1;
     Operande* op2;
@@ -55,7 +55,7 @@ struct LigneCode{
     LigneNature nat;
     union{
         InstrIL* instr;
-        char* etiq;
+        char* label;
         char* comment;
     } val;
     LigneCode* next;
@@ -67,33 +67,33 @@ private:
     int nb_regmax;
     LigneCode* generatedCode;
     LigneCode* lastAdded;
-    void Afficher(LigneCode* bLigne);
-    void Afficher(reg_id bReg);
-    void Afficher(Operande* bOperande);
+    void display(LigneCode* bLigne);
+    void display(reg_id bReg);
+    void display(Operande* bOperande);
 
 public:
     IL(void);
     ~IL(void);
 
-    void Afficher();
+    void display();
 
-    InsOpEnum NodeToOp(CNoeud* bNoeud);
+    InsOpEnum nodeToOp(CNoeud* bNoeud);
 
-    Operande* createOp(reg_id bRegDirect);
-    Operande* createOp(int bDep,reg_id bRegBase);
-    Operande* createOp(int bDep,reg_id bRegBase,reg_id bRegIndexe);
+    Operande* createOp(reg_id bdirectRegister);
+    Operande* createOp(int bdep,reg_id bRegBase);
+    Operande* createOp(int bdep,reg_id bRegBase,reg_id bRegIndexe);
     Operande* createOpVal(int bvalInt);
     Operande* createOpFloat(float bvalFloat);
-    Operande* createOpChaine(char* bvalChaine);
-    Operande* createOpEtiq(char* bvalEtiq);
+    Operande* createOpString(char* bvalChaine);
+    Operande* createOpLabel(char* bvalEtiq);
 
 
 
-    void Add(InsOpEnum bOp,Operande* bOp1,Operande* bOp2,size_op bSize);
-    void Add(InsOpEnum bOp,Operande* bOp1,size_op bSize);
-    void Add(InsOpEnum bOp);
-    void Add(const char* bComment);
-    void AddEtiq(const char* bEtiq);
+    void add(InsOpEnum bOp,Operande* bOp1,Operande* bOp2,size_op bSize);
+    void add(InsOpEnum bOp,Operande* bOp1,size_op bSize);
+    void add(InsOpEnum bOp);
+    void add(const char* bComment);
+    void addLabel(const char* bEtiq);
 
 };
 

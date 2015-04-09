@@ -33,8 +33,8 @@ public:
     ~TypeItem(void);
 
     // reimplemantation des fonctions:
-    void Detruir();
-    void Afficher();
+    void destroy();
+    void display();
 
     // Get
     char* GetNom() {return Nom;}

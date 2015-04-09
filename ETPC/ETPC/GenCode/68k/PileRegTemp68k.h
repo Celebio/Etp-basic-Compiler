@@ -26,7 +26,7 @@ private:
     reg_id PileD[TAILLE_PILED];
     reg_id PileA[TAILLE_PILEA];
 
-    void DepilerD(void);
+    void depilerD(void);
     void EmpilerD(reg_id R);
     int nb_reg;
     asm68kCoder* mIL;

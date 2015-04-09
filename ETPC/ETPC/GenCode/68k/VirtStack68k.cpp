@@ -97,7 +97,7 @@ int VirtStack68k::GetStackPos(char* VarNom)
     return -77777;  // magic number pour dire qu'il n'a pas trouv? alors qu'il est cens?
                     // le trouver car les v?rifications sont faites dans verisem
 }
-void VirtStack68k::Afficher(){
+void VirtStack68k::display(){
     VirtStackElem68k* pCour=VirtualStackBuffer;
     printf("Virtual Stack State:\n");
     while(pCour)

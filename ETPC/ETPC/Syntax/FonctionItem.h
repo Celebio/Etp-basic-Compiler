@@ -40,8 +40,8 @@ public:
     ~FonctionItem(void);
 
 
-    void Detruir();
-    void Afficher();
+    void destroy();
+    void display();
 
     // Get
     const char* GetNom() {return Nom;}

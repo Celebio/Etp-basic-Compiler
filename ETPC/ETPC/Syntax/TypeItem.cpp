@@ -23,15 +23,15 @@ TypeItem::TypeItem(void){}
 TypeItem::~TypeItem(void){}
 
 
-void TypeItem::Detruir()
+void TypeItem::destroy()
 {
 }
 
-void TypeItem::Afficher()
+void TypeItem::display()
 {
     printf("Type:%s \n",Nom);
     printf("les champs:\n");
-    ChampListe.Afficher();
+    ChampListe.display();
 }
 
 void TypeItem::SetTagNom(TAG* bTag)

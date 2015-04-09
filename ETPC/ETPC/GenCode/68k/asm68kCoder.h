@@ -25,8 +25,8 @@
 #include "VirtStack68k.h"
 #include "noeud.h"
 
-typedef enum LigneNature68k {NA_ETIQ,NA_INST,NA_COMMENT,NA_UNKNOWN} LigneNature68k;
-typedef enum OperandeNature68k {OP_DIRECT,OP_INDIRECT,OP_INDEXE,OP_ENTIER,OP_FLOAT,OP_CHAINE,OP_ETIQ} OperandeNature68k;
+typedef enum LineNature68k {NA_ETIQ,NA_INST,NA_COMMENT,NA_UNKNOWN} LineNature68k;
+typedef enum OperandNature68k {OP_DIRECT,OP_INDIRECT,OP_INDEXE,OP_INTEGER,OP_FLOAT,OP_STRING,OP_LABEL} OperandNature68k;
 typedef enum size_op68k{ SZ_UNKNOWN=-1,SZ_NA=-2,SZ_B=1,SZ_W=2,SZ_L=4,SZ_F=10 } size_op68k;
 
 
@@ -62,42 +62,42 @@ typedef enum InsOpEnum68k{
 } InsOpEnum68k;
 
 struct Operande68k {
-    OperandeNature68k nat;
+    OperandNature68k nat;
     bool PreDecr;
     bool PostIncr;
     union {
-        reg_id RegDirect;
+        reg_id directRegister;
         struct {
-            int Dep;
-            reg_id RegBase;
-        } Indirect;
+            int dep;
+            reg_id baseRegister;
+        } indirect;
         struct {
-            int Dep;
-            reg_id RegBase;
-            reg_id RegIndexe;
-        } Indexe;
+            int dep;
+            reg_id baseRegister;
+            reg_id indexRegister;
+        } indexed;
         int valInt;
         float valFloat;
-        char* valChaine;
-        char* valEtiq;
+        char* valString;
+        char* valLabel;
     }val;
 };
 
 struct InstrIL{
-    InsOpEnum68k Op;
+    InsOpEnum68k opertr;
     size_op68k Size;
     Operande68k* op1;
     Operande68k* op2;
 };
 
-struct LigneCode68k{
-    LigneNature68k nat;
+struct LineCode68k{
+    LineNature68k nat;
     union{
         InstrIL* instr;
-        const char* etiq;
+        const char* label;
         const char* comment;
     } val;
-    LigneCode68k* next;
+    LineCode68k* next;
 };
 
 
@@ -106,43 +106,43 @@ private:
     int nb_regmax;
     int etiqNo;
 
-    LigneCode68k* generatedCode;
-    LigneCode68k* lastAdded;
+    LineCode68k* generatedCode;
+    LineCode68k* lastAdded;
     std::ofstream* mStream;
     std::ifstream* iStream;
 
-    void Afficher(LigneCode68k* bLigne);
-    void Afficher(reg_id bReg);
-    void Afficher(Operande68k* bOperande);
+    void display(LineCode68k* bLigne);
+    void display(reg_id bReg);
+    void display(Operande68k* bOperande);
 
 public:
     asm68kCoder(void);
     ~asm68kCoder(void);
 
-    void Afficher();
-    void AfficherLeDebut();
-    void AfficherLaFin();
+    void display();
+    void displayHeader();
+    void displayFooter();
 
-    void SetStream(std::ofstream* bStream) {mStream= bStream; }
+    void setStream(std::ofstream* bStream) {mStream= bStream; }
 
-    InsOpEnum68k NodeToOp(CNoeud* bNoeud);
+    InsOpEnum68k nodeToOp(CNoeud* bNoeud);
 
-    Operande68k* createOp(reg_id bRegDirect);
-    Operande68k* createOp(int bDep,reg_id bRegBase);
+    Operande68k* createOp(reg_id bdirectRegister);
+    Operande68k* createOp(int bdep,reg_id bRegBase);
     Operande68k* createOp(reg_id bRegBase,bool Pred,bool Posti);
-    Operande68k* createOp(int bDep,reg_id bRegBase,reg_id bRegIndexe);
+    Operande68k* createOp(int bdep,reg_id bRegBase,reg_id bRegIndexe);
     Operande68k* createOpVal(int bvalInt);
     Operande68k* createOpFloat(float bvalFloat);
-    Operande68k* createOpChaine(char* bvalChaine);
-    Operande68k* createOpEtiq(char* bvalEtiq);
-    Operande68k* createOpEtiq();
+    Operande68k* createOpString(char* bvalChaine);
+    Operande68k* createOpLabel(char* bvalEtiq);
+    Operande68k* createOpLabel();
 
 
-    void Add(InsOpEnum68k bOp,Operande68k* bOp1,Operande68k* bOp2,size_op68k bSize);
-    void Add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize);
-    void Add(InsOpEnum68k bOp);
-    void Add(const char* bComment);
-    void AddEtiq(const char* bEtiq);
+    void add(InsOpEnum68k bOp,Operande68k* bOp1,Operande68k* bOp2,size_op68k bSize);
+    void add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize);
+    void add(InsOpEnum68k bOp);
+    void add(const char* bComment);
+    void addLabel(const char* bEtiq);
 
 
     InsOpEnum68k getOppBra(InsOpEnum68k bOp);

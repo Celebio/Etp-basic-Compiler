@@ -35,8 +35,8 @@ Genz80::~Genz80(void){
 #define max(a,b) (a>b?a:b)
 
 void Genz80::TestGenerate(){
-    //ILcoder.Add(LOAD,ILcoder.createOp(2,3),ILcoder.createOp(5),SZ_W);
-    //ILcoder.Afficher();
+    //ilCoder.add(LOAD,ilCoder.createOp(2,3),ilCoder.createOp(5),SZ_W);
+    //ilCoder.display();
 }
 
 
@@ -71,8 +71,8 @@ size_opz80 Genz80::GetSize(CNoeud* bNoeud){
 
 void Genz80::GenerCode(){
     std::ofstream file(outputFileName);
-    ILcoder.SetStream(&file);
-    ILcoder.AfficherLeDebut();
-    ILcoder.AfficherLaFin();
+    ilCoder.setStream(&file);
+    ilCoder.displayHeader();
+    ilCoder.displayFooter();
 }
 

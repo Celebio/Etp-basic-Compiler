@@ -20,17 +20,17 @@ private:
     Collection* Types;
     Collection* Fonctions;
 
-    IL ILcoder;
+    IL ilCoder;
     VirtStack Stack;
-    PileRegTemp* RegPile;
+    PileRegTemp* registerStack;
 
     int mNbRegMax;
 
     int NbRegArith(CNoeud* bNoeud,NatureOp bNat);
     int NbRegObjet(CNoeud* bNoeud,NatureOp bNat);
 
-    void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** Op);
-    void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** Op);
+    void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr);
+    void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** opertr);
 
 public:
     GenIL(void);

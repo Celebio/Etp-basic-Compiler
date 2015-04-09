@@ -8,7 +8,7 @@ class PileRegTemp{
 private:
     reg_id Pile[TAILLE_PILE];
 
-    void Depiler(void);
+    void depiler(void);
     void Empiler(reg_id R);
     int nb_reg;
     IL* mIL;

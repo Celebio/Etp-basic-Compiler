@@ -64,11 +64,11 @@ public:
     ~Collection();
 
     //fonctions
-    ColItem* Add(ColItem* bElem);
+    ColItem* add(ColItem* bElem);
     ColItem* AddDebut(ColItem* bElem);
-    void Add(const char* bDesc,TAG* bTag);
+    void add(const char* bDesc,TAG* bTag);
     void Clear();
-    void Afficher();
+    void display();
     bool estVide();
 
     // iterators:

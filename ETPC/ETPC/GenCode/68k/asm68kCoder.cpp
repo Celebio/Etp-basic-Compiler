@@ -20,7 +20,7 @@
 
 using namespace std;
 
-const char* ImageOp68k[]={
+const char* imageOp68k[]={
     "???",
     "MOVE",
     "ADD",
@@ -68,7 +68,7 @@ asm68kCoder::~asm68kCoder(void){
 /**********************************************************
     UTILE
     *******************************************************************/
-InsOpEnum68k asm68kCoder::NodeToOp(CNoeud* bNoeud)
+InsOpEnum68k asm68kCoder::nodeToOp(CNoeud* bNoeud)
 {
     switch(bNoeud->GetOperator())
     {
@@ -117,7 +117,7 @@ InsOpEnum68k asm68kCoder::NodeToOp(CNoeud* bNoeud)
     AFFICHAGE
     *******************************************************************/
 
-void asm68kCoder::Afficher(reg_id bReg){
+void asm68kCoder::display(reg_id bReg){
     if (bReg==SP_REG)
         //printf("A7");
         (*mStream) << "A7";
@@ -133,64 +133,52 @@ void asm68kCoder::Afficher(reg_id bReg){
 }
 
 
-void asm68kCoder::Afficher(Operande68k* bOperande){
+void asm68kCoder::display(Operande68k* bOperande){
     if (bOperande==NULL)
         return;
 
-    if (bOperande->nat==OP_ENTIER){
-        //printf("#%i",bOperande->val.valInt);
+    if (bOperande->nat==OP_INTEGER){
         (*mStream) << "#" << bOperande->val.valInt;
     }
     else if (bOperande->nat==OP_FLOAT){
-        //printf("#%f",bOperande->val.valFloat);
         (*mStream) << "#" << bOperande->val.valFloat;
     }
-    else if (bOperande->nat==OP_CHAINE){
-        //printf("#%c%s%c",34,bOperande->val.valChaine,34);
-        (*mStream) << "#\"" << bOperande->val.valChaine << "\"";
+    else if (bOperande->nat==OP_STRING){
+        (*mStream) << "#\"" << bOperande->val.valString << "\"";
     }
     else if (bOperande->nat==OP_DIRECT){
-        Afficher(bOperande->val.RegDirect);
+        display(bOperande->val.directRegister);
     }
     else if (bOperande->nat==OP_INDIRECT){
         if (bOperande->PreDecr)
-            //printf("-");
             (*mStream) << "-";
-        if (bOperande->val.Indirect.Dep!=0)
-            //printf("%i(",bOperande->val.Indirect.Dep);
-            (*mStream) << bOperande->val.Indirect.Dep;
+        if (bOperande->val.indirect.dep!=0)
+            (*mStream) << bOperande->val.indirect.dep;
         else {
         }
-            //printf("(");
             (*mStream) << "(";
-            Afficher(bOperande->val.Indirect.RegBase);
-            //printf(")");
+            display(bOperande->val.indirect.baseRegister);
             (*mStream) << ")";
             if (bOperande->PostIncr){
-                //printf("+");
                 (*mStream) << "+";
             }
     }
     else if (bOperande->nat==OP_INDEXE){
-        Afficher(bOperande->val.Indexe.RegIndexe);
-        //printf("%i(",bOperande->val.Indirect.Dep);
-        (*mStream) << bOperande->val.Indirect.Dep << "(";
-        Afficher(bOperande->val.Indexe.RegBase);
-        //printf(")");
+        display(bOperande->val.indexed.indexRegister);
+        (*mStream) << bOperande->val.indirect.dep << "(";
+        display(bOperande->val.indexed.baseRegister);
         (*mStream) << ")";
     }
-    else if (bOperande->nat==OP_ETIQ){
-        //printf("%s",bOperande->val.valEtiq);
-        (*mStream) << bOperande->val.valEtiq;
+    else if (bOperande->nat==OP_LABEL){
+        (*mStream) << bOperande->val.valLabel;
     }
 }
 
-void asm68kCoder::AfficherLeDebut(){
-    //printf(";Made with ETP\n\tinclude \"os.h\"\n\txdef _main\n\txdef _nostub\n\txdef _ti89\n\txdef _ti92plus\n\t\n\n");
+void asm68kCoder::displayHeader(){
     (*mStream) << ";Made with ETP\n\tinclude \"os.h\"\n\txdef _main\n\txdef _nostub\n\txdef _ti89\n\txdef _ti92plus\n\t\n\n";
 }
 
-void asm68kCoder::AfficherLaFin(){
+void asm68kCoder::displayFooter(){
     iStream = new ifstream("etplib.asm");
     string line;
     if (iStream->is_open())
@@ -202,70 +190,55 @@ void asm68kCoder::AfficherLaFin(){
         iStream->close();
     }
     delete iStream;
-    //printf(";Made with ETP\n\tinclude \"os.h\"\n\txdef _main\n\txdef _nostub\n\txdef _ti89\n\txdef _ti92plus\n\t\n\n");
-    //(*mStream) << ";Made with ETP\n\tinclude \"os.h\"\n\txdef _main\n\txdef _nostub\n\txdef _ti89\n\txdef _ti92plus\n\t\n\n";
 }
 
-void asm68kCoder::Afficher(){
-    LigneCode68k* Cour=generatedCode;
+void asm68kCoder::display(){
+    LineCode68k* Cour=generatedCode;
     while (Cour){
-        Afficher(Cour);
+        display(Cour);
         Cour=Cour->next;
     }
 }
 
-void asm68kCoder::Afficher(LigneCode68k* bLigne){
+void asm68kCoder::display(LineCode68k* bLigne){
     int sz;
     if (bLigne==NULL)
         return;
 
     switch(bLigne->nat){
         case NA_ETIQ:
-            //printf("%s:",bLigne->val.etiq);
-            (*mStream) << bLigne->val.etiq << ":";
+            (*mStream) << bLigne->val.label << ":";
             break;
         case NA_INST:
-            //printf("\t");
             (*mStream) << "\t";
-            //printf("%s",ImageOp68k[bLigne->val.instr->Op]);
-            (*mStream) << ImageOp68k[bLigne->val.instr->Op];
+            (*mStream) << imageOp68k[bLigne->val.instr->opertr];
             sz=bLigne->val.instr->Size;
             if (sz==SZ_UNKNOWN){
-                //printf(".?");
                 (*mStream) << ".?";
             }else if (sz==SZ_NA){
-                //printf("");
                 (*mStream) << "";
             }else if (sz==SZ_B){
-                //printf(".B");
                 (*mStream) << ".B";
             }else if (sz==SZ_W){
-                //printf(".W");
                 (*mStream) << ".W";
             }else if (sz==SZ_L){
-                //printf(".L");
                 (*mStream) << ".L";
             }else if (sz==SZ_F){
-                //printf(".F");
                 (*mStream) << ".F";
             }
-            //printf("\t");
             (*mStream) << "\t";
-            Afficher(bLigne->val.instr->op1);
+            display(bLigne->val.instr->op1);
             if (bLigne->val.instr->op2){
-                //printf(",");
                 (*mStream) << ",";
-                Afficher(bLigne->val.instr->op2);
+                display(bLigne->val.instr->op2);
             }
             break;
         case NA_COMMENT:
-            //printf("\t;%s",bLigne->val.comment);
             (*mStream) << "\t;" << bLigne->val.comment;
             break;
         case NA_UNKNOWN:
             break;
     }
-    //printf("\n");
     (*mStream) << "\n";
 }
 
@@ -273,11 +246,11 @@ void asm68kCoder::Afficher(LigneCode68k* bLigne){
     AJOUT D'INSTRUCTION
     *******************************************************************/
 
-void asm68kCoder::Add(InsOpEnum68k bOp,Operande68k* bOp1,Operande68k* bOp2,size_op68k bSize){
-    LigneCode68k* aux=new LigneCode68k();
+void asm68kCoder::add(InsOpEnum68k bOp,Operande68k* bOp1,Operande68k* bOp2,size_op68k bSize){
+    LineCode68k* aux=new LineCode68k();
     aux->nat=NA_INST;
     InstrIL* aux1=new InstrIL();
-    aux1->Op=bOp;
+    aux1->opertr=bOp;
     aux1->op1=new Operande68k(*bOp1);
     aux1->op2=new Operande68k(*bOp2);
     aux1->Size=bSize;
@@ -292,14 +265,14 @@ void asm68kCoder::Add(InsOpEnum68k bOp,Operande68k* bOp1,Operande68k* bOp2,size_
         lastAdded=aux;
     }
 #ifdef AFF_EACH_INST
-    Afficher();
+    display();
 #endif
 }
-void asm68kCoder::Add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize){
-    LigneCode68k* aux=new LigneCode68k();
+void asm68kCoder::add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize){
+    LineCode68k* aux=new LineCode68k();
     aux->nat=NA_INST;
     InstrIL* aux1=new InstrIL();
-    aux1->Op=bOp;
+    aux1->opertr=bOp;
     aux1->op1=new Operande68k(*bOp1);
     aux1->op2=NULL;
     aux1->Size=bSize;
@@ -314,14 +287,14 @@ void asm68kCoder::Add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize){
         lastAdded=aux;
     }
 #ifdef AFF_EACH_INST
-    Afficher();
+    display();
 #endif
 }
-void asm68kCoder::Add(InsOpEnum68k bOp){
-    LigneCode68k* aux=new LigneCode68k();
+void asm68kCoder::add(InsOpEnum68k bOp){
+    LineCode68k* aux=new LineCode68k();
     aux->nat=NA_INST;
     InstrIL* aux1=new InstrIL();
-    aux1->Op=bOp;
+    aux1->opertr=bOp;
     aux1->op1=NULL;
     aux1->op2=NULL;
     aux1->Size=SZ_NA;
@@ -336,11 +309,11 @@ void asm68kCoder::Add(InsOpEnum68k bOp){
         lastAdded=aux;
     }
 #ifdef AFF_EACH_INST
-    Afficher();
+    display();
 #endif
 }
-void asm68kCoder::Add(const char* bComment){
-    LigneCode68k* aux=new LigneCode68k();
+void asm68kCoder::add(const char* bComment){
+    LineCode68k* aux=new LineCode68k();
     aux->nat=NA_COMMENT;
     aux->val.comment=bComment;
 
@@ -353,14 +326,14 @@ void asm68kCoder::Add(const char* bComment){
         lastAdded=aux;
     }
 #ifdef AFF_EACH_INST
-    Afficher();
+    display();
 #endif
 }
 
-void asm68kCoder::AddEtiq(const char* bEtiq){
-    LigneCode68k* aux=new LigneCode68k();
+void asm68kCoder::addLabel(const char* bEtiq){
+    LineCode68k* aux=new LineCode68k();
     aux->nat=NA_ETIQ;
-    aux->val.etiq=bEtiq;
+    aux->val.label=bEtiq;
 
     if (generatedCode==NULL){
         generatedCode=aux;
@@ -371,7 +344,7 @@ void asm68kCoder::AddEtiq(const char* bEtiq){
         lastAdded=aux;
     }
 #ifdef AFF_EACH_INST
-    Afficher();
+    display();
 #endif
 }
 
@@ -379,21 +352,21 @@ void asm68kCoder::AddEtiq(const char* bEtiq){
 /**********************************************************
     CREATION OPERANDE
     *******************************************************************/
-Operande68k* asm68kCoder::createOp(reg_id bRegDirect){
+Operande68k* asm68kCoder::createOp(reg_id bdirectRegister){
     Operande68k* aux=new Operande68k();
     aux->nat=OP_DIRECT;
     aux->PostIncr=false;
     aux->PreDecr=false;
-    aux->val.RegDirect=bRegDirect;
+    aux->val.directRegister=bdirectRegister;
     return aux;
 }
-Operande68k* asm68kCoder::createOp(int bDep,reg_id bRegBase){
+Operande68k* asm68kCoder::createOp(int bdep,reg_id bRegBase){
     Operande68k* aux=new Operande68k();
     aux->nat=OP_INDIRECT;
     aux->PostIncr=false;
     aux->PreDecr=false;
-    aux->val.Indirect.Dep=bDep;
-    aux->val.Indirect.RegBase=bRegBase;
+    aux->val.indirect.dep=bdep;
+    aux->val.indirect.baseRegister=bRegBase;
     return aux;
 }
 Operande68k* asm68kCoder::createOp(reg_id bRegBase,bool Pred,bool Posti){
@@ -401,23 +374,23 @@ Operande68k* asm68kCoder::createOp(reg_id bRegBase,bool Pred,bool Posti){
     aux->nat=OP_INDIRECT;
     aux->PostIncr=Pred;
     aux->PreDecr=Posti;
-    aux->val.Indirect.Dep=0;
-    aux->val.Indirect.RegBase=bRegBase;
+    aux->val.indirect.dep=0;
+    aux->val.indirect.baseRegister=bRegBase;
     return aux;
 }
-Operande68k* asm68kCoder::createOp(int bDep,reg_id bRegBase,reg_id bRegIndexe){
+Operande68k* asm68kCoder::createOp(int bdep,reg_id bRegBase,reg_id bRegIndexe){
     Operande68k* aux=new Operande68k();
     aux->nat=OP_INDEXE;
     aux->PostIncr=false;
     aux->PreDecr=false;
-    aux->val.Indexe.Dep=bDep;
-    aux->val.Indexe.RegBase=bRegBase;
-    aux->val.Indexe.RegIndexe=bRegIndexe;
+    aux->val.indexed.dep=bdep;
+    aux->val.indexed.baseRegister=bRegBase;
+    aux->val.indexed.indexRegister=bRegIndexe;
     return aux;
 }
 Operande68k* asm68kCoder::createOpVal(int bvalInt){
     Operande68k* aux=new Operande68k();
-    aux->nat=OP_ENTIER;
+    aux->nat=OP_INTEGER;
     aux->PostIncr=false;
     aux->PreDecr=false;
     aux->val.valInt=bvalInt;
@@ -431,24 +404,24 @@ Operande68k* asm68kCoder::createOpFloat(float bvalFloat){
     aux->val.valFloat=bvalFloat;
     return aux;
 }
-Operande68k* asm68kCoder::createOpChaine(char* bvalChaine){
+Operande68k* asm68kCoder::createOpString(char* bvalChaine){
     Operande68k* aux=new Operande68k();
-    aux->nat=OP_CHAINE;
+    aux->nat=OP_STRING;
     aux->PostIncr=false;
     aux->PreDecr=false;
-    aux->val.valChaine=bvalChaine;
+    aux->val.valString=bvalChaine;
     return aux;
 }
-Operande68k* asm68kCoder::createOpEtiq(char* bvalEtiq){
+Operande68k* asm68kCoder::createOpLabel(char* bvalEtiq){
     Operande68k* aux=new Operande68k();
-    aux->nat=OP_ETIQ;
+    aux->nat=OP_LABEL;
     aux->PostIncr=false;
     aux->PreDecr=false;
-    aux->val.valEtiq=bvalEtiq;
+    aux->val.valLabel=bvalEtiq;
     return aux;
 }
 
-Operande68k* asm68kCoder::createOpEtiq(){
+Operande68k* asm68kCoder::createOpLabel(){
     Operande68k* aux=new Operande68k();
     // g?n?ration automatique des ?tiquettes distinctes
     // to do: a transformer en string de stdlib
@@ -456,10 +429,10 @@ Operande68k* asm68kCoder::createOpEtiq(){
     sprintf(newString,"%s%i",".sysetiq",etiqNo);
     etiqNo++;
 
-    aux->nat=OP_ETIQ;
+    aux->nat=OP_LABEL;
     aux->PostIncr=false;
     aux->PreDecr=false;
-    aux->val.valEtiq=newString;
+    aux->val.valLabel=newString;
     return aux;
 }
 

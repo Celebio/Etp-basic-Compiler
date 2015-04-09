@@ -67,7 +67,7 @@ const char *VarTypeType::VarTypeTypeImage(){
     return "(Inconnu!)";
 }
 
-void VarTypeType::Afficher()
+void VarTypeType::display()
 {
     if (Type!=TP_USER)
     {

@@ -32,8 +32,8 @@ public:
     ~DimElemItem(void);
 
     // les oblig?s
-    void Detruir();
-    void Afficher();
+    void destroy();
+    void display();
 
     int GetConstVal(){return ConstVal;}
     CNoeud* GetExpr(){return expr;}

@@ -387,12 +387,12 @@ errorIsNumeric Tokenizer::IsNumeric(TAG* bTag)
         return ISNOTNUMERIC;
     return IsNumeric(bTag->GetIdentif());
 }
-void Tokenizer::Afficher(void)
+void Tokenizer::display(void)
 {
     TAG* debut = pListe;
     while (debut)
     {
-        debut->Afficher();
+        debut->display();
         debut=debut->GetNext();
     }
 }

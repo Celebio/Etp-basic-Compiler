@@ -59,7 +59,7 @@ bool VeriSem::TypeExiste(VariableItem* bVariable)
     }
     if (!Found)
     {
-        errListe->Add("Type inconnu",bVariable->GetTagType());
+        errListe->add("Type inconnu",bVariable->GetTagType());
     }
     return Found;
 }
@@ -119,7 +119,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             #ifdef _DEBUGSEM
 
                 printf("on dirait un ");
-                bType.Afficher();
+                bType.display();
                 printf(" a gauche\n");
             #endif
             if (bType.Type==TP_USER)    // cest un user define type ? gauche du token_point
@@ -129,7 +129,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
                     Type1=(TypeItem*)pTypeListe.getNext();
                     if (!strcmp(Type1->GetNom(),bType.Expr)){
                         printf("les champs du type:\n");
-                        Type1->GetChampListe()->Afficher();
+                        Type1->GetChampListe()->display();
                         printf("\n\n");
                         Type1->GetChampListe()->bindIterator(&pVarListe);
                         while (pVarListe.elemExists()){
@@ -147,7 +147,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
                                 }
                                 if (expr->GetFilsD()->GetSuccNmbr()!=i){
                                     sprintf(bufferErrDescr,"Erreur de dimension:le tableau a %i dimension(s) et on en fournit %i",i,expr->GetFilsD()->GetSuccNmbr());
-                                    errListe->Add(bufferErrDescr,expr->GetFilsD()->GetTAG());
+                                    errListe->add(bufferErrDescr,expr->GetFilsD()->GetTAG());
                                     break;
                                 }
                                 for (i=0;i<expr->GetFilsD()->GetSuccNmbr();i++)
@@ -160,7 +160,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
                         }
                         if (retVal==unknownVal){
                             sprintf(bufferErrDescr,"Impossible de trouver le champs %s du type %s ",expr->GetFilsD()->GetTAG()->GetIdentif(),bType.Expr);
-                            errListe->Add(bufferErrDescr,expr->GetFilsD()->GetTAG());
+                            errListe->add(bufferErrDescr,expr->GetFilsD()->GetTAG());
                             break;
                         }
                         break;
@@ -173,7 +173,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
                 // possibilit? d'ajouter myString.champ
                 // mais en attendant : ...
                 sprintf(bufferErrDescr,"Impossible de trouver le champs %s ",expr->GetFilsD()->GetTAG()->GetIdentif());
-                errListe->Add(bufferErrDescr,expr->GetFilsD()->GetTAG());
+                errListe->add(bufferErrDescr,expr->GetFilsD()->GetTAG());
                 break;
             }
             break;
@@ -185,7 +185,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             bType=GetTypeExpression(expr->GetFilsG(),unknownVal,foncEnCours);
             if (bType.Type!=TP_INTEGER && bType.Type!=TP_LONG)
             {
-                errListe->Add("On attend un Integer ou un Long",expr->GetTAG());
+                errListe->add("On attend un Integer ou un Long",expr->GetTAG());
                 break;
             }
             if (typeAttendu.Type==TP_INTEGER || typeAttendu.Type==TP_LONG)
@@ -199,7 +199,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             bType=GetTypeExpression(expr->GetFilsD(),typeAttendu,foncEnCours);
             if (bType.Type!=TP_BOOLEAN && bType.Type!=TP_INTEGER && bType.Type!=TP_LONG)
             {
-                errListe->Add("On attend un Boolean,Integer ou un Long",expr->GetTAG());
+                errListe->add("On attend un Boolean,Integer ou un Long",expr->GetTAG());
                 break;
             }
             if (typeAttendu.Type==TP_BOOLEAN || typeAttendu.Type==TP_INTEGER || typeAttendu.Type==TP_LONG)
@@ -255,7 +255,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             if (typeG!=typeD)
             {
                 sprintf(bufferErrDescr,"Impossible de comparer deux elements de type different. A gauche il y a %s et a droite %s",typeG.VarTypeTypeImage(),typeD.VarTypeTypeImage());
-                errListe->Add(bufferErrDescr,expr->GetTAG());
+                errListe->add(bufferErrDescr,expr->GetTAG());
                 break;
             }
 
@@ -266,7 +266,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
                     && typeG.Type!=TP_BYTE)
                 {
                     sprintf(bufferErrDescr,"Impossible de comparer deux elements de type %s",typeG.VarTypeTypeImage());
-                    errListe->Add(bufferErrDescr,expr->GetTAG());
+                    errListe->add(bufferErrDescr,expr->GetTAG());
                     break;
                 }
                 typeD=GetTypeExpression(expr->GetFilsD(),typeG,foncEnCours);
@@ -283,12 +283,12 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
                     && typeG.Type!=TP_BYTE)
                 {
                     sprintf(bufferErrDescr,"Impossible de comparer deux elements de type %s",typeG.VarTypeTypeImage());
-                    errListe->Add(bufferErrDescr,expr->GetTAG());
+                    errListe->add(bufferErrDescr,expr->GetTAG());
                     break;
                 }
                 // il faut que typeG==typeD, deja v?rifi? pr?cedemment
                 if (bOp==OPTOR_CMP_XOR && typeG.Type!=TP_BOOLEAN){
-                    errListe->Add("Impossible d'appliquer un XOR sur des booleens",expr->GetTAG());
+                    errListe->add("Impossible d'appliquer un XOR sur des booleens",expr->GetTAG());
                     break;
                 }
                 if (typeG.Type==TP_BYTE || typeG.Type==TP_INTEGER || typeG.Type==TP_LONG){
@@ -379,7 +379,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             }
             if (expr->GetSuccNmbr()!=i){
                 sprintf(bufferErrDescr,"Erreur de dimension:le tableau a %i dimension(s) et on en fournit %i",i,expr->GetSuccNmbr());
-                errListe->Add(bufferErrDescr,expr->GetTAG());
+                errListe->add(bufferErrDescr,expr->GetTAG());
                 break;
             }
             for (i=0;i<expr->GetSuccNmbr();i++)
@@ -415,7 +415,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             if (expr->GetSuccNmbr()!=i)
             {
                 sprintf(bufferErrDescr,"Erreur de dimension:le tableau a %i dimension(s) et on en fournit %i",i,expr->GetSuccNmbr());
-                errListe->Add(bufferErrDescr,expr->GetTAG());
+                errListe->add(bufferErrDescr,expr->GetTAG());
                 break;
             }
             for (i=0;i<expr->GetSuccNmbr();i++)
@@ -452,7 +452,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             if (expr->GetSuccNmbr()!=i)
             {
                 sprintf(bufferErrDescr,"Erreur de dimension:le tableau a %i dimension(s) et on en fournit %i",i,expr->GetSuccNmbr());
-                errListe->Add(bufferErrDescr,expr->GetTAG());
+                errListe->add(bufferErrDescr,expr->GetTAG());
                 break;
             }
             for (i=0;i<expr->GetSuccNmbr();i++)
@@ -498,7 +498,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
         if (expr->GetSuccNmbr()!=i)
         {
             sprintf(bufferErrDescr,"Nombre d'arguments incorrect:il y a %i argument(s) et la fonction en attend %i",expr->GetSuccNmbr(),i);
-            errListe->Add(bufferErrDescr,expr->GetTAG());
+            errListe->add(bufferErrDescr,expr->GetTAG());
             break;
         }
         Fonc1->GetArguListe()->bindIterator(&pVarListe);
@@ -561,7 +561,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             if (expr->GetSuccNmbr()!=i)
             {
                 sprintf(bufferErrDescr,"Erreur de dimension:le tableau a %i dimension(s) et on en fournit %i",i,expr->GetSuccNmbr());
-                errListe->Add(bufferErrDescr,expr->GetTAG());
+                errListe->add(bufferErrDescr,expr->GetTAG());
                 break;
             }
             for (i=0;i<expr->GetSuccNmbr();i++)
@@ -576,21 +576,21 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 
 #ifdef _DEBUGSEM
     printf("donc le type de <%s> serait:",expr->ImageNoeud());
-    retVal.Afficher();
+    retVal.display();
     printf("\n");
 #endif
     if (retVal.Type==TP_UNKNOWN)        // element non declar?
     {
         if (expr->GetNature()==NOEUD_OPERANDE_FONCTION)
-            errListe->Add("Fonction non declare",expr->GetTAG());
+            errListe->add("Fonction non declare",expr->GetTAG());
         else if (expr->GetNature()==NOEUD_OPERANDE_VARIABLE)
-            errListe->Add("Variable non declare",expr->GetTAG());
+            errListe->add("Variable non declare",expr->GetTAG());
         else if (expr->GetNature()==NOEUD_OPERANDE_ARRAY)
-            errListe->Add("Tableau non declare",expr->GetTAG());
+            errListe->add("Tableau non declare",expr->GetTAG());
         else if (expr->GetNature()==NOEUD_OPERATOR)
             ;
         else
-            errListe->Add("Element non declare",expr->GetTAG());
+            errListe->add("Element non declare",expr->GetTAG());
         expr->SetType(retVal);
         return retVal;
     }
@@ -603,9 +603,9 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             // sinon:
             sprintf(bufferErrDescr,"Type incorrect. Conversion impossible de %s en %s",retVal.VarTypeTypeImage(),typeAttendu.VarTypeTypeImage());
             if (expr->GetNature() == NOEUD_OPERATOR)
-                errListe->Add(bufferErrDescr,expr->GetFilsD()->GetTAG());
+                errListe->add(bufferErrDescr,expr->GetFilsD()->GetTAG());
             else
-                errListe->Add(bufferErrDescr,expr->GetTAG());
+                errListe->add(bufferErrDescr,expr->GetTAG());
         }
         //expr->SetType(retVal);
         //return retVal;
@@ -652,7 +652,7 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
         }
         else
         {
-            errListe->Add("Expression d'assignement vide",bInstr->GetAffectExprAssigned()->GetTAG());
+            errListe->add("Expression d'assignement vide",bInstr->GetAffectExprAssigned()->GetTAG());
             break;
         }
         break;
@@ -662,7 +662,7 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
         typePro.Expr=NULL;
         typeAux=GetTypeExpression(bInstr->GetFORExprAssigned(),typePro,foncEnCours);
         if (typeAux != intVal && typeAux != longVal && typeAux != byteVal){
-            errListe->Add("L'iterateur doit etre Integer ou Long",bInstr->GetFORExprAssigned()->GetTAG());
+            errListe->add("L'iterateur doit etre Integer ou Long",bInstr->GetFORExprAssigned()->GetTAG());
             break;
         }
 
@@ -747,20 +747,20 @@ void VeriSem::VerifSem(){
     while(iter1.elemExists()){
         iter2.initHead(iter1.getCour()->next);
         Type1 = (TypeItem*)iter1.getNext();
-        //Type1->Afficher();
+        //Type1->display();
         while(iter2.elemExists()){
             Type2 = (TypeItem*)iter2.getNext();
-            //Type2->Afficher();
+            //Type2->display();
             if (!strcmp(Type2->GetNom(),Type1->GetNom())){
                 sprintf(errMsgBuf,"%s est declare plusieurs fois",Type2->GetNom());
-                errListe->Add(errMsgBuf,Type2->GetTagNom());
+                errListe->add(errMsgBuf,Type2->GetTagNom());
             }
         }
         // existence des types des champs
         Type1->GetChampListe()->bindIterator(&iter2);
         while (iter2.elemExists()){
             Var1 = (VariableItem*)iter2.getNext();
-            //Var1->Afficher();
+            //Var1->display();
             TypeExiste(Var1);
         }
         fooType.Type=TP_USER;
@@ -781,7 +781,7 @@ void VeriSem::VerifSem(){
             Var2=(VariableItem*)iter2.getNext();
             if (!strcmp(Var1->GetTagNom()->GetIdentif(),Var2->GetTagNom()->GetIdentif())){
                 sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->GetTagNom()->GetIdentif());
-                errListe->Add(errMsgBuf,Var2->GetTagNom());
+                errListe->add(errMsgBuf,Var2->GetTagNom());
             }
         }
         TypeExiste(Var1);
@@ -799,7 +799,7 @@ void VeriSem::VerifSem(){
                 Var2=(VariableItem*)iter3.getNext();
                 if (!strcmp(Var1->GetTagNom()->GetIdentif(),Var2->GetTagNom()->GetIdentif())){
                     sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->GetTagNom()->GetIdentif());
-                    errListe->Add(errMsgBuf,Var2->GetTagNom());
+                    errListe->add(errMsgBuf,Var2->GetTagNom());
                 }
             }
             if(TypeExiste(Var1))
@@ -819,7 +819,7 @@ void VeriSem::VerifSem(){
                 Var2=(VariableItem*)iter3.getNext();
                 if (!strcmp(Var1->GetTagNom()->GetIdentif(),Var2->GetTagNom()->GetIdentif())){
                     sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->GetTagNom()->GetIdentif());
-                    errListe->Add(errMsgBuf,Var2->GetTagNom());
+                    errListe->add(errMsgBuf,Var2->GetTagNom());
                 }
             }
             // regarder les similitudes avec les arguments
@@ -828,7 +828,7 @@ void VeriSem::VerifSem(){
                 Var2=(VariableItem*)iter3.getNext();
                 if (!strcmp(Var1->GetTagNom()->GetIdentif(),Var2->GetTagNom()->GetIdentif())){
                     sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->GetTagNom()->GetIdentif());
-                    errListe->Add(errMsgBuf,Var2->GetTagNom());
+                    errListe->add(errMsgBuf,Var2->GetTagNom());
                 }
             }
 

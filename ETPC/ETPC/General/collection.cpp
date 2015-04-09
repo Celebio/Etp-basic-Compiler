@@ -58,7 +58,7 @@ void Collection::Clear(){
     {
         precCour=Cour;
         Cour=Cour->next;
-        precCour->Elem->Detruir();
+        precCour->Elem->destroy();
         delete precCour;
     }
     buffer=NULL;
@@ -69,7 +69,7 @@ void Collection::Clear(){
 
 /* MANIPULATION DE LA COLLECTION
 ***********************************************************************/
-ColItem* Collection::Add(ColItem* bElem)
+ColItem* Collection::add(ColItem* bElem)
 {
     if (!buffer)
     {
@@ -88,9 +88,9 @@ ColItem* Collection::Add(ColItem* bElem)
     return bElem;
 }
 ColItem* Collection::AddDebut(ColItem* bElem)
-// pareil que Add, mais ajoute en debut de liste
+// pareil que add, mais ajoute en debut de liste
 // sert uniquement pour avoir une liste dans l'autre sens pour les arguments d'une fonction
-// ne pas utiliser AddDebut et Add pour une meme instance de Collection, last n'est pas mis ? jour
+// ne pas utiliser AddDebut et add pour une meme instance de Collection, last n'est pas mis ? jour
 {
     if (!buffer)
     {
@@ -108,19 +108,19 @@ ColItem* Collection::AddDebut(ColItem* bElem)
     }
     return bElem;
 }
-void Collection::Add(const char* bDesc,TAG* bTag)
+void Collection::add(const char* bDesc,TAG* bTag)
 {
     errorC *bErr=new errorC();
     strcpy(bErr->Descr,bDesc);
     bErr->Tag = bTag;
-    Add(bErr);
+    add(bErr);
 }
-void Collection::Afficher()
+void Collection::display()
 {
     ArrayElem *Cour=buffer;
     while (Cour)
     {
-        Cour->Elem->Afficher();
+        Cour->Elem->display();
         Cour=Cour->next;
     }
 }

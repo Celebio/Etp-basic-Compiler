@@ -28,8 +28,8 @@ public:
     TAG* Tag;
     errorC(void);
     ~errorC(void);
-    void Detruir();
-    void Afficher();
+    void destroy();
+    void display();
 };
 
 #endif

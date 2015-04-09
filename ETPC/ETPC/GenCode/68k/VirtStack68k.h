@@ -46,7 +46,7 @@ public:
     void ClearStack();
 
     int GetStackPos(char* VarNom);
-    void Afficher();
+    void display();
 };
 
 

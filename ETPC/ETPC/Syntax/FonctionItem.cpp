@@ -26,24 +26,24 @@ FonctionItem::FonctionItem(void)
 FonctionItem::~FonctionItem(void)
 {
 }
-void FonctionItem::Detruir()
+void FonctionItem::destroy()
 {
 }
-void FonctionItem::Afficher()
+void FonctionItem::display()
 {
     printf("Fonction:ligne:%i  nom:%s, arguments:\n",Ligne,Nom);
     printf("Arguments:\n");
-    ArguListe.Afficher();
+    ArguListe.display();
     printf("Variables locales:\n");
-    VarListe.Afficher();
+    VarListe.display();
 
     if (RetType.Type != TP_VOID)
     {
         printf("retourne ");
-        RetType.Afficher();
+        RetType.display();
     }
     printf("\n");
     printf("Instructions:\n");
-    InstrListe.Afficher();
+    InstrListe.display();
 }
 

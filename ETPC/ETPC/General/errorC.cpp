@@ -24,13 +24,13 @@ errorC::errorC(void)
 errorC::~errorC(void)
 {
 }
-void errorC::Detruir()
+void errorC::destroy()
 {
     // rien de particulier
 }
-void errorC::Afficher()
+void errorC::display()
 {
     printf("%s  ligne: %i  %s  ",Tag->GetFileName(),Tag->GetLigne(),Descr);
     if (Tag)
-        Tag->Afficher();
+        Tag->display();
 }

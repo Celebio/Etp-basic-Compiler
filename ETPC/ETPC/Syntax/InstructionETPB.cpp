@@ -27,40 +27,40 @@ InstructionETPB::InstructionETPB(InstrTypeEnum bNat){
     switch(nat)
     {
     case INS_DECLARATION:
-        val.Declared =NULL;
+        val.declaredVariable =NULL;
         break;
     case INS_AFFECTATION:
-        val.affect.ExprAssigned =NULL;
-        val.affect.ExprArbre =NULL;
+        val.instrAssignment.exprAssigned =NULL;
+        val.instrAssignment.exprTree =NULL;
         break;
     case INS_STRUCT_FOR:
-        val.structFOR.ExprAssigned =NULL;
-        val.structFOR.ExprArbreINIT =NULL;
-        val.structFOR.ExprArbreTO =NULL;
-        val.structFOR.ExprArbreSTEP =NULL;
-        val.structFOR.Corps =new Collection();
+        val.instrFor.exprAssigned =NULL;
+        val.instrFor.exprInitTree =NULL;
+        val.instrFor.exprToTree =NULL;
+        val.instrFor.exprStepTree =NULL;
+        val.instrFor.body =new Collection();
         break;
     case INS_STRUCT_DOLPWH:
-        val.structDO.Corps =new Collection();
-        val.structDO.ExprCondition =NULL;
+        val.instrDo.body =new Collection();
+        val.instrDo.exprCondition =NULL;
         break;
     case INS_STRUCT_DOWH:
-        val.structDO.ExprCondition =NULL;
-        val.structDO.Corps =new Collection();
+        val.instrDo.exprCondition =NULL;
+        val.instrDo.body =new Collection();
         break;
     case INS_IF:
-        val.conditionIF.ExprArbre =NULL;
+        val.instrIfCondition.exprTree =NULL;
 
-        val.conditionIF.IfCorps =new Collection();
-        val.conditionIF.ElseCorps =new Collection();
-        val.conditionIF.ElseIfCorps = new Collection();
-        val.conditionIF.ExprElseIf = new Collection();
+        val.instrIfCondition.ifBody =new Collection();
+        val.instrIfCondition.elseBody =new Collection();
+        val.instrIfCondition.elseIfBody = new Collection();
+        val.instrIfCondition.exprElseIf = new Collection();
         break;
     case INS_CALL:
-        val.CallExpr =NULL;
+        val.exprFunctionCall =NULL;
         break;
     case INS_RETURN:
-        val.ReturnExpr =NULL;
+        val.exprReturn =NULL;
         break;
     default:
         break;
@@ -69,11 +69,11 @@ InstructionETPB::InstructionETPB(InstrTypeEnum bNat){
 InstructionETPB::~InstructionETPB(void){}
 
 
-void InstructionETPB::Detruir()
+void InstructionETPB::destroy()
 {
 
 }
-void InstructionETPB::Afficher()
+void InstructionETPB::display()
 {
     Collection* listElseIfExpr;
     Collection* listElseIfCorps;
@@ -84,58 +84,58 @@ void InstructionETPB::Afficher()
     {
     case INS_DECLARATION:
         printf("Declaration\n");
-        val.Declared->Afficher();
+        val.declaredVariable->display();
         break;
     case INS_AFFECTATION:
         printf("Affectation\n");
         printf("Expression assigned...\n");
-        val.affect.ExprAssigned->Afficher();
+        val.instrAssignment.exprAssigned->display();
         printf("Expression arbre...\n");
-        val.affect.ExprArbre->Afficher();
+        val.instrAssignment.exprTree->display();
         break;
     case INS_STRUCT_FOR:
         printf("For\n");
         printf("Expression assigned...\n");
-        if (val.structFOR.ExprAssigned)
-            val.structFOR.ExprAssigned->Afficher();
+        if (val.instrFor.exprAssigned)
+            val.instrFor.exprAssigned->display();
         printf("Expression valeur initiale...\n");
-        if (val.structFOR.ExprArbreINIT)
-            val.structFOR.ExprArbreINIT->Afficher();
+        if (val.instrFor.exprInitTree)
+            val.instrFor.exprInitTree->display();
         printf("Expression valeur de fin...\n");
-        if (val.structFOR.ExprArbreTO)
-            val.structFOR.ExprArbreTO->Afficher();
+        if (val.instrFor.exprToTree)
+            val.instrFor.exprToTree->display();
         printf("Expression valeur de pas...\n");
-        if (val.structFOR.ExprArbreSTEP)
-            val.structFOR.ExprArbreSTEP->Afficher();
-        printf("Corps de la boucle:\n");
-        if (val.structFOR.Corps)
-            val.structFOR.Corps->Afficher();
+        if (val.instrFor.exprStepTree)
+            val.instrFor.exprStepTree->display();
+        printf("body de la boucle:\n");
+        if (val.instrFor.body)
+            val.instrFor.body->display();
         printf("\n....Next\n");
         break;
     case INS_STRUCT_DOLPWH:
         printf("Do\n");
-        printf("Corps de la boucle:\n");
-        val.structDO.Corps->Afficher();
+        printf("body de la boucle:\n");
+        val.instrDo.body->display();
         printf("LOOP WHILE Condition...\n");
-        val.structDO.ExprCondition->Afficher();
+        val.instrDo.exprCondition->display();
         break;
     case INS_STRUCT_DOWH:
         printf("Do\n");
         printf("WHILE Condition...\n");
-        val.structDO.ExprCondition->Afficher();
-        printf("Corps de la boucle:\n");
-        val.structDO.Corps->Afficher();
+        val.instrDo.exprCondition->display();
+        printf("body de la boucle:\n");
+        val.instrDo.body->display();
         printf("LOOP\n");
         break;
     case INS_IF:
         printf("If\n");
         printf("Expression de la condition principale:\n");
-        val.conditionIF.ExprArbre->Afficher();
+        val.instrIfCondition.exprTree->display();
 
-        printf("Corps If:\n");
-        val.conditionIF.IfCorps->Afficher();
-        listElseIfExpr=val.conditionIF.ExprElseIf;
-        listElseIfCorps=val.conditionIF.ElseIfCorps;
+        printf("body If:\n");
+        val.instrIfCondition.ifBody->display();
+        listElseIfExpr=val.instrIfCondition.exprElseIf;
+        listElseIfCorps=val.instrIfCondition.elseIfBody;
 
         //listElseIfExpr->iteratorInit1();
         //listElseIfCorps->iteratorInit1();
@@ -144,9 +144,9 @@ void InstructionETPB::Afficher()
         while (iterElseIfCorps.elemExists())
         {
             printf("ElseIf..condition:\n");
-            iterElseIfExpr.getNext()->Afficher();
-            printf("Corps du ElseIf:\n");
-            iterElseIfCorps.getNext()->Afficher();
+            iterElseIfExpr.getNext()->display();
+            printf("body du ElseIf:\n");
+            iterElseIfCorps.getNext()->display();
         }
         if (iterElseIfExpr.elemExists())
         {
@@ -157,13 +157,13 @@ void InstructionETPB::Afficher()
         while (listElseIfExpr)  // normalement ils s'annulent en meme temps
         {
             printf("ElseIf..condition:\n");
-            (*(listElseIfExpr->Elem))->Afficher();
+            (*(listElseIfExpr->Elem))->display();
             listElseIfExpr=listElseIfExpr->next;
         }
 
         while (listElseIfCorps) // normalement ils s'annulent en meme temps
         {
-            printf("Corps du ElseIf:\n");
+            printf("body du ElseIf:\n");
             afficher(*(listElseIfCorps->Elem));
             listElseIfCorps=listElseIfCorps->next;
         }
@@ -172,9 +172,9 @@ void InstructionETPB::Afficher()
         while (listElseIfExpr && listElseIfCorps)   // normalement ils s'annulent en meme temps
         {
             printf("ElseIf..condition:\n");
-            listElseIfExpr->Elem->Afficher();
+            listElseIfExpr->Elem->display();
             listElseIfExpr=listElseIfExpr->next;
-            printf("Corps du ElseIf:\n");
+            printf("body du ElseIf:\n");
             afficher(*(listElseIfCorps->Elem));
             listElseIfCorps=listElseIfCorps->next;
         }
@@ -186,16 +186,16 @@ void InstructionETPB::Afficher()
             if (listElseIfCorps)
                 printf("trop de corps\n");
         }*/
-        printf("Corps ELSE:\n");
-        val.conditionIF.ElseCorps->Afficher();
+        printf("body ELSE:\n");
+        val.instrIfCondition.elseBody->display();
         break;
     case INS_CALL:
         printf("Call\n");
-        val.CallExpr->Afficher();
+        val.exprFunctionCall->display();
         break;
     case INS_RETURN:
         printf("Return\n");
-        val.ReturnExpr->Afficher();
+        val.exprReturn->display();
         break;
     default:
         break;

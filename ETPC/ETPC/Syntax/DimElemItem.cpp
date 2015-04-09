@@ -21,11 +21,11 @@ DimElemItem::DimElemItem(void){}
 DimElemItem::~DimElemItem(void){}
 
 
-void DimElemItem::Detruir()
+void DimElemItem::destroy()
 {
     expr->DestroyArbre();
 }
-void DimElemItem::Afficher()
+void DimElemItem::display()
 {
-    expr->Afficher();
+    expr->display();
 }

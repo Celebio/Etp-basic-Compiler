@@ -28,7 +28,7 @@ PileRegTemp68k::PileRegTemp68k(asm68kCoder* bIL,VirtStack68k* bStack){
     mStack=bStack;
 }
 
-void PileRegTemp68k::DepilerD(void){
+void PileRegTemp68k::depilerD(void){
     int i;
     for (i=0;i<TAILLE_PILED-1;i++){
         PileD[i]=PileD[i+1];
@@ -65,30 +65,30 @@ Operande68k* PileRegTemp68k::Sommet(){
 
 void PileRegTemp68k::Allouer(Operande68k* M){
     if (M->nat==OP_DIRECT){
-        DepilerD();
+        depilerD();
     }
     else if (M->nat==OP_INDIRECT){
-        if (M->val.Indirect.RegBase!=SP_REG){
-            DepilerD();
+        if (M->val.indirect.baseRegister!=SP_REG){
+            depilerD();
         }
     }
     else if (M->nat==OP_INDEXE){
-        DepilerD();
+        depilerD();
     }
     else{
     }
 }
 void PileRegTemp68k::Liberer(Operande68k* M){
     if (M->nat==OP_DIRECT){
-        EmpilerD(M->val.RegDirect);
+        EmpilerD(M->val.directRegister);
     }
     else if (M->nat==OP_INDIRECT){
-        if (M->val.Indirect.RegBase!=SP_REG){
-            EmpilerD(M->val.Indirect.RegBase);
+        if (M->val.indirect.baseRegister!=SP_REG){
+            EmpilerD(M->val.indirect.baseRegister);
         }
     }
     else if (M->nat==OP_INDEXE){
-        EmpilerD(M->val.Indexe.RegIndexe);
+        EmpilerD(M->val.indexed.indexRegister);
     }
     else{
     }
@@ -104,16 +104,16 @@ Operande68k* PileRegTemp68k::AllouerTemp(int taille){
     StackVar->SetTagNom(tagNomVar);
     StackVar->SetSize(taille);
     retVal=mIL->createOp(0,SP_REG);
-    mIL->Add("Creation de temporaire");
-    mIL->Add(SUB,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
+    mIL->add("Creation de temporaire");
+    mIL->add(SUB,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
     mStack->PushToStack(StackVar);
     return retVal;
 }
 void PileRegTemp68k::LibererTemp(Operande68k* T,int taille){
     VariableItem* AEffacer;
     AEffacer=mStack->Pop();
-    mIL->Add("Liberation de temporaire");
-    mIL->Add(ADD,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
+    mIL->add("Liberation de temporaire");
+    mIL->add(ADD,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
 
     delete AEffacer->GetTagNom();
 }

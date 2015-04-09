@@ -126,7 +126,7 @@ public:
     void SetNext(TAG* bNext) {Next=bNext;}
 
     // Display
-    void Afficher();
+    void display();
 };
 
 

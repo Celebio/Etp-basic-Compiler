@@ -3,7 +3,7 @@
 #include "GenIL.h"
 
 GenIL::GenIL(void){
-    RegPile=new PileRegTemp(&ILcoder,&Stack);
+    registerStack=new PileRegTemp(&ilCoder,&Stack);
 }
 GenIL::~GenIL(void){
 }
@@ -11,8 +11,8 @@ GenIL::~GenIL(void){
 #define max(a,b) (a>b?a:b)
 
 void GenIL::TestGenerate(){
-    ILcoder.Add(LOAD,ILcoder.createOp(2,3),ILcoder.createOp(5),SZ_W);
-    ILcoder.Afficher();
+    ilCoder.add(LOAD,ilCoder.createOp(2,3),ilCoder.createOp(5),SZ_W);
+    ilCoder.display();
 }
 
 
@@ -95,7 +95,7 @@ int GenIL::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
     bNoeud->SetNbReg(val);
     return val;
 }
-void GenIL::CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** Op){
+void GenIL::CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
     size_op Size=SZ_UNKNOWN;
 
     if (bNoeud->GetType().Type==TP_INTEGER) Size=SZ_W;
@@ -106,12 +106,12 @@ void GenIL::CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** Op){
 
     if (bNoeud->GetNature()==NOEUD_OPERANDE_VARIABLE){
         if (bNat==NO_REG){
-            ILcoder.Add(LOAD,ILcoder.createOp(Stack.GetStackPos(bNoeud->GetTAG()->GetIdentif()),SP_REG),RegPile->Sommet(),Size);
-            *Op=RegPile->Sommet();
+            ilCoder.add(LOAD,ilCoder.createOp(Stack.GetStackPos(bNoeud->GetTAG()->GetIdentif()),SP_REG),registerStack->Sommet(),Size);
+            *opertr=registerStack->Sommet();
         }
         else if (bNat==NO_DVAL || bNat==NO_DADR){
 
-            *Op=ILcoder.createOp(Stack.GetStackPos(bNoeud->GetTAG()->GetIdentif()),SP_REG);
+            *opertr=ilCoder.createOp(Stack.GetStackPos(bNoeud->GetTAG()->GetIdentif()),SP_REG);
         }
     }
     else{
@@ -119,7 +119,7 @@ void GenIL::CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** Op){
     }
 }
 
-void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** Op){
+void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
     NatureNoeud NatureArbre=bNoeud->GetNature();
     size_op Size=SZ_UNKNOWN;
     Operande* Op1;
@@ -137,7 +137,7 @@ void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** Op){
         if (bNat==NO_REG){
             if (bNoeud->GetTAG()->GetToken()==TOKEN_NOMBRE)
             {
-                ILcoder.Add(LOAD,ILcoder.createOpVal(atoi(bNoeud->GetTAG()->GetIdentif())),RegPile->Sommet(),Size);
+                ilCoder.add(LOAD,ilCoder.createOpVal(atoi(bNoeud->GetTAG()->GetIdentif())),registerStack->Sommet(),Size);
 
             }
             else if (bNoeud->GetTAG()->GetToken()==TOKEN_STRINGCONSTANT)
@@ -146,23 +146,23 @@ void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** Op){
             }
             else if (bNoeud->GetTAG()->GetToken()==TOKEN_TRUE)
             {
-                ILcoder.Add(LOAD,ILcoder.createOpVal(1),RegPile->Sommet(),Size);
+                ilCoder.add(LOAD,ilCoder.createOpVal(1),registerStack->Sommet(),Size);
 
             }
             else if (bNoeud->GetTAG()->GetToken()==TOKEN_FALSE)
             {
-                ILcoder.Add(LOAD,ILcoder.createOpVal(0),RegPile->Sommet(),Size);
+                ilCoder.add(LOAD,ilCoder.createOpVal(0),registerStack->Sommet(),Size);
             }
             else
             {
                 printf("ERREUR interne!!!\n");
             }
-            *Op=RegPile->Sommet();
+            *opertr=registerStack->Sommet();
         }
         else{
             if (bNoeud->GetTAG()->GetToken()==TOKEN_NOMBRE)
             {
-                *Op=ILcoder.createOpVal(atoi(bNoeud->GetTAG()->GetIdentif()));
+                *opertr=ilCoder.createOpVal(atoi(bNoeud->GetTAG()->GetIdentif()));
             }
             else if (bNoeud->GetTAG()->GetToken()==TOKEN_STRINGCONSTANT)
             {
@@ -170,11 +170,11 @@ void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** Op){
             }
             else if (bNoeud->GetTAG()->GetToken()==TOKEN_TRUE)
             {
-                *Op=ILcoder.createOpVal(1);
+                *opertr=ilCoder.createOpVal(1);
             }
             else if (bNoeud->GetTAG()->GetToken()==TOKEN_FALSE)
             {
-                *Op=ILcoder.createOpVal(0);
+                *opertr=ilCoder.createOpVal(0);
             }
             else
             {
@@ -185,14 +185,14 @@ void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** Op){
     // A = objet
     else if (NatureArbre==NOEUD_OPERANDE_VARIABLE)
     {
-        CodeObjet(bNoeud,bNat,Op);
+        CodeObjet(bNoeud,bNat,opertr);
     }
     // A = - A1 ou A = conversion(A1)
     else if (NatureArbre==NOEUD_OPERATOR && bNoeud->GetOperator()==OPTOR_MOINSUNAIRE)
     {
         CodeArith(bNoeud->GetFilsD(),NO_DVAL,&Op1);
-        ILcoder.Add(OPP,Op1,RegPile->Sommet(),Size);
-        *Op=RegPile->Sommet();
+        ilCoder.add(OPP,Op1,registerStack->Sommet(),Size);
+        *opertr=registerStack->Sommet();
     }
     //else if (NatureArbre==NOEUD_OPERATOR && bNoeud->GetOperType()==OPBIN
 
@@ -205,33 +205,33 @@ void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** Op){
 
         if (n1>=mNbRegMax && n2 >=mNbRegMax){
             CodeArith(bNoeud->GetFilsD(),NO_REG,&Op2);
-            T=RegPile->AllouerTemp(Size);
-            ILcoder.Add(STORE,Op2,T,Size);
+            T=registerStack->AllouerTemp(Size);
+            ilCoder.add(STORE,Op2,T,Size);
             CodeArith(bNoeud->GetFilsG(),NO_REG,&Op1);
-            RegPile->LibererTemp(T,Size);
-            ILcoder.Add(ILcoder.NodeToOp(bNoeud),T,Op1,Size);
+            registerStack->LibererTemp(T,Size);
+            ilCoder.add(ilCoder.nodeToOp(bNoeud),T,Op1,Size);
             delete T;
-            *Op=Op1;
+            *opertr=Op1;
         }
         else if (n1>=n2 && n2 < mNbRegMax)
         {
             CodeArith(bNoeud->GetFilsG(),NO_REG,&Op1);
-            RegPile->Allouer(Op1);
+            registerStack->Allouer(Op1);
             CodeArith(bNoeud->GetFilsD(),NO_DVAL,&Op2);
-            RegPile->Liberer(Op1);
-            ILcoder.Add(ILcoder.NodeToOp(bNoeud),Op2,Op1,Size);
-            *Op=Op1;
+            registerStack->Liberer(Op1);
+            ilCoder.add(ilCoder.nodeToOp(bNoeud),Op2,Op1,Size);
+            *opertr=Op1;
         }
         else if (n1<n2 && n1 < mNbRegMax)
         {
-            RegPile->Echange();
+            registerStack->Echange();
             CodeArith(bNoeud->GetFilsD(),NO_DVAL,&Op2);
-            RegPile->Allouer(Op2);
+            registerStack->Allouer(Op2);
             CodeArith(bNoeud->GetFilsG(),NO_REG,&Op1);
-            RegPile->Liberer(Op2);
-            RegPile->Echange();
-            ILcoder.Add(ILcoder.NodeToOp(bNoeud),Op2,Op1,Size);
-            *Op=Op1;
+            registerStack->Liberer(Op2);
+            registerStack->Echange();
+            ilCoder.add(ilCoder.nodeToOp(bNoeud),Op2,Op1,Size);
+            *opertr=Op1;
         }
     }
     // A = f(A1,A2, ... , An)
@@ -259,7 +259,7 @@ void GenIL::GenerCode(){
     while(iter1.elemExists()){
         Fonc1=(FonctionItem*)iter1.getNext();
         Stack.ClearStack();
-        ILcoder.AddEtiq(Fonc1->GetNom());
+        ilCoder.addLabel(Fonc1->GetNom());
         Fonc1->GetArguListe()->bindIterator(&iter2);
         while (iter2.elemExists()){
             Var1=(VariableItem*)iter2.getElem();
@@ -274,17 +274,17 @@ void GenIL::GenerCode(){
             somme+=Var1->GetSize();
             iter2.getNext();
         }
-        Stack.Afficher();
+        Stack.display();
         if (somme)
-            ILcoder.Add(SUB,ILcoder.createOpVal(somme),ILcoder.createOp(SP_REG),SZ_L);
+            ilCoder.add(SUB,ilCoder.createOpVal(somme),ilCoder.createOp(SP_REG),SZ_L);
 
         Fonc1->GetInstrListe()->bindIterator(&iter2);
         while(iter2.elemExists()){
             Instr1=(InstructionETPB*)iter2.getNext();
-            RegPile->Init(mNbRegMax);
+            registerStack->Init(mNbRegMax);
             switch(Instr1->getNat()){
             case INS_AFFECTATION:
-                Operande* ExprArbrAff=RegPile->Sommet();
+                Operande* ExprArbrAff=registerStack->Sommet();
                 NbRegArith(Instr1->GetAffectExprArbre(),NO_REG);
                 CodeArith(Instr1->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
 
@@ -292,7 +292,7 @@ void GenIL::GenerCode(){
             }
         }
 
-        ILcoder.Afficher();
+        ilCoder.display();
 
 
         Stack.ClearStack();

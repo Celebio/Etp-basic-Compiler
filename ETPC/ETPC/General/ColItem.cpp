@@ -25,10 +25,10 @@ ColItem::ColItem(void)
 ColItem::~ColItem(void)
 {
 }
-void ColItem::Detruir()
+void ColItem::destroy()
 {
 }
-void ColItem::Afficher()
+void ColItem::display()
 {
     printf("Affichage non implemente pour cet objet\n");
 }

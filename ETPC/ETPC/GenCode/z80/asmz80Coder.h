@@ -43,25 +43,25 @@ struct Operandez80 {
     bool PreDecr;
     bool PostIncr;
     union {
-        regz80_id RegDirect;
+        regz80_id directRegister;
         struct {
-            int Dep;
-            regz80_id RegBase;
-        } Indirect;
+            int dep;
+            regz80_id baseRegister;
+        } indirect;
         struct {
-            int Dep;
-            regz80_id RegBase;
-            regz80_id RegIndexe;
-        } Indexe;
+            int dep;
+            regz80_id baseRegister;
+            regz80_id indexRegister;
+        } indexed;
         int valInt;
         float valFloat;
-        char* valChaine;
-        char* valEtiq;
+        char* valString;
+        char* valLabel;
     }val;
 };
 
 struct InstrILz80{
-    InsOpEnumz80 Op;
+    InsOpEnumz80 opertr;
     size_opz80 Size;
     Operandez80* op1;
     Operandez80* op2;
@@ -70,7 +70,7 @@ struct LigneCodez80{
     LigneNaturez80 nat;
     union{
         InstrILz80* instr;
-        char* etiq;
+        char* label;
         char* comment;
     } val;
     LigneCodez80* next;
@@ -85,18 +85,18 @@ private:
     LigneCodez80* lastAdded;
     std::ofstream* mStream;
 
-    void Afficher(LigneCodez80* bLigne);
-    void Afficher(regz80_id bReg);
-    void Afficher(Operandez80* bOperande);
+    void display(LigneCodez80* bLigne);
+    void display(regz80_id bReg);
+    void display(Operandez80* bOperande);
 
 public:
     asmz80Coder();
     ~asmz80Coder();
 
-    void Afficher();
-    void AfficherLeDebut();
-    void AfficherLaFin();
-    void SetStream(std::ofstream* bStream) {mStream= bStream; }
+    void display();
+    void displayHeader();
+    void displayFooter();
+    void setStream(std::ofstream* bStream) {mStream= bStream; }
 
 };
 

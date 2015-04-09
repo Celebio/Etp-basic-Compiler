@@ -50,8 +50,8 @@ public:
     ~VariableItem(void);
 
     // reimplemantation des fonctions:
-    void Detruir();
-    void Afficher();
+    void destroy();
+    void display();
 
     // Get
     VarPortEnum GetCar() {return Car;}

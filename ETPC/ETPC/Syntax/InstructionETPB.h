@@ -42,34 +42,34 @@ private:
     InstrTypeEnum nat;
     union {
         struct {
-            CNoeud* ExprAssigned;               // expression de la chose affect?
-            CNoeud* ExprArbre;                  // l'arbre de l'expression de l'affectation
-        } affect;
+            CNoeud* exprAssigned;
+            CNoeud* exprTree;
+        } instrAssignment;
 
         struct {
-            CNoeud* ExprArbre;                                      // l'expression de la condition du IF
-            Collection* IfCorps;                    // le corps de ce qu'il faut executer pour le IF
-            Collection* ExprElseIf;                         // les expressions des elseIf
-            Collection* ElseCorps;                  // le corps de ce qu'il faut executer pour le else
-            Collection* ElseIfCorps;    // les corps des diff?rents bloc des endif
-        } conditionIF;
+            CNoeud* exprTree;
+            Collection* ifBody;
+            Collection* exprElseIf;
+            Collection* elseBody;
+            Collection* elseIfBody;
+        } instrIfCondition;
 
         struct {
-            CNoeud* ExprAssigned;                   // expression de la chose affect?
-            CNoeud* ExprArbreINIT;                  // l'arbre de l'expression de l'affectation
-            CNoeud* ExprArbreTO;                    // l'expression de la limite "To ..."
-            CNoeud* ExprArbreSTEP;                  // l'expression de la limite "To ..."
-            Collection* Corps;      // le corps de ce qu'il faut executer dans la boucle
-        } structFOR;
+            CNoeud* exprAssigned;
+            CNoeud* exprInitTree;
+            CNoeud* exprToTree;
+            CNoeud* exprStepTree;
+            Collection* body;
+        } instrFor;
 
         struct {
-            CNoeud* ExprCondition;                  // l'arbre de la condition
-            Collection* Corps;      // le corps de ce qu'il faut executer dans la boucle
-        } structDO;
+            CNoeud* exprCondition;
+            Collection* body;
+        } instrDo;
 
-        VariableItem* Declared;     // la variable d?clar?e
-        CNoeud* CallExpr;       // l'expression de l'appel de procedure
-        CNoeud* ReturnExpr;     // l'expression retourn?e
+        VariableItem* declaredVariable;     // la variable d?clar?e
+        CNoeud* exprFunctionCall;       // l'expression de l'appel de procedure
+        CNoeud* exprReturn;     // l'expression retourn?e
     } val;
 
     void printProblem();
@@ -80,8 +80,8 @@ public:
     ~InstructionETPB(void);
 
     // les oblig?s
-    void Detruir();
-    void Afficher();
+    void destroy();
+    void display();
 
     // divers
     void ChangeNatINS_STRUCT_DOWH()
@@ -99,137 +99,137 @@ public:
 
     /* AFFECTATION  */
     CNoeud* GetAffectExprAssigned(){
-        if (nat==INS_AFFECTATION) return val.affect.ExprAssigned;
+        if (nat==INS_AFFECTATION) return val.instrAssignment.exprAssigned;
         /*...else */printProblem(); return NULL;
     }
     void SetAffectExprAssigned(CNoeud* bNoeud){
-        val.affect.ExprAssigned=bNoeud;
+        val.instrAssignment.exprAssigned=bNoeud;
     }
     CNoeud** GetAffectExprAssignedPtr(){
-        if (nat==INS_AFFECTATION) return &(val.affect.ExprAssigned);
+        if (nat==INS_AFFECTATION) return &(val.instrAssignment.exprAssigned);
         /*...else */printProblem(); return NULL;
     }
     CNoeud* GetAffectExprArbre(){
-        if (nat==INS_AFFECTATION) return val.affect.ExprArbre;
+        if (nat==INS_AFFECTATION) return val.instrAssignment.exprTree;
         /*...else */printProblem(); return NULL;
     }
     CNoeud** GetAffectExprArbrePtr(){
-        if (nat==INS_AFFECTATION) return &(val.affect.ExprArbre);
+        if (nat==INS_AFFECTATION) return &(val.instrAssignment.exprTree);
         /*...else */printProblem(); return NULL;
     }
 
     /* IF   */
     CNoeud* GetIFExprArbre(){
-        if (nat==INS_IF) return val.conditionIF.ExprArbre;
+        if (nat==INS_IF) return val.instrIfCondition.exprTree;
         /*...else */printProblem(); return NULL;
     }
     CNoeud** GetIFExprArbrePtr(){
-        if (nat==INS_IF) return &(val.conditionIF.ExprArbre);
+        if (nat==INS_IF) return &(val.instrIfCondition.exprTree);
         /*...else */printProblem(); return NULL;
     }
     Collection* GetIFIfCorps(){
-        if (nat==INS_IF) return val.conditionIF.IfCorps;
+        if (nat==INS_IF) return val.instrIfCondition.ifBody;
         /*...else */printProblem(); return NULL;
     }
     Collection* GetIFExprElseIf(){
-        if (nat==INS_IF) return val.conditionIF.ExprElseIf;
+        if (nat==INS_IF) return val.instrIfCondition.exprElseIf;
         /*...else */printProblem(); return NULL;
     }
     Collection* GetIFElseCorps(){
-        if (nat==INS_IF) return val.conditionIF.ElseCorps;
+        if (nat==INS_IF) return val.instrIfCondition.elseBody;
         /*...else */printProblem(); return NULL;
     }
     Collection* GetIFElseIfCorps(){
-        if (nat==INS_IF) return val.conditionIF.ElseIfCorps;
+        if (nat==INS_IF) return val.instrIfCondition.elseIfBody;
         /*...else */printProblem(); return NULL;
     }
 
     /* FOR  */
     CNoeud* GetFORExprAssigned(){
-        if (nat==INS_STRUCT_FOR) return val.structFOR.ExprAssigned;
+        if (nat==INS_STRUCT_FOR) return val.instrFor.exprAssigned;
         /*...else */printProblem(); return NULL;
     }
     void SetFORExprAssigned(CNoeud* bNoeud){
-        val.structFOR.ExprAssigned=bNoeud;
+        val.instrFor.exprAssigned=bNoeud;
     }
     CNoeud** GetFORExprAssignedPtr(){
-        if (nat==INS_STRUCT_FOR) return &(val.structFOR.ExprAssigned);
+        if (nat==INS_STRUCT_FOR) return &(val.instrFor.exprAssigned);
         /*...else */printProblem(); return NULL;
     }
 
     CNoeud* GetFORExprArbreINIT(){
-        if (nat==INS_STRUCT_FOR) return val.structFOR.ExprArbreINIT;
+        if (nat==INS_STRUCT_FOR) return val.instrFor.exprInitTree;
         /*...else */printProblem(); return NULL;
     }
     void SetFORExprArbreINIT(CNoeud* bNoeud){
-        val.structFOR.ExprArbreINIT=bNoeud;
+        val.instrFor.exprInitTree=bNoeud;
     }
     CNoeud** GetFORExprArbreINITPtr(){
-        if (nat==INS_STRUCT_FOR) return &(val.structFOR.ExprArbreINIT);
+        if (nat==INS_STRUCT_FOR) return &(val.instrFor.exprInitTree);
         /*...else */printProblem(); return NULL;
     }
     CNoeud* GetFORExprArbreTO(){
-        if (nat==INS_STRUCT_FOR) return val.structFOR.ExprArbreTO;
+        if (nat==INS_STRUCT_FOR) return val.instrFor.exprToTree;
         /*...else */printProblem(); return NULL;
     }
     void SetFORExprArbreTO(CNoeud* bNoeud)
     {
-        val.structFOR.ExprArbreTO=bNoeud;
+        val.instrFor.exprToTree=bNoeud;
     }
     CNoeud** GetFORExprArbreTOPtr(){
-        if (nat==INS_STRUCT_FOR) return &(val.structFOR.ExprArbreTO);
+        if (nat==INS_STRUCT_FOR) return &(val.instrFor.exprToTree);
         /*...else */printProblem(); return NULL;
     }
     CNoeud* GetFORExprArbreSTEP(){
-        if (nat==INS_STRUCT_FOR) return val.structFOR.ExprArbreSTEP;
+        if (nat==INS_STRUCT_FOR) return val.instrFor.exprStepTree;
         /*...else */printProblem(); return NULL;
     }
     CNoeud** GetFORExprArbreSTEPPtr(){
-        if (nat==INS_STRUCT_FOR) return &(val.structFOR.ExprArbreSTEP);
+        if (nat==INS_STRUCT_FOR) return &(val.instrFor.exprStepTree);
         /*...else */printProblem(); return NULL;
     }
     Collection* GetFORCorps(){
-        if (nat==INS_STRUCT_FOR) return val.structFOR.Corps;
+        if (nat==INS_STRUCT_FOR) return val.instrFor.body;
         /*...else */printProblem(); return NULL;
     }
 
     /*  DO  */
     CNoeud* GetDOExprCondition(){
-        if (nat==INS_STRUCT_DOWH || nat==INS_STRUCT_DOLPWH) return val.structDO.ExprCondition;
+        if (nat==INS_STRUCT_DOWH || nat==INS_STRUCT_DOLPWH) return val.instrDo.exprCondition;
         /*...else */printProblem(); return NULL;
     }
     CNoeud** GetDOExprConditionPtr(){
-        if (nat==INS_STRUCT_DOWH || nat==INS_STRUCT_DOLPWH) return &(val.structDO.ExprCondition);
+        if (nat==INS_STRUCT_DOWH || nat==INS_STRUCT_DOLPWH) return &(val.instrDo.exprCondition);
         /*...else */printProblem(); return NULL;
     }
 
     Collection* GetDOCorps(){
-        if (nat==INS_STRUCT_DOWH || nat==INS_STRUCT_DOLPWH) return val.structDO.Corps;
+        if (nat==INS_STRUCT_DOWH || nat==INS_STRUCT_DOLPWH) return val.instrDo.body;
         /*...else */printProblem(); return NULL;
     }
 
     VariableItem* GetDeclDeclared(){
-        if (nat==INS_DECLARATION) return val.Declared;
+        if (nat==INS_DECLARATION) return val.declaredVariable;
         /*...else */printProblem(); return NULL;
     }
     CNoeud* GetCallExpr(){
-        if (nat==INS_CALL) return val.CallExpr;
+        if (nat==INS_CALL) return val.exprFunctionCall;
         /*...else */printProblem(); return NULL;
     }
     CNoeud** GetCallExprPtr(){
-        if (nat==INS_CALL) return &(val.CallExpr);
+        if (nat==INS_CALL) return &(val.exprFunctionCall);
         /*...else */printProblem(); return NULL;
     }
     CNoeud* GetReturnExpr(){
-        if (nat==INS_RETURN) return val.ReturnExpr;
+        if (nat==INS_RETURN) return val.exprReturn;
         /*...else */printProblem(); return NULL;
     }
     CNoeud** GetReturnExprPtr(){
-        if (nat==INS_RETURN) return &(val.ReturnExpr);
+        if (nat==INS_RETURN) return &(val.exprReturn);
         /*...else */printProblem(); return NULL;
     }
     void SetReturnExpr(CNoeud* bExpr){
-        val.ReturnExpr=bExpr;
+        val.exprReturn=bExpr;
     }
 
 };
