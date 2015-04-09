@@ -77,7 +77,7 @@ public:
 
     void Afficher();
 
-    InsOpEnum IL::NodeToOp(CNoeud* bNoeud);
+    InsOpEnum NodeToOp(CNoeud* bNoeud);
 
     Operande* createOp(reg_id bRegDirect);
     Operande* createOp(int bDep,reg_id bRegBase);

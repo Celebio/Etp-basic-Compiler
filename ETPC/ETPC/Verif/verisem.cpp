@@ -633,6 +633,7 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
     VarTypeType longVal(TP_LONG);
     VarTypeType byteVal(TP_BYTE);
     VarTypeType typeAux,typePro;
+    CNoeud *forExprTreestep = NULL;
 
     switch(bInstr->getNat())
     {
@@ -670,7 +671,10 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
         GetTypeExpression(bInstr->GetFORExprArbreSTEP(),typeAux,foncEnCours);
         bInstr->GetFORExprArbreINIT()->SimplifyConstantExpression();
         bInstr->GetFORExprArbreTO()->SimplifyConstantExpression();
-        bInstr->GetFORExprArbreSTEP()->SimplifyConstantExpression();
+        forExprTreestep = bInstr->GetFORExprArbreSTEP();
+        if (forExprTreestep){
+            forExprTreestep->SimplifyConstantExpression();
+        }
         VerifSemInstr(bInstr->GetFORCorps(),foncEnCours);
         break;
     case INS_STRUCT_DOLPWH:
