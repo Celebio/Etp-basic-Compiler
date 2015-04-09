@@ -46,7 +46,7 @@ const char *ImageOperator[]={
 
 CNoeud::CNoeud(void)
 {
-    mNature=NOEUD_UNKNOWN;
+    mNature=NODE_UNKNOWN;
     mType.Type=TP_UNKNOWN;  // on ne connait pas le type de cet ?l?ment
     mType.Expr=NULL;        // '    '   '   '   '   '   '   '   '
     mFilsG=NULL;
@@ -58,7 +58,7 @@ CNoeud::CNoeud(void)
 CNoeud::CNoeud(TAG* bTAG)
 {
     //CNoeud();
-    mNature=NOEUD_UNKNOWN;
+    mNature=NODE_UNKNOWN;
     mType.Type=TP_UNKNOWN;  // on ne connait pas le type de cet ?l?ment
     mType.Expr=NULL;        // '    '   '   '   '   '   '   '   '
     mFilsG=NULL;
@@ -68,24 +68,24 @@ CNoeud::CNoeud(TAG* bTAG)
     mTAG =bTAG;
     // faut faire des trucs du style... (pour la g?n?ration de code)
     //if (bTAG->Token ==
-    mOperator=GiveOperatorType(bTAG->GetToken());
+    mOperator=getOperatorType(bTAG->GetToken());
     mOperType=getOperType(bTAG);
     if (mOperator!=OPTOR_UNKNOWN)
-        mNature=NOEUD_OPERATOR;
+        mNature=NODE_OPERATOR;
     else
     {
         if (bTAG->GetToken()==TOKEN_NOMBRE || bTAG->GetToken()==TOKEN_STRINGCONSTANT
             || bTAG->GetToken()==TOKEN_TRUE
             || bTAG->GetToken()==TOKEN_FALSE)
         {
-            mNature=NOEUD_OPERANDE_CTE;
+            mNature=NODE_OPERAND_CONSTANT;
             #ifdef _DEBUGARBRES
                 printf("defini comme operande cte\n");
             #endif
         }
         else if (bTAG->GetToken()==TOKEN_IDENTIF)
         {
-            mNature=NOEUD_OPERANDE_VARIABLE;
+            mNature=NODE_OPERAND_VARIABLE;
             #ifdef _DEBUGARBRES
                 printf("apriori une variable\n");
             #endif
@@ -150,9 +150,9 @@ void CNoeud::display(const char *S,const char *SD,const char *SG){
         printf("%s+-<%s >\n",S,getNodeRepr());
     else if (j<30)
     {
-        if (mNature==NOEUD_OPERANDE_FONCTION)
+        if (mNature==NODE_OPERAND_FUNCTION)
             printf("%s+-<%s >-(\n",S,getNodeRepr());
-        else if (mNature==NOEUD_OPERANDE_ARRAY)
+        else if (mNature==NODE_OPERAND_ARRAY)
             printf("%s+-<%s >-[\n",S,getNodeRepr());
         else
             printf("%s+-<%s >-?\n",S,getNodeRepr());
@@ -209,7 +209,7 @@ CNoeud* CNoeud::addLeftChild(TAG* bTAG){
     return mFilsG;
 }
 
-TypeOptor GiveOperatorType(enumTokenType bToken)
+TypeOptor getOperatorType(enumTokenType bToken)
 {
     TypeOptor retVal;
     if (bToken==TOKEN_OPENPAR)
@@ -271,13 +271,13 @@ void CNoeud::setLeftChild(CNoeud *bNoeud){
     mFilsG=bNoeud;
 }
 void CNoeud::setAsFunction(){
-    mNature=NOEUD_OPERANDE_FONCTION;
+    mNature=NODE_OPERAND_FUNCTION;
     #ifdef _DEBUGARBRES
         printf("finalement function\n");
     #endif
 }
 void CNoeud::setAsArray(){
-    mNature=NOEUD_OPERANDE_ARRAY;
+    mNature=NODE_OPERAND_ARRAY;
     #ifdef _DEBUGARBRES
         printf("finalement array\n");
     #endif
@@ -328,7 +328,7 @@ int CNoeud::getSuccNmbr(){
     for(i=0;Successeur[i]!=NULL;i++);
     return i;
 }
-NatureNoeud CNoeud::getNature(){
+NodeNature CNoeud::getNature(){
     return mNature;
 }
 VarTypeType CNoeud::getType(){
@@ -368,10 +368,10 @@ natureOperator CNoeud::getOperType(TAG* bTag)
 }
 
 bool CNoeud::isConstant(){
-    if (mNature==NOEUD_OPERANDE_CTE){
+    if (mNature==NODE_OPERAND_CONSTANT){
         return true;
     }
-    else if (mNature==NOEUD_OPERATOR){
+    else if (mNature==NODE_OPERATOR){
         if (mFilsG && mFilsD){
             return (mFilsG->isConstant() && mFilsD->isConstant());
         }
@@ -404,7 +404,7 @@ void CNoeud::simplifyConstantExpression(){
     char *courIdentif2;
     switch(mNature)
     {
-    case NOEUD_OPERATOR:
+    case NODE_OPERATOR:
         if (mOperType==OPBIN){
             mFilsG->simplifyConstantExpression();
             mFilsD->simplifyConstantExpression();
@@ -501,16 +501,16 @@ void CNoeud::simplifyConstantExpression(){
             }
         }
         break;
-    case NOEUD_OPERANDE_CTE:
+    case NODE_OPERAND_CONSTANT:
         //rien ? faire
         break;
-    case NOEUD_OPERANDE_VARIABLE:
+    case NODE_OPERAND_VARIABLE:
         //rien ? faire
         break;
-    case NOEUD_OPERANDE_FONCTION:
+    case NODE_OPERAND_FUNCTION:
         //rien ? faire
         break;
-    case NOEUD_OPERANDE_ARRAY:
+    case NODE_OPERAND_ARRAY:
         //rien ? faire
         break;
     default:

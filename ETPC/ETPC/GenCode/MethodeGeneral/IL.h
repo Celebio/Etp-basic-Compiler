@@ -46,7 +46,7 @@ struct Operande {
 
 struct InstrIL{
     InsOpEnum opertr;
-    size_op Size;
+    size_op size;
     Operande* op1;
     Operande* op2;
 };

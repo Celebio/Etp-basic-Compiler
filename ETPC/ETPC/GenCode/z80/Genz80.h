@@ -49,23 +49,23 @@ private:
 
     int mNbRegMax;
 
-    //size_opz80 GetSize(CNoeud* bNoeud);
+    //size_opz80 getSize(CNoeud* bNoeud);
 
-    int NbRegArith(CNoeud* bNoeud,NatureOpz80 bNat);
-    int NbRegObjet(CNoeud* bNoeud,NatureOpz80 bNat);
+    int getNbRegArith(CNoeud* bNoeud,NatureOpz80 bNat);
+    int getNbRegObject(CNoeud* bNoeud,NatureOpz80 bNat);
 
-//  void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operandez80** opertr);
-//  void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operandez80** opertr);
+//  void codeArith(CNoeud* bNoeud,NatureOp bNat,Operandez80** opertr);
+//  void codeObject(CNoeud* bNoeud,NatureOp bNat,Operandez80** opertr);
 
 public:
     Genz80(void);
     Genz80(const char *oFileName);
     ~Genz80(void);
 
-    void TestGenerate();
-    void GenerCode();
+    void testGenerate();
+    void generateCode();
 
-    void SetEnvironnement(Collection* BerrListe,
+    void setEnvironnement(Collection* BerrListe,
                             Collection* BVariablesPublic,
                             Collection* BTypes,
                             Collection* BFonctions);

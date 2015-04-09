@@ -48,7 +48,7 @@ public:
     ~VeriSem(void);
 
     void VerifSem();
-    void SetEnvironnement(Collection* BerrListe,
+    void setEnvironnement(Collection* BerrListe,
                             Collection* BVariablesPublic,
                             Collection* BTypes,
                             Collection* BFonctions);

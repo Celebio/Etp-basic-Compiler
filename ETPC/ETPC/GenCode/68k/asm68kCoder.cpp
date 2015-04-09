@@ -212,7 +212,7 @@ void asm68kCoder::display(LineCode68k* bLigne){
         case NA_INST:
             (*mStream) << "\t";
             (*mStream) << imageOp68k[bLigne->val.instr->opertr];
-            sz=bLigne->val.instr->Size;
+            sz=bLigne->val.instr->size;
             if (sz==SZ_UNKNOWN){
                 (*mStream) << ".?";
             }else if (sz==SZ_NA){
@@ -253,7 +253,7 @@ void asm68kCoder::add(InsOpEnum68k bOp,Operande68k* bOp1,Operande68k* bOp2,size_
     aux1->opertr=bOp;
     aux1->op1=new Operande68k(*bOp1);
     aux1->op2=new Operande68k(*bOp2);
-    aux1->Size=bSize;
+    aux1->size=bSize;
     aux->val.instr=aux1;
 
     if (generatedCode==NULL){
@@ -275,7 +275,7 @@ void asm68kCoder::add(InsOpEnum68k bOp,Operande68k* bOp1,size_op68k bSize){
     aux1->opertr=bOp;
     aux1->op1=new Operande68k(*bOp1);
     aux1->op2=NULL;
-    aux1->Size=bSize;
+    aux1->size=bSize;
     aux->val.instr=aux1;
 
     if (generatedCode==NULL){
@@ -297,7 +297,7 @@ void asm68kCoder::add(InsOpEnum68k bOp){
     aux1->opertr=bOp;
     aux1->op1=NULL;
     aux1->op2=NULL;
-    aux1->Size=SZ_NA;
+    aux1->size=SZ_NA;
     aux->val.instr=aux1;
 
     if (generatedCode==NULL){

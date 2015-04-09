@@ -25,14 +25,14 @@
 #include "ColItem.h"
 
 
-typedef enum NatureNoeud{
-    NOEUD_UNKNOWN,
-    NOEUD_OPERATOR,
-    NOEUD_OPERANDE_CTE,
-    NOEUD_OPERANDE_VARIABLE,
-    NOEUD_OPERANDE_FONCTION,
-    NOEUD_OPERANDE_ARRAY
-} NatureNoeud;
+typedef enum NodeNature{
+    NODE_UNKNOWN,
+    NODE_OPERATOR,
+    NODE_OPERAND_CONSTANT,
+    NODE_OPERAND_VARIABLE,
+    NODE_OPERAND_FUNCTION,
+    NODE_OPERAND_ARRAY
+} NodeNature;
 
 
 typedef enum natureOperator {NOTOP,OPBIN,OPUNG,OPUND} natureOperator;
@@ -85,13 +85,13 @@ typedef enum TypeOptor{
 } TypeOptor;
 
 
-extern TypeOptor GiveOperatorType(enumTokenType bToken);
+extern TypeOptor getOperatorType(enumTokenType bToken);
 
 class CNoeud :
     public ColItem
 {
 private:
-    NatureNoeud mNature;
+    NodeNature mNature;
     CNoeud* mFilsG;
     CNoeud* mFilsD;
     CNoeud* Successeur[30]; // pour les arbres non-binaires
@@ -144,7 +144,7 @@ public:
     CNoeud* getRightChild();
     CNoeud** getSuccPtr(int index);
     int getSuccNmbr();
-    NatureNoeud getNature();
+    NodeNature getNature();
     VarTypeType getType();
     TAG* getTag();
     TypeOptor getOperator();

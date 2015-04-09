@@ -62,7 +62,7 @@ struct Operandez80 {
 
 struct InstrILz80{
     InsOpEnumz80 opertr;
-    size_opz80 Size;
+    size_opz80 size;
     Operandez80* op1;
     Operandez80* op2;
 };

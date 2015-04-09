@@ -10,13 +10,13 @@ GenIL::~GenIL(void){
 
 #define max(a,b) (a>b?a:b)
 
-void GenIL::TestGenerate(){
+void GenIL::testGenerate(){
     ilCoder.add(LOAD,ilCoder.createOp(2,3),ilCoder.createOp(5),SZ_W);
     ilCoder.display();
 }
 
 
-void GenIL::SetEnvironnement(Collection* BerrListe,
+void GenIL::setEnvironnement(Collection* BerrListe,
                             Collection* BVariablesPublic,
                             Collection* BTypes,
                             Collection* BFonctions)
@@ -27,9 +27,9 @@ void GenIL::SetEnvironnement(Collection* BerrListe,
     Fonctions=BFonctions;
 }
 
-int GenIL::NbRegObjet(CNoeud* bNoeud,NatureOp bNat){
+int GenIL::getNbRegObject(CNoeud* bNoeud,NatureOp bNat){
     int val;
-    if (bNoeud->getNature()==NOEUD_OPERANDE_VARIABLE){
+    if (bNoeud->getNature()==NODE_OPERAND_VARIABLE){
         if (bNat==NO_REG){
             val=1;
         }
@@ -38,18 +38,18 @@ int GenIL::NbRegObjet(CNoeud* bNoeud,NatureOp bNat){
         }
     }
     else{
-        printf("Cas inconnu dans NbRegObjet\n");
+        printf("Cas inconnu dans getNbRegObject\n");
     }
     bNoeud->setNbReg(val);
     return val;
 }
 
-int GenIL::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
-    NatureNoeud NatureArbre=bNoeud->getNature();
+int GenIL::getNbRegArith(CNoeud* bNoeud,NatureOp bNat){
+    NodeNature NatureArbre=bNoeud->getNature();
     int val=-1;
     int n1,n2,nMax;
     // A = Litteral
-    if (NatureArbre==NOEUD_OPERANDE_CTE){
+    if (NatureArbre==NODE_OPERAND_CONSTANT){
         if (bNat==NO_REG){
             val=1;
         }
@@ -58,21 +58,21 @@ int GenIL::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
         }
     }
     // A = objet
-    else if (NatureArbre==NOEUD_OPERANDE_VARIABLE)
+    else if (NatureArbre==NODE_OPERAND_VARIABLE)
     {
-        val=NbRegObjet(bNoeud,bNat);
+        val=getNbRegObject(bNoeud,bNat);
     }
     // A = - A1 ou A = conversion(A1)
-    else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperator()==OPTOR_MOINSUNAIRE)
+    else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperator()==OPTOR_MOINSUNAIRE)
     {
-        val=max(1,NbRegArith(bNoeud,bNat));
+        val=max(1,getNbRegArith(bNoeud,bNat));
     }
-    //else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperType()==OPBIN
+    //else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperType()==OPBIN
 
-    else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperType()==OPBIN)
+    else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperType()==OPBIN)
     {
-        n1=NbRegArith(bNoeud->getLeftChild(),NO_REG);
-        n2=NbRegArith(bNoeud->getRightChild(),NO_DVAL);
+        n1=getNbRegArith(bNoeud->getLeftChild(),NO_REG);
+        n2=getNbRegArith(bNoeud->getRightChild(),NO_DVAL);
         if (n1==n2){
             val=n1+1;
         }else{
@@ -80,11 +80,11 @@ int GenIL::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
         }
     }
     // A = f(A1,A2, ... , An)
-    else if (NatureArbre==NOEUD_OPERANDE_FONCTION)
+    else if (NatureArbre==NODE_OPERAND_FUNCTION)
     {
         nMax=1;
         for (int i=0;i<bNoeud->getSuccNmbr();i++){
-            n1=NbRegArith(*(bNoeud->getSuccPtr(i)),NO_REG);
+            n1=getNbRegArith(*(bNoeud->getSuccPtr(i)),NO_REG);
             if (n1>nMax){
                 nMax=n1;
             }
@@ -95,49 +95,49 @@ int GenIL::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
     bNoeud->setNbReg(val);
     return val;
 }
-void GenIL::CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
-    size_op Size=SZ_UNKNOWN;
+void GenIL::codeObject(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
+    size_op size=SZ_UNKNOWN;
 
-    if (bNoeud->getType().Type==TP_INTEGER) Size=SZ_W;
-    if (bNoeud->getType().Type==TP_FLOAT) Size=SZ_F;
-    if (bNoeud->getType().Type==TP_LONG) Size=SZ_L;
-    if (bNoeud->getType().Type==TP_BOOLEAN) Size=SZ_B;
-    if (bNoeud->getType().Type==TP_BYTE) Size=SZ_B;
+    if (bNoeud->getType().Type==TP_INTEGER) size=SZ_W;
+    if (bNoeud->getType().Type==TP_FLOAT) size=SZ_F;
+    if (bNoeud->getType().Type==TP_LONG) size=SZ_L;
+    if (bNoeud->getType().Type==TP_BOOLEAN) size=SZ_B;
+    if (bNoeud->getType().Type==TP_BYTE) size=SZ_B;
 
-    if (bNoeud->getNature()==NOEUD_OPERANDE_VARIABLE){
+    if (bNoeud->getNature()==NODE_OPERAND_VARIABLE){
         if (bNat==NO_REG){
-            ilCoder.add(LOAD,ilCoder.createOp(Stack.GetStackPos(bNoeud->getTag()->GetIdentif()),SP_REG),registerStack->front(),Size);
+            ilCoder.add(LOAD,ilCoder.createOp(Stack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG),registerStack->front(),size);
             *opertr=registerStack->front();
         }
         else if (bNat==NO_DVAL || bNat==NO_DADR){
 
-            *opertr=ilCoder.createOp(Stack.GetStackPos(bNoeud->getTag()->GetIdentif()),SP_REG);
+            *opertr=ilCoder.createOp(Stack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG);
         }
     }
     else{
-        printf("Cas inconnu dans CodeObjet\n");
+        printf("Cas inconnu dans codeObject\n");
     }
 }
 
-void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
-    NatureNoeud NatureArbre=bNoeud->getNature();
-    size_op Size=SZ_UNKNOWN;
+void GenIL::codeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
+    NodeNature NatureArbre=bNoeud->getNature();
+    size_op size=SZ_UNKNOWN;
     Operande* Op1;
     Operande* Op2;
 
-    if (bNoeud->getType().Type==TP_INTEGER) Size=SZ_W;
-    if (bNoeud->getType().Type==TP_FLOAT) Size=SZ_F;
-    if (bNoeud->getType().Type==TP_LONG) Size=SZ_L;
-    if (bNoeud->getType().Type==TP_BOOLEAN) Size=SZ_B;
-    if (bNoeud->getType().Type==TP_BYTE) Size=SZ_B;
+    if (bNoeud->getType().Type==TP_INTEGER) size=SZ_W;
+    if (bNoeud->getType().Type==TP_FLOAT) size=SZ_F;
+    if (bNoeud->getType().Type==TP_LONG) size=SZ_L;
+    if (bNoeud->getType().Type==TP_BOOLEAN) size=SZ_B;
+    if (bNoeud->getType().Type==TP_BYTE) size=SZ_B;
 
 
     // A = Litteral
-    if (NatureArbre==NOEUD_OPERANDE_CTE){
+    if (NatureArbre==NODE_OPERAND_CONSTANT){
         if (bNat==NO_REG){
             if (bNoeud->getTag()->GetToken()==TOKEN_NOMBRE)
             {
-                ilCoder.add(LOAD,ilCoder.createOpVal(atoi(bNoeud->getTag()->GetIdentif())),registerStack->front(),Size);
+                ilCoder.add(LOAD,ilCoder.createOpVal(atoi(bNoeud->getTag()->GetIdentif())),registerStack->front(),size);
 
             }
             else if (bNoeud->getTag()->GetToken()==TOKEN_STRINGCONSTANT)
@@ -146,12 +146,12 @@ void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
             }
             else if (bNoeud->getTag()->GetToken()==TOKEN_TRUE)
             {
-                ilCoder.add(LOAD,ilCoder.createOpVal(1),registerStack->front(),Size);
+                ilCoder.add(LOAD,ilCoder.createOpVal(1),registerStack->front(),size);
 
             }
             else if (bNoeud->getTag()->GetToken()==TOKEN_FALSE)
             {
-                ilCoder.add(LOAD,ilCoder.createOpVal(0),registerStack->front(),Size);
+                ilCoder.add(LOAD,ilCoder.createOpVal(0),registerStack->front(),size);
             }
             else
             {
@@ -183,20 +183,20 @@ void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
         }
     }
     // A = objet
-    else if (NatureArbre==NOEUD_OPERANDE_VARIABLE)
+    else if (NatureArbre==NODE_OPERAND_VARIABLE)
     {
-        CodeObjet(bNoeud,bNat,opertr);
+        codeObject(bNoeud,bNat,opertr);
     }
     // A = - A1 ou A = conversion(A1)
-    else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperator()==OPTOR_MOINSUNAIRE)
+    else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperator()==OPTOR_MOINSUNAIRE)
     {
-        CodeArith(bNoeud->getRightChild(),NO_DVAL,&Op1);
-        ilCoder.add(OPP,Op1,registerStack->front(),Size);
+        codeArith(bNoeud->getRightChild(),NO_DVAL,&Op1);
+        ilCoder.add(OPP,Op1,registerStack->front(),size);
         *opertr=registerStack->front();
     }
-    //else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperType()==OPBIN
+    //else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperType()==OPBIN
 
-    else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperType()==OPBIN)
+    else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperType()==OPBIN)
     {
         int n1,n2;
         n1=bNoeud->getLeftChild()->getNbReg();
@@ -204,38 +204,38 @@ void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
         Operande* T;
 
         if (n1>=mNbRegMax && n2 >=mNbRegMax){
-            CodeArith(bNoeud->getRightChild(),NO_REG,&Op2);
-            T=registerStack->allocateTemp(Size);
-            ilCoder.add(STORE,Op2,T,Size);
-            CodeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
-            registerStack->freeTemp(T,Size);
-            ilCoder.add(ilCoder.nodeToOp(bNoeud),T,Op1,Size);
+            codeArith(bNoeud->getRightChild(),NO_REG,&Op2);
+            T=registerStack->allocateTemp(size);
+            ilCoder.add(STORE,Op2,T,size);
+            codeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
+            registerStack->freeTemp(T,size);
+            ilCoder.add(ilCoder.nodeToOp(bNoeud),T,Op1,size);
             delete T;
             *opertr=Op1;
         }
         else if (n1>=n2 && n2 < mNbRegMax)
         {
-            CodeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
+            codeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
             registerStack->allocate(Op1);
-            CodeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
+            codeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
             registerStack->freeOperand(Op1);
-            ilCoder.add(ilCoder.nodeToOp(bNoeud),Op2,Op1,Size);
+            ilCoder.add(ilCoder.nodeToOp(bNoeud),Op2,Op1,size);
             *opertr=Op1;
         }
         else if (n1<n2 && n1 < mNbRegMax)
         {
             registerStack->Echange();
-            CodeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
+            codeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
             registerStack->allocate(Op2);
-            CodeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
+            codeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
             registerStack->freeOperand(Op2);
             registerStack->Echange();
-            ilCoder.add(ilCoder.nodeToOp(bNoeud),Op2,Op1,Size);
+            ilCoder.add(ilCoder.nodeToOp(bNoeud),Op2,Op1,size);
             *opertr=Op1;
         }
     }
     // A = f(A1,A2, ... , An)
-    else if (NatureArbre==NOEUD_OPERANDE_FONCTION)
+    else if (NatureArbre==NODE_OPERAND_FUNCTION)
     {
 
         for (int i=0;i<bNoeud->getSuccNmbr();i++){
@@ -245,7 +245,7 @@ void GenIL::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
 }
 
 
-void GenIL::GenerCode(){
+void GenIL::generateCode(){
     ColIterator iter1;
     ColIterator iter2;
     FonctionItem* Fonc1;
@@ -258,20 +258,20 @@ void GenIL::GenerCode(){
     Fonctions->bindIterator(&iter1);
     while(iter1.elemExists()){
         Fonc1=(FonctionItem*)iter1.getNext();
-        Stack.ClearStack();
+        Stack.clearStack();
         ilCoder.addLabel(Fonc1->GetNom());
         Fonc1->GetArguListe()->bindIterator(&iter2);
         while (iter2.elemExists()){
             Var1=(VariableItem*)iter2.getElem();
-            Stack.PushToStack(Var1);
+            Stack.pushToStack(Var1);
             iter2.getNext();
         }
         somme=0;
         Fonc1->GetVarListe()->bindIterator(&iter2);
         while (iter2.elemExists()){
             Var1=(VariableItem*)iter2.getElem();
-            Stack.PushToStack(Var1);
-            somme+=Var1->GetSize();
+            Stack.pushToStack(Var1);
+            somme+=Var1->getSize();
             iter2.getNext();
         }
         Stack.display();
@@ -285,8 +285,8 @@ void GenIL::GenerCode(){
             switch(Instr1->getNat()){
             case INS_AFFECTATION:
                 Operande* ExprArbrAff=registerStack->front();
-                NbRegArith(Instr1->GetAffectExprArbre(),NO_REG);
-                CodeArith(Instr1->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
+                getNbRegArith(Instr1->GetAffectExprArbre(),NO_REG);
+                codeArith(Instr1->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
 
                 break;
             }
@@ -295,7 +295,7 @@ void GenIL::GenerCode(){
         ilCoder.display();
 
 
-        Stack.ClearStack();
+        Stack.clearStack();
 
     }// prochaine fonction
 

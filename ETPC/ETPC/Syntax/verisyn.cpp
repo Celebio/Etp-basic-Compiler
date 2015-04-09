@@ -145,7 +145,7 @@ bool VeriSyn::VerifyExpression(bool requis,
         //crTokType=aux->getOperType();
 
 
-        if (aux->getNature()==NOEUD_UNKNOWN)
+        if (aux->getNature()==NODE_UNKNOWN)
         {
             errListe->add("Mot reserve non permis dans une expression",Cour);
             return false;
@@ -209,7 +209,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                 // ? faire..
 
                 // insertion du noeud de l'op?rateur ? la bonne place en fonction de sa priorit?
-                while (courNoeud->getOperator()> GiveOperatorType(Cour->GetToken()))
+                while (courNoeud->getOperator()> getOperatorType(Cour->GetToken()))
                 {
                     precNoeud=courNoeud;
                     courNoeud=courNoeud->getRightChild();

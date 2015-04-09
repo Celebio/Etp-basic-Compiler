@@ -24,28 +24,27 @@
 
 
 #define max(a,b) (a>b?a:b)
-//#define max3(a,b,c)  ( a>b ? (max(a,c)) : (max(b,c)) )
-#define max3(a,b,c) (max(a,max(b,c)))       // Geyelin optimisation
+#define max3(a,b,c) (max(a,max(b,c)))
 
 Gen68k::Gen68k(void){
-    registerStack=new PileRegTemp68k(&ilCoder,&Stack);
+    registerStack = new PileRegTemp68k(&ilCoder,&Stack);
 }
 Gen68k::Gen68k(const char *oFileName){
     sprintf(outputFileName,"%s%s",oFileName,".asm");
-    registerStack=new PileRegTemp68k(&ilCoder,&Stack);
+    registerStack= new PileRegTemp68k(&ilCoder,&Stack);
 }
 
 Gen68k::~Gen68k(void){
 }
 
 
-void Gen68k::TestGenerate(){
+void Gen68k::testGenerate(){
     //ilCoder.add(LOAD,ilCoder.createOp(2,3),ilCoder.createOp(5),SZ_W);
     ilCoder.display();
 }
 
 
-void Gen68k::SetEnvironnement(Collection* BerrListe,
+void Gen68k::setEnvironnement(Collection* BerrListe,
                             Collection* BVariablesPublic,
                             Collection* BTypes,
                             Collection* BFonctions)
@@ -56,9 +55,9 @@ void Gen68k::SetEnvironnement(Collection* BerrListe,
     Fonctions=BFonctions;
 }
 
-int Gen68k::NbRegObjet(CNoeud* bNoeud, NatureOp bNat){
+int Gen68k::getNbRegObject(CNoeud* bNoeud, NatureOp bNat){
     int val;
-    if (bNoeud->getNature()==NOEUD_OPERANDE_VARIABLE){
+    if (bNoeud->getNature()==NODE_OPERAND_VARIABLE){
         if (bNat==NO_REG){
             val=1;
         }
@@ -67,36 +66,36 @@ int Gen68k::NbRegObjet(CNoeud* bNoeud, NatureOp bNat){
         }
     }
     else{
-        printf("Cas inconnu dans NbRegObjet\n");
+        printf("Cas inconnu dans getNbRegObject\n");
     }
     bNoeud->setNbReg(val);
     return val;
 }
 
-int Gen68k::NbRegBool(CNoeud* bNoeud){
+int Gen68k::getNbRegBool(CNoeud* bNoeud){
     bNoeud->display();
     int val=-1;
     TypeOptor operaTOR = bNoeud->getOperator();
 
     if (operaTOR == OPTOR_CMP_AND || operaTOR == OPTOR_CMP_OR){
-        int n1 = NbRegBool(bNoeud->getLeftChild());
-        int n2 = NbRegBool(bNoeud->getRightChild());
+        int n1 = getNbRegBool(bNoeud->getLeftChild());
+        int n2 = getNbRegBool(bNoeud->getRightChild());
         val = max3(1,n1,n2);
     }
     else if (operaTOR == OPTOR_NOT){
-        val = NbRegBool(bNoeud->getRightChild());
+        val = getNbRegBool(bNoeud->getRightChild());
     }
     else if (operaTOR == OPTOR_UNKNOWN){
-        if ((bNoeud->getNature()== NOEUD_OPERANDE_CTE && bNoeud->getTag()->GetToken() ==TOKEN_TRUE)
-            || (bNoeud->getNature()== NOEUD_OPERANDE_CTE && bNoeud->getTag()->GetToken() ==TOKEN_FALSE)){
+        if ((bNoeud->getNature()== NODE_OPERAND_CONSTANT && bNoeud->getTag()->GetToken() ==TOKEN_TRUE)
+            || (bNoeud->getNature()== NODE_OPERAND_CONSTANT && bNoeud->getTag()->GetToken() ==TOKEN_FALSE)){
             val=1;  // TO DO : ? voir
         }
         // TO DO : autre objets...
     }
     else if (operaTOR == OPTOR_INF || operaTOR == OPTOR_INFEQ || operaTOR == OPTOR_EQUAL ||
         operaTOR == OPTOR_DIFFERENT || operaTOR == OPTOR_SUP || operaTOR == OPTOR_SUPEQ ) {
-        int n1 = NbRegArith(bNoeud->getLeftChild(),NO_REG);
-        int n2 = NbRegArith(bNoeud->getRightChild(),NO_DVAL);
+        int n1 = getNbRegArith(bNoeud->getLeftChild(),NO_REG);
+        int n2 = getNbRegArith(bNoeud->getRightChild(),NO_DVAL);
         if (n1!=n2){
             val = max(n1,n2);
         } else {
@@ -110,12 +109,12 @@ int Gen68k::NbRegBool(CNoeud* bNoeud){
     return val;
 }
 
-int Gen68k::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
-    NatureNoeud NatureArbre=bNoeud->getNature();
+int Gen68k::getNbRegArith(CNoeud* bNoeud,NatureOp bNat){
+    NodeNature NatureArbre=bNoeud->getNature();
     int val=-1;
     int n1,n2,nMax;
     // A = Litteral
-    if (NatureArbre==NOEUD_OPERANDE_CTE){
+    if (NatureArbre==NODE_OPERAND_CONSTANT){
         if (bNat==NO_REG){
             val=1;
         }
@@ -124,21 +123,21 @@ int Gen68k::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
         }
     }
     // A = objet
-    else if (NatureArbre==NOEUD_OPERANDE_VARIABLE)
+    else if (NatureArbre==NODE_OPERAND_VARIABLE)
     {
-        val=NbRegObjet(bNoeud,bNat);
+        val=getNbRegObject(bNoeud,bNat);
     }
     // A = - A1 ou A = conversion(A1)
-    else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperator()==OPTOR_MOINSUNAIRE)
+    else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperator()==OPTOR_MOINSUNAIRE)
     {
-        val=max(1,NbRegArith(bNoeud,bNat));
+        val=max(1,getNbRegArith(bNoeud,bNat));
     }
-    //else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperType()==OPBIN
+    //else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperType()==OPBIN
 
-    else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperType()==OPBIN)
+    else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperType()==OPBIN)
     {
-        n1=NbRegArith(bNoeud->getLeftChild(),NO_REG);
-        n2=NbRegArith(bNoeud->getRightChild(),NO_DVAL);
+        n1=getNbRegArith(bNoeud->getLeftChild(),NO_REG);
+        n2=getNbRegArith(bNoeud->getRightChild(),NO_DVAL);
         if (n1==n2){
             val=n1+1;
         }else{
@@ -146,11 +145,11 @@ int Gen68k::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
         }
     }
     // A = f(A1,A2, ... , An)
-    else if (NatureArbre==NOEUD_OPERANDE_FONCTION)
+    else if (NatureArbre==NODE_OPERAND_FUNCTION)
     {
         nMax=1;
         for (int i=0;i<bNoeud->getSuccNmbr();i++){
-            n1=NbRegArith(*(bNoeud->getSuccPtr(i)),NO_REG);
+            n1=getNbRegArith(*(bNoeud->getSuccPtr(i)),NO_REG);
             if (n1>nMax){
                 nMax=n1;
             }
@@ -161,49 +160,49 @@ int Gen68k::NbRegArith(CNoeud* bNoeud,NatureOp bNat){
     bNoeud->setNbReg(val);
     return val;
 }
-void Gen68k::CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
-    size_op68k Size=GetSize(bNoeud);
+void Gen68k::codeObject(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
+    size_op68k size=getSize(bNoeud);
 
-    if (bNoeud->getNature()==NOEUD_OPERANDE_VARIABLE){
+    if (bNoeud->getNature()==NODE_OPERAND_VARIABLE){
         if (bNat==NO_REG){
-            ilCoder.add(MOVE,ilCoder.createOp(Stack.GetStackPos(bNoeud->getTag()->GetIdentif()),SP_REG),registerStack->front(),Size);
+            ilCoder.add(MOVE,ilCoder.createOp(Stack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG),registerStack->front(),size);
             *opertr=registerStack->front();
         }
         else if (bNat==NO_DVAL || bNat==NO_DADR){
 
-            *opertr=ilCoder.createOp(Stack.GetStackPos(bNoeud->getTag()->GetIdentif()),SP_REG);
+            *opertr=ilCoder.createOp(Stack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG);
         }
     }
     else{
-        printf("Cas inconnu dans CodeObjet\n");
+        printf("Cas inconnu dans codeObject\n");
     }
 }
 
-size_op68k Gen68k::GetSize(CNoeud* bNoeud){
-    size_op68k Size=SZ_UNKNOWN;
+size_op68k Gen68k::getSize(CNoeud* bNoeud){
+    size_op68k size=SZ_UNKNOWN;
 
-    if (bNoeud->getType().Type==TP_INTEGER) Size=SZ_W;
-    if (bNoeud->getType().Type==TP_FLOAT) Size=SZ_F;
-    if (bNoeud->getType().Type==TP_LONG) Size=SZ_L;
-    if (bNoeud->getType().Type==TP_BOOLEAN) Size=SZ_W;  // et pas Size=SZ_B;
-    if (bNoeud->getType().Type==TP_BYTE) Size=SZ_W;     // et pas Size=SZ_B;
-    return Size;
+    if (bNoeud->getType().Type==TP_INTEGER) size=SZ_W;
+    if (bNoeud->getType().Type==TP_FLOAT) size=SZ_F;
+    if (bNoeud->getType().Type==TP_LONG) size=SZ_L;
+    if (bNoeud->getType().Type==TP_BOOLEAN) size=SZ_W;  // et pas size=SZ_B;
+    if (bNoeud->getType().Type==TP_BYTE) size=SZ_W;     // et pas size=SZ_B;
+    return size;
 }
 
-void Gen68k::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
-    NatureNoeud NatureArbre=bNoeud->getNature();
-    size_op68k Size=GetSize(bNoeud);
+void Gen68k::codeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
+    NodeNature NatureArbre=bNoeud->getNature();
+    size_op68k size=getSize(bNoeud);
     Operande68k* Op1;
     Operande68k* Op2;
     //printf("entree dans codearith avec bNoeud:\n");
     //bNoeud->display();
 
     // A = Litteral
-    if (NatureArbre==NOEUD_OPERANDE_CTE){
+    if (NatureArbre==NODE_OPERAND_CONSTANT){
         if (bNat==NO_REG){
             if (bNoeud->getTag()->GetToken()==TOKEN_NOMBRE)
             {
-                ilCoder.add(MOVE,ilCoder.createOpVal(atoi(bNoeud->getTag()->GetIdentif())),registerStack->front(),Size);
+                ilCoder.add(MOVE,ilCoder.createOpVal(atoi(bNoeud->getTag()->GetIdentif())),registerStack->front(),size);
 
             }
             else if (bNoeud->getTag()->GetToken()==TOKEN_STRINGCONSTANT)
@@ -212,12 +211,12 @@ void Gen68k::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
             }
             else if (bNoeud->getTag()->GetToken()==TOKEN_TRUE)
             {
-                ilCoder.add(MOVE,ilCoder.createOpVal(1),registerStack->front(),Size);
+                ilCoder.add(MOVE,ilCoder.createOpVal(1),registerStack->front(),size);
 
             }
             else if (bNoeud->getTag()->GetToken()==TOKEN_FALSE)
             {
-                ilCoder.add(MOVE,ilCoder.createOpVal(0),registerStack->front(),Size);
+                ilCoder.add(MOVE,ilCoder.createOpVal(0),registerStack->front(),size);
             }
             else
             {
@@ -249,34 +248,34 @@ void Gen68k::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
         }
     }
     // A = objet
-    else if (NatureArbre==NOEUD_OPERANDE_VARIABLE)
+    else if (NatureArbre==NODE_OPERAND_VARIABLE)
     {
-        CodeObjet(bNoeud,bNat,opertr);
+        codeObject(bNoeud,bNat,opertr);
     }
     // A = - A1 ou A = conversion(A1)
-    else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperator()==OPTOR_MOINSUNAIRE)
+    else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperator()==OPTOR_MOINSUNAIRE)
     {
-        CodeArith(bNoeud->getRightChild(),NO_DVAL,&Op1);
-        ilCoder.add(OPP,Op1,registerStack->front(),Size);
+        codeArith(bNoeud->getRightChild(),NO_DVAL,&Op1);
+        ilCoder.add(OPP,Op1,registerStack->front(),size);
         *opertr=registerStack->front();
     }
     // A = A1 opbin A2 et op_bin commutatif et A1 est litteral ou objet
     // et A2 n'est ni litteral ni objet
-    else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperType()==OPBIN &&
+    else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperType()==OPBIN &&
             bNoeud->isCommutative() &&
-             (bNoeud->getLeftChild()->getNature()==NOEUD_OPERANDE_CTE ||
-             bNoeud->getLeftChild()->getNature()==NOEUD_OPERANDE_VARIABLE)
+             (bNoeud->getLeftChild()->getNature()==NODE_OPERAND_CONSTANT ||
+             bNoeud->getLeftChild()->getNature()==NODE_OPERAND_VARIABLE)
              &&
-            (bNoeud->getRightChild()->getNature()!=NOEUD_OPERANDE_CTE &&
-             bNoeud->getRightChild()->getNature()!=NOEUD_OPERANDE_VARIABLE))
+            (bNoeud->getRightChild()->getNature()!=NODE_OPERAND_CONSTANT &&
+             bNoeud->getRightChild()->getNature()!=NODE_OPERAND_VARIABLE))
     {
         CNoeud* aux=bNoeud->getRightChild();
         bNoeud->setRightChild(bNoeud->getLeftChild());
         bNoeud->setLeftChild(aux);
-        CodeArith(bNoeud, bNat, opertr);
+        codeArith(bNoeud, bNat, opertr);
     }
 
-    else if (NatureArbre==NOEUD_OPERATOR && bNoeud->getOperType()==OPBIN)
+    else if (NatureArbre==NODE_OPERATOR && bNoeud->getOperType()==OPBIN)
     {
         int n1,n2;
         n1=bNoeud->getLeftChild()->getNbReg();
@@ -284,67 +283,67 @@ void Gen68k::CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
         Operande68k* T;
 
         if (n1>=mNbRegMax && n2 >=mNbRegMax){
-            CodeArith(bNoeud->getRightChild(),NO_REG,&Op2);
-            T=registerStack->allocateTemp(Size);
-            ilCoder.add(MOVE,Op2,T,Size);
-            CodeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
-            registerStack->freeTemp(T,Size);
-            ilCoder.add(ilCoder.nodeToOp(bNoeud),T,Op1,Size);
+            codeArith(bNoeud->getRightChild(),NO_REG,&Op2);
+            T=registerStack->allocateTemp(size);
+            ilCoder.add(MOVE,Op2,T,size);
+            codeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
+            registerStack->freeTemp(T,size);
+            ilCoder.add(ilCoder.nodeToOp(bNoeud),T,Op1,size);
             delete T;
             *opertr=Op1;
         }
         else if (n1>=n2 && n2 < mNbRegMax)
         {
-            CodeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
+            codeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
             registerStack->allocate(Op1);
-            CodeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
+            codeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
             registerStack->freeOperand(Op1);
-            ilCoder.add(ilCoder.nodeToOp(bNoeud),Op2,Op1,Size);
+            ilCoder.add(ilCoder.nodeToOp(bNoeud),Op2,Op1,size);
             *opertr=Op1;
         }
         else if (n1<n2 && n1 < mNbRegMax)
         {
             registerStack->switchD();
-            CodeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
+            codeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
             registerStack->allocate(Op2);
-            CodeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
+            codeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
             registerStack->freeOperand(Op2);
             registerStack->switchD();
-            ilCoder.add(ilCoder.nodeToOp(bNoeud),Op2,Op1,Size);
+            ilCoder.add(ilCoder.nodeToOp(bNoeud),Op2,Op1,size);
             *opertr=Op1;
         }
     }
     // A = f(A1,A2, ... , An)
-    else if (NatureArbre==NOEUD_OPERANDE_FONCTION)
+    else if (NatureArbre==NODE_OPERAND_FUNCTION)
     {
         int somme=0;        // la somme des tailles de ce qui est pouss? dans la pile
         size_op68k SizeOfArgument;
         for (int i=bNoeud->getSuccNmbr()-1;i>=0;i--){
-            SizeOfArgument=GetSize(*bNoeud->getSuccPtr(i));
+            SizeOfArgument=getSize(*bNoeud->getSuccPtr(i));
             somme+=(int)SizeOfArgument;
-            CodeArith(*bNoeud->getSuccPtr(i),NO_REG,&Op2);
+            codeArith(*bNoeud->getSuccPtr(i),NO_REG,&Op2);
             ilCoder.add(MOVE,Op2,ilCoder.createOp(A7,false,true),SizeOfArgument);
-            Stack.PushToStack(SizeOfArgument);
+            Stack.pushToStack(SizeOfArgument);
         }
         ilCoder.add(BSR,ilCoder.createOpLabel(bNoeud->getTag()->GetIdentif()),SZ_NA);
         ilCoder.add(ADD,ilCoder.createOpVal(somme),ilCoder.createOp(SP_REG),SZ_L);
 
         //Stack.display();
         for (int i=bNoeud->getSuccNmbr()-1;i>=0;i--){
-            Stack.Pop();
+            Stack.pop();
             //Stack.display();
         }
-        ilCoder.add(MOVE,ilCoder.createOp(D0),registerStack->front(),Size);
+        ilCoder.add(MOVE,ilCoder.createOp(D0),registerStack->front(),size);
         *opertr=registerStack->front();
     }
 }
 
-void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg){
+void Gen68k::codeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg){
     //printf("Entree dans COdeBOOl\n");
     //printf("expression booleenne:\n");
     //bNoeud->display();
 
-    size_op68k Size=GetSize(bNoeud);
+    size_op68k size=getSize(bNoeud);
     Operande68k* T;
 
     Operande68k* Etiq = ilCoder.createOpLabel();
@@ -356,44 +355,44 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
     if (operaTOR == OPTOR_CMP_AND){
         if (AvecSaut==true){
             if (ValSaut==true){
-                CodeBool(bNoeud->getLeftChild(),true,false,Etiq1,DansReg,ValReg);
-                CodeBool(bNoeud->getRightChild(),true,true,etiqSaut,DansReg,ValReg);
+                codeBool(bNoeud->getLeftChild(),true,false,Etiq1,DansReg,ValReg);
+                codeBool(bNoeud->getRightChild(),true,true,etiqSaut,DansReg,ValReg);
                 ilCoder.addLabel(Etiq1->val.valLabel);
             }
             else {  // ValSaut==false
-                CodeBool(bNoeud->getLeftChild(),true,false,etiqSaut,DansReg,ValReg);
-                CodeBool(bNoeud->getRightChild(),true,false,etiqSaut,DansReg,ValReg);
+                codeBool(bNoeud->getLeftChild(),true,false,etiqSaut,DansReg,ValReg);
+                codeBool(bNoeud->getRightChild(),true,false,etiqSaut,DansReg,ValReg);
             }
         }
         else {      // AvecSaut==false
-            CodeBool(bNoeud->getLeftChild(),true,false,Etiq1,true,ValReg);
-            CodeBool(bNoeud->getRightChild(),false,false,NULL,true,ValReg);  // le deuxieme false n'a aucun impact normalement
+            codeBool(bNoeud->getLeftChild(),true,false,Etiq1,true,ValReg);
+            codeBool(bNoeud->getRightChild(),false,false,NULL,true,ValReg);  // le deuxieme false n'a aucun impact normalement
             ilCoder.addLabel(Etiq1->val.valLabel);
         }
     }
     else if (operaTOR == OPTOR_CMP_OR){
         if (AvecSaut==true){
             if (ValSaut==true){
-                CodeBool(bNoeud->getLeftChild(),true,true,etiqSaut,DansReg,ValReg);
-                CodeBool(bNoeud->getRightChild(),true,true,etiqSaut,DansReg,ValReg);
+                codeBool(bNoeud->getLeftChild(),true,true,etiqSaut,DansReg,ValReg);
+                codeBool(bNoeud->getRightChild(),true,true,etiqSaut,DansReg,ValReg);
             }
             else {  // ValSaut==false
-                CodeBool(bNoeud->getLeftChild(),true,true,Etiq1,DansReg,ValReg);
-                CodeBool(bNoeud->getRightChild(),true,false,etiqSaut,DansReg,ValReg);
+                codeBool(bNoeud->getLeftChild(),true,true,Etiq1,DansReg,ValReg);
+                codeBool(bNoeud->getRightChild(),true,false,etiqSaut,DansReg,ValReg);
                 ilCoder.addLabel(Etiq1->val.valLabel);
             }
         }
         else {      // AvecSaut==false
-            CodeBool(bNoeud->getLeftChild(),true,true,Etiq1,true,ValReg);
-            CodeBool(bNoeud->getRightChild(),false,false,NULL,true,ValReg);  // le deuxieme false n'a aucun impact normalement
+            codeBool(bNoeud->getLeftChild(),true,true,Etiq1,true,ValReg);
+            codeBool(bNoeud->getRightChild(),false,false,NULL,true,ValReg);  // le deuxieme false n'a aucun impact normalement
             ilCoder.addLabel(Etiq1->val.valLabel);
         }
     }
     else if (operaTOR == OPTOR_NOT){
-        CodeBool(bNoeud->getRightChild(),AvecSaut,!ValSaut,etiqSaut,DansReg,!ValReg);
+        codeBool(bNoeud->getRightChild(),AvecSaut,!ValSaut,etiqSaut,DansReg,!ValReg);
     }
     else if (operaTOR == OPTOR_UNKNOWN){
-        if (bNoeud->getNature()== NOEUD_OPERANDE_CTE && bNoeud->getTag()->GetToken() ==TOKEN_TRUE){
+        if (bNoeud->getNature()== NODE_OPERAND_CONSTANT && bNoeud->getTag()->GetToken() ==TOKEN_TRUE){
             Operande68k* ValRegOp;
             ValRegOp = ilCoder.createOpVal( ValReg ? 1 : 0 );
             if (AvecSaut==true){
@@ -403,7 +402,7 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
             else {  // AvecSaut==false
                 ilCoder.add(MOVE,ValRegOp,registerStack->front(),SZ_B);
             }
-        } else if (bNoeud->getNature()== NOEUD_OPERANDE_CTE && bNoeud->getTag()->GetToken() ==TOKEN_FALSE){
+        } else if (bNoeud->getNature()== NODE_OPERAND_CONSTANT && bNoeud->getTag()->GetToken() ==TOKEN_FALSE){
             Operande68k* ValRegOp;
             ValRegOp = ilCoder.createOpVal( ValReg ? 0 : 1 );
             if (AvecSaut==true){
@@ -417,44 +416,44 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
     }
     else if (operaTOR == OPTOR_INF || operaTOR == OPTOR_INFEQ || operaTOR == OPTOR_EQUAL ||
         operaTOR == OPTOR_DIFFERENT || operaTOR == OPTOR_SUP || operaTOR == OPTOR_SUPEQ ) {
-        int n1 = NbRegArith(bNoeud->getLeftChild(),NO_REG);
-        int n2 = NbRegArith(bNoeud->getRightChild(),NO_DVAL);
+        int n1 = getNbRegArith(bNoeud->getLeftChild(),NO_REG);
+        int n2 = getNbRegArith(bNoeud->getRightChild(),NO_DVAL);
         Operande68k* Op2;
         Operande68k* Op1;
         if (n1 >= mNbRegMax && n2 >= mNbRegMax) {
-            CodeArith(bNoeud->getRightChild(),NO_REG,&Op2);
-            T=registerStack->allocateTemp(Size);
-            ilCoder.add(MOVE,Op2,T,Size);
-            CodeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
-            registerStack->freeTemp(T,Size);
-            ilCoder.add(CMP,T,Op1,GetSize(bNoeud->getRightChild()));
+            codeArith(bNoeud->getRightChild(),NO_REG,&Op2);
+            T=registerStack->allocateTemp(size);
+            ilCoder.add(MOVE,Op2,T,size);
+            codeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
+            registerStack->freeTemp(T,size);
+            ilCoder.add(CMP,T,Op1,getSize(bNoeud->getRightChild()));
         }
         else if (n1>=n2 && n2 < mNbRegMax)
         {
-            CodeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
+            codeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
             registerStack->allocate(Op1);
-            CodeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
+            codeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
             registerStack->freeOperand(Op1);
-            ilCoder.add(CMP,Op2,Op1,GetSize(bNoeud->getRightChild()));
+            ilCoder.add(CMP,Op2,Op1,getSize(bNoeud->getRightChild()));
         }
         else if (n1<n2 && n1 < mNbRegMax)
         {
             registerStack->switchD();
-            CodeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
+            codeArith(bNoeud->getRightChild(),NO_DVAL,&Op2);
             registerStack->allocate(Op2);
-            CodeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
+            codeArith(bNoeud->getLeftChild(),NO_REG,&Op1);
             registerStack->freeOperand(Op2);
             registerStack->switchD();
-            ilCoder.add(CMP,Op2,Op1,GetSize(bNoeud->getRightChild()));
+            ilCoder.add(CMP,Op2,Op1,getSize(bNoeud->getRightChild()));
         }
 
         if (AvecSaut){
             // Scc
             /*
             if (ValReg==true){
-                ilCoder.add((InsOpEnum68k)(ilCoder.nodeToOp(bNoeud)+(SEQ-BEQ)),Op1,Size);
+                ilCoder.add((InsOpEnum68k)(ilCoder.nodeToOp(bNoeud)+(SEQ-BEQ)),Op1,size);
             } else {        // sinon l'oppos?
-                ilCoder.add((InsOpEnum68k)(ilCoder.getOppBra(ilCoder.nodeToOp(bNoeud))+(SEQ-BEQ)),Op1,Size);
+                ilCoder.add((InsOpEnum68k)(ilCoder.getOppBra(ilCoder.nodeToOp(bNoeud))+(SEQ-BEQ)),Op1,size);
             }*/
             // Bcc
             if (ValSaut==true){
@@ -467,9 +466,9 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
             // Scc
             /*
             if (ValReg==true){
-                ilCoder.add((InsOpEnum68k)(ilCoder.nodeToOp(bNoeud)+(SEQ-BEQ)),Op1,Size);
+                ilCoder.add((InsOpEnum68k)(ilCoder.nodeToOp(bNoeud)+(SEQ-BEQ)),Op1,size);
             } else {        // sinon l'oppos?
-                ilCoder.add((InsOpEnum68k)(ilCoder.getOppBra(ilCoder.nodeToOp(bNoeud))+(SEQ-BEQ)),Op1,Size);
+                ilCoder.add((InsOpEnum68k)(ilCoder.getOppBra(ilCoder.nodeToOp(bNoeud))+(SEQ-BEQ)),Op1,size);
             }*/
         }
     }
@@ -480,17 +479,17 @@ void Gen68k::CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* eti
 }
 
 
-void Gen68k::CodeInstr(Collection* bInstrSuite){
+void Gen68k::codeInstr(Collection* bInstrSuite){
     ColIterator iter2;
     bInstrSuite->bindIterator(&iter2);
     InstructionETPB* Instr1;
 
     while(iter2.elemExists()){
         Instr1=(InstructionETPB*)iter2.getNext();
-        CodeInstr(Instr1);
+        codeInstr(Instr1);
     }
 }
-void Gen68k::CodeInstr(InstructionETPB* bInstr){
+void Gen68k::codeInstr(InstructionETPB* bInstr){
 
 
 
@@ -505,29 +504,29 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
         Operande68k* ExprArbrAffected;
         int nG,nD;
 
-        nG=NbRegArith(bInstr->GetAffectExprAssigned(),NO_REG);
-        nD=NbRegArith(bInstr->GetAffectExprArbre(),NO_REG);
+        nG=getNbRegArith(bInstr->GetAffectExprAssigned(),NO_REG);
+        nD=getNbRegArith(bInstr->GetAffectExprArbre(),NO_REG);
 
         if (nD >= nG){
-            CodeArith(bInstr->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
+            codeArith(bInstr->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
             registerStack->allocate(ExprArbrAff);
-            CodeArith(bInstr->GetAffectExprAssigned(),NO_DADR,&ExprArbrAffected);
+            codeArith(bInstr->GetAffectExprAssigned(),NO_DADR,&ExprArbrAffected);
             registerStack->freeOperand(ExprArbrAff);
-            ilCoder.add(MOVE,ExprArbrAff,ExprArbrAffected,GetSize(bInstr->GetAffectExprAssigned()));
+            ilCoder.add(MOVE,ExprArbrAff,ExprArbrAffected,getSize(bInstr->GetAffectExprAssigned()));
         }
         else{
-            CodeArith(bInstr->GetAffectExprAssigned(),NO_DADR,&ExprArbrAffected);
+            codeArith(bInstr->GetAffectExprAssigned(),NO_DADR,&ExprArbrAffected);
             registerStack->allocate(ExprArbrAffected);
-            CodeArith(bInstr->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
+            codeArith(bInstr->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
             registerStack->freeOperand(ExprArbrAffected);
-            ilCoder.add(MOVE,ExprArbrAff,ExprArbrAffected,GetSize(bInstr->GetAffectExprAssigned()));
+            ilCoder.add(MOVE,ExprArbrAff,ExprArbrAffected,getSize(bInstr->GetAffectExprAssigned()));
         }
         break;
     case INS_RETURN:
         Operande68k* OpResReturn;
         if (bInstr->GetReturnExpr()){
-            CodeArith(bInstr->GetReturnExpr(),NO_REG,&OpResReturn);
-            ilCoder.add(MOVE,OpResReturn,ilCoder.createOp(D0),GetSize(bInstr->GetReturnExpr()));
+            codeArith(bInstr->GetReturnExpr(),NO_REG,&OpResReturn);
+            ilCoder.add(MOVE,OpResReturn,ilCoder.createOp(D0),getSize(bInstr->GetReturnExpr()));
         }
         ilCoder.add(RTS);
         break;
@@ -540,11 +539,11 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
         CallNoeud=bInstr->GetCallExpr();
         Operande68k* Op2;
         for (int i=CallNoeud->getSuccNmbr()-1;i>=0;i--){
-            SizeOfArgument=GetSize(*CallNoeud->getSuccPtr(i));
+            SizeOfArgument=getSize(*CallNoeud->getSuccPtr(i));
             somme+=(int)SizeOfArgument;
-            CodeArith(*CallNoeud->getSuccPtr(i),NO_REG,&Op2);
+            codeArith(*CallNoeud->getSuccPtr(i),NO_REG,&Op2);
             ilCoder.add(MOVE,Op2,ilCoder.createOp(A7,false,true),SizeOfArgument);
-            Stack.PushToStack(SizeOfArgument);
+            Stack.pushToStack(SizeOfArgument);
         }
         ilCoder.add(BSR,ilCoder.createOpLabel(CallNoeud->getTag()->GetIdentif()),SZ_NA);
         if (somme){
@@ -552,7 +551,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
         }
         //Stack.display();
         for (int i=CallNoeud->getSuccNmbr()-1;i>=0;i--){
-            Stack.Pop();
+            Stack.pop();
             //Stack.display();
         }
         break;
@@ -573,27 +572,27 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
         stepExpr = bInstr->GetFORExprArbreSTEP();
         varExpr = bInstr->GetFORExprAssigned();
         CorpsFor = bInstr->GetFORCorps();
-        SizeVarIter =GetSize(varExpr);
+        SizeVarIter =getSize(varExpr);
         EtiqForDebTest = ilCoder.createOpLabel();
         EtiqForFin = ilCoder.createOpLabel();
 
         // ---------------------------------------------------
         // Affectation initiale
         // ---------------------------------------------------
-        nG=NbRegArith(varExpr,NO_REG);
-        nD=NbRegArith(initExpr,NO_REG);
+        nG=getNbRegArith(varExpr,NO_REG);
+        nD=getNbRegArith(initExpr,NO_REG);
 
         if (nD >= nG){
-            CodeArith(initExpr,NO_REG,&ExprArbrAff);
+            codeArith(initExpr,NO_REG,&ExprArbrAff);
             registerStack->allocate(ExprArbrAff);
-            CodeArith(varExpr,NO_DADR,&ExprArbrAffected);
+            codeArith(varExpr,NO_DADR,&ExprArbrAffected);
             registerStack->freeOperand(ExprArbrAff);
             ilCoder.add(MOVE,ExprArbrAff,ExprArbrAffected,SizeVarIter);
         }
         else{
-            CodeArith(varExpr,NO_DADR,&ExprArbrAffected);
+            codeArith(varExpr,NO_DADR,&ExprArbrAffected);
             registerStack->allocate(ExprArbrAffected);
-            CodeArith(initExpr,NO_REG,&ExprArbrAff);
+            codeArith(initExpr,NO_REG,&ExprArbrAff);
             registerStack->freeOperand(ExprArbrAffected);
             ilCoder.add(MOVE,ExprArbrAff,ExprArbrAffected,SizeVarIter);
         }
@@ -604,7 +603,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 
         // temporaire sur la pile qui va contenir la valeur de l'expression d'arriv?e TO
         TexpTO=registerStack->allocateTemp(SizeVarIter);
-        CodeArith(finExpr,NO_REG,&ExprArbrAff);
+        codeArith(finExpr,NO_REG,&ExprArbrAff);
         //registerStack->allocate(ExprArbrAff);
         ilCoder.add(MOVE,ExprArbrAff,TexpTO,SizeVarIter);
         //registerStack->freeOperand(ExprArbrAff);
@@ -617,12 +616,12 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 
         // cas 1: pas de step
         if (stepExpr == NULL){
-            CodeArith(varExpr,NO_REG,&ExprArbrAffected);
+            codeArith(varExpr,NO_REG,&ExprArbrAffected);
             ilCoder.add(CMP,TexpTO,ExprArbrAffected,SizeVarIter);
             ilCoder.add(BGT,EtiqForFin,SZ_NA);
-            CodeInstr(CorpsFor);
+            codeInstr(CorpsFor);
             // iterateur = iterateur+1 sous entendu
-            CodeArith(varExpr,NO_DADR,&ExprArbrAffected);
+            codeArith(varExpr,NO_DADR,&ExprArbrAffected);
             ilCoder.add(ADD,ilCoder.createOpVal(1),ExprArbrAffected,SizeVarIter);
             ilCoder.add(BRA,EtiqForDebTest,SZ_NA);
         }
@@ -630,7 +629,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
         else if (stepExpr->isConstant()){
             int constStepVal;
             constStepVal = atoi(stepExpr->getTag()->GetIdentif());
-            CodeArith(varExpr,NO_REG,&ExprArbrAffected);
+            codeArith(varExpr,NO_REG,&ExprArbrAffected);
             ilCoder.add(CMP,TexpTO,ExprArbrAffected,SizeVarIter);
             if (constStepVal < 0){
                 ilCoder.add(BLT,EtiqForFin,SZ_NA);
@@ -638,9 +637,9 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
             else {
                 ilCoder.add(BGT,EtiqForFin,SZ_NA);
             }
-            CodeInstr(CorpsFor);
+            codeInstr(CorpsFor);
             // iterateur = iterateur+cte sous entendu
-            CodeArith(varExpr,NO_DADR,&ExprArbrAffected);
+            codeArith(varExpr,NO_DADR,&ExprArbrAffected);
             ilCoder.add(ADD,ilCoder.createOpVal(constStepVal),ExprArbrAffected,SizeVarIter);
             ilCoder.add(BRA,EtiqForDebTest,SZ_NA);
 
@@ -663,8 +662,8 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
         exprDo = bInstr->GetDOExprCondition();
         EtiqDebut = ilCoder.createOpLabel();
         ilCoder.addLabel(EtiqDebut->val.valLabel);
-        CodeInstr(CorpsDo);
-        CodeBool(exprDo,true,true,EtiqDebut,false,false);
+        codeInstr(CorpsDo);
+        codeBool(exprDo,true,true,EtiqDebut,false,false);
         break;
     case INS_STRUCT_DOWH:       // do while (condition) .... loop
         Collection* CorpsWhile;
@@ -679,15 +678,15 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 
         ilCoder.add(BRA,EtiqWhileFin,SZ_NA);        // on va directement voir le test
         ilCoder.addLabel(EtiqWhileDebut->val.valLabel);
-        CodeInstr(CorpsWhile);
+        codeInstr(CorpsWhile);
         ilCoder.addLabel(EtiqWhileFin->val.valLabel);
-        CodeBool(exprWhile,true,true,EtiqWhileDebut,false,false);
+        codeBool(exprWhile,true,true,EtiqWhileDebut,false,false);
 
         break;
     case INS_IF:
         CNoeud* exprIf;
         exprIf = bInstr->GetIFExprArbre();
-        //printf("CodeInstr IF\n");
+        //printf("codeInstr IF\n");
         //printf("Expression du If:\n");
         //exprIf->display();
 
@@ -713,12 +712,12 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
         // -------------------------------------------------------
         // Codage de expression de IF
         // -------------------------------------------------------
-        CodeBool(exprIf,true,false,EtiqFinCorpsIF,false,false); // le dernier false n'a aucun impact normalement
+        codeBool(exprIf,true,false,EtiqFinCorpsIF,false,false); // le dernier false n'a aucun impact normalement
 
         // -------------------------------------------------------
         // Codage de corps de IF
         // -------------------------------------------------------
-        CodeInstr(InstrCorpsIf);
+        codeInstr(InstrCorpsIf);
         if (!InstrCorpsElse->estVide() || !listExprElseIf->estVide() ){
             EtiqFinBloc = ilCoder.createOpLabel();
             ilCoder.add(BRA,EtiqFinBloc,SZ_NA);     // on ajoute un saut ? tout ? la fin s'il y a un else ou des elseif
@@ -746,12 +745,12 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
             // -------------------------------------------------------
             // Codage de expression de ElseIF
             // -------------------------------------------------------
-            CodeBool(exprElseIf,true,false,EtiqFinLocalCorpsElseIf,false,false);
+            codeBool(exprElseIf,true,false,EtiqFinLocalCorpsElseIf,false,false);
 
             // -------------------------------------------------------
             // Codage de corps de ElseIF
             // -------------------------------------------------------
-            CodeInstr(InstrCorpsElseIf);
+            codeInstr(InstrCorpsElseIf);
 
             if (!InstrCorpsElse->estVide()){            // il existe un Else, il ne faut pas executer son corps, donc saut ? la fin
                 ilCoder.add(BRA,EtiqFinBloc,SZ_NA);
@@ -767,7 +766,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
         if (EtiqDebutElse) {    // un elseif a cr?e une ?tiquette debut Else
             ilCoder.addLabel(EtiqDebutElse->val.valLabel);    // label fin corps ElseIf
         }
-        CodeInstr(InstrCorpsElse);
+        codeInstr(InstrCorpsElse);
 
         // -------------------------------------------------------
         //      label fin Global
@@ -783,7 +782,7 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
 }
 
 
-void Gen68k::GenerCode(){
+void Gen68k::generateCode(){
     ColIterator iter1;
     ColIterator iter2;
     FonctionItem* Fonc1;
@@ -808,23 +807,23 @@ void Gen68k::GenerCode(){
             }
             else {
                 ilCoder.addLabel(Fonc1->GetNom());
-                Stack.ClearStack();
+                Stack.clearStack();
                 Fonc1->GetArguListe()->bindIterator(&iter2);
                 while (iter2.elemExists()){
                     Var1=(VariableItem*)iter2.getElem();
                     // used? unused?
-                    Stack.PushToStack(Var1);
+                    Stack.pushToStack(Var1);
                     iter2.getNext();
                 }
-                Stack.PushToStack(4);   // l'adresse de retour de la fonction
+                Stack.pushToStack(4);   // l'adresse de retour de la fonction
                 //Stack.display();
 
                 tailleVarLocales=0;
                 Fonc1->GetVarListe()->bindIterator(&iter2);
                 while (iter2.elemExists()){
                     Var1=(VariableItem*)iter2.getElem();
-                    Stack.PushToStack(Var1);
-                    tailleVarLocales+=Var1->GetSize();
+                    Stack.pushToStack(Var1);
+                    tailleVarLocales+=Var1->getSize();
                     iter2.getNext();
                 }
                 if (tailleVarLocales)
@@ -833,10 +832,10 @@ void Gen68k::GenerCode(){
                 Stack.display();
 
                 Collection* InstrListe = Fonc1->GetInstrListe();
-                CodeInstr(InstrListe);
+                codeInstr(InstrListe);
 
 
-                Stack.ClearStack();
+                Stack.clearStack();
                 if (tailleVarLocales)
                     ilCoder.add(ADD,ilCoder.createOpVal(tailleVarLocales),ilCoder.createOp(SP_REG),SZ_L);
                 ilCoder.add(RTS);

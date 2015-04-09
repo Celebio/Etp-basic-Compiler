@@ -7,7 +7,7 @@
 typedef int reg_id;
 
 struct VirtStackElem{
-    int deepth;
+    int depth;
     VariableItem* var;
     VirtStackElem* next;
 };
@@ -19,12 +19,12 @@ public:
     VirtStack(void);
     ~VirtStack(void);
 
-    void PushToStack(VariableItem* bVar);
-    VariableItem* Pop();
+    void pushToStack(VariableItem* bVar);
+    VariableItem* pop();
 
-    void ClearStack();
+    void clearStack();
 
-    int GetStackPos(char* VarNom);
+    int getStackPos(char* varName);
     void display();
 };
 

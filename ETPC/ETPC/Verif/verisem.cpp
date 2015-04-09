@@ -64,7 +64,7 @@ bool VeriSem::TypeExiste(VariableItem* bVariable)
     return Found;
 }
 
-void VeriSem::SetEnvironnement(Collection* BerrListe,
+void VeriSem::setEnvironnement(Collection* BerrListe,
                             Collection* BVariablesPublic,
                             Collection* BTypes,
                             Collection* BFonctions)
@@ -108,9 +108,9 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 #endif
     switch(expr->getNature())
     {
-    case NOEUD_UNKNOWN:
+    case NODE_UNKNOWN:
         break;
-    case NOEUD_OPERATOR:
+    case NODE_OPERATOR:
         bOp=expr->getOperator();
         if (bOp==OPTOR_POINT)   // operateur d'acc?s
         {
@@ -306,7 +306,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
         //if (expr->getRightChild())
 
         break;
-    case NOEUD_OPERANDE_CTE:
+    case NODE_OPERAND_CONSTANT:
         #ifdef _DEBUGSEM
             printf("Donnee constante %i\n",1<<15);
         #endif
@@ -351,7 +351,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             retVal.Type=TP_BOOLEAN;
         }
         break;
-    case NOEUD_OPERANDE_VARIABLE:
+    case NODE_OPERAND_VARIABLE:
         #ifdef _DEBUGSEM
             printf("trouve une variable\n");
         #endif
@@ -466,7 +466,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
         #endif
 
         break;
-    case NOEUD_OPERANDE_FONCTION:
+    case NODE_OPERAND_FUNCTION:
         #ifdef _DEBUGSEM
             printf("utilise comme fonction\n");
         #endif
@@ -511,7 +511,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             pVarListe.getNext();
         }
         break;
-    case NOEUD_OPERANDE_ARRAY:
+    case NODE_OPERAND_ARRAY:
         #ifdef _DEBUGSEM
             printf("Trouve en tant que array\n");
         #endif
@@ -581,13 +581,13 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 #endif
     if (retVal.Type==TP_UNKNOWN)        // element non declar?
     {
-        if (expr->getNature()==NOEUD_OPERANDE_FONCTION)
+        if (expr->getNature()==NODE_OPERAND_FUNCTION)
             errListe->add("Fonction non declare",expr->getTag());
-        else if (expr->getNature()==NOEUD_OPERANDE_VARIABLE)
+        else if (expr->getNature()==NODE_OPERAND_VARIABLE)
             errListe->add("Variable non declare",expr->getTag());
-        else if (expr->getNature()==NOEUD_OPERANDE_ARRAY)
+        else if (expr->getNature()==NODE_OPERAND_ARRAY)
             errListe->add("Tableau non declare",expr->getTag());
-        else if (expr->getNature()==NOEUD_OPERATOR)
+        else if (expr->getNature()==NODE_OPERATOR)
             ;
         else
             errListe->add("Element non declare",expr->getTag());
@@ -602,7 +602,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             // conversion possible?
             // sinon:
             sprintf(bufferErrDescr,"Type incorrect. Conversion impossible de %s en %s",retVal.VarTypeTypeImage(),typeAttendu.VarTypeTypeImage());
-            if (expr->getNature() == NOEUD_OPERATOR)
+            if (expr->getNature() == NODE_OPERATOR)
                 errListe->add(bufferErrDescr,expr->getRightChild()->getTag());
             else
                 errListe->add(bufferErrDescr,expr->getTag());

@@ -34,13 +34,13 @@ Genz80::~Genz80(void){
 
 #define max(a,b) (a>b?a:b)
 
-void Genz80::TestGenerate(){
+void Genz80::testGenerate(){
     //ilCoder.add(LOAD,ilCoder.createOp(2,3),ilCoder.createOp(5),SZ_W);
     //ilCoder.display();
 }
 
 
-void Genz80::SetEnvironnement(Collection* BerrListe,
+void Genz80::setEnvironnement(Collection* BerrListe,
                             Collection* BVariablesPublic,
                             Collection* BTypes,
                             Collection* BFonctions)
@@ -51,25 +51,25 @@ void Genz80::SetEnvironnement(Collection* BerrListe,
     Fonctions=BFonctions;
 }
 
-int Genz80::NbRegObjet(CNoeud* bNoeud,NatureOpz80 bNat){
+int Genz80::getNbRegObject(CNoeud* bNoeud,NatureOpz80 bNat){
     return 0;
 }
 
-int Genz80::NbRegArith(CNoeud* bNoeud,NatureOpz80 bNat){
+int Genz80::getNbRegArith(CNoeud* bNoeud,NatureOpz80 bNat){
     return 0;
 }
 
 
 
 /*
-size_opz80 Genz80::GetSize(CNoeud* bNoeud){
+size_opz80 Genz80::getSize(CNoeud* bNoeud){
 
 }
 */
 
 
 
-void Genz80::GenerCode(){
+void Genz80::generateCode(){
     std::ofstream file(outputFileName);
     ilCoder.setStream(&file);
     ilCoder.displayHeader();

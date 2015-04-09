@@ -115,7 +115,7 @@ void IL::display(LigneCode* bLigne){
             printf("\t");
             printf("%s",ImageOp[bLigne->val.instr->opertr]);
             printf(".");
-            sz=bLigne->val.instr->Size;
+            sz=bLigne->val.instr->size;
             if (sz==SZ_UNKNOWN){
                 printf("?");
             }else if (sz==SZ_B){
@@ -152,7 +152,7 @@ void IL::add(InsOpEnum bOp,Operande* bOp1,Operande* bOp2,size_op bSize){
     aux1->opertr=bOp;
     aux1->op1=new Operande(*bOp1);
     aux1->op2=new Operande(*bOp2);
-    aux1->Size=bSize;
+    aux1->size=bSize;
     aux->val.instr=aux1;
 
     if (generatedCode==NULL){
@@ -171,7 +171,7 @@ void IL::add(InsOpEnum bOp,Operande* bOp1,size_op bSize){
     aux1->opertr=bOp;
     aux1->op1=new Operande(*bOp1);
     aux1->op2=NULL;
-    aux1->Size=bSize;
+    aux1->size=bSize;
     aux->val.instr=aux1;
 
     if (generatedCode==NULL){
@@ -190,7 +190,7 @@ void IL::add(InsOpEnum bOp){
     aux1->opertr=bOp;
     aux1->op1=NULL;
     aux1->op2=NULL;
-    aux1->Size=SZ_UNKNOWN;
+    aux1->size=SZ_UNKNOWN;
     aux->val.instr=aux1;
 
     if (generatedCode==NULL){

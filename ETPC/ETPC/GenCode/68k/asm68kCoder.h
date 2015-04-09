@@ -85,7 +85,7 @@ struct Operande68k {
 
 struct InstrIL{
     InsOpEnum68k opertr;
-    size_op68k Size;
+    size_op68k size;
     Operande68k* op1;
     Operande68k* op2;
 };

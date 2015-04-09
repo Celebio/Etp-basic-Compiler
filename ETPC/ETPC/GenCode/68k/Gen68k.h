@@ -50,30 +50,30 @@ private:
 
     int mNbRegMax;
 
-    size_op68k GetSize(CNoeud* bNoeud);
+    size_op68k getSize(CNoeud* bNoeud);
 
-    int NbRegArith(CNoeud* bNoeud,NatureOp bNat);
-    int NbRegObjet(CNoeud* bNoeud,NatureOp bNat);
-    int NbRegBool(CNoeud* bNoeud);
+    int getNbRegArith(CNoeud* bNoeud,NatureOp bNat);
+    int getNbRegObject(CNoeud* bNoeud,NatureOp bNat);
+    int getNbRegBool(CNoeud* bNoeud);
 
 
 
-    void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr);
-    void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr);
-    void CodeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg);
+    void codeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr);
+    void codeObject(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr);
+    void codeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg);
 
-    void CodeInstr(InstructionETPB* bInstr);
-    void CodeInstr(Collection* bInstrSuite);
+    void codeInstr(InstructionETPB* bInstr);
+    void codeInstr(Collection* bInstrSuite);
 
 public:
     Gen68k(void);
     Gen68k(const char *oFileName);
     ~Gen68k(void);
 
-    void TestGenerate();
-    void GenerCode();
+    void testGenerate();
+    void generateCode();
 
-    void SetEnvironnement(Collection* BerrListe,
+    void setEnvironnement(Collection* BerrListe,
                             Collection* BVariablesPublic,
                             Collection* BTypes,
                             Collection* BFonctions);

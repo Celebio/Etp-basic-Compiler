@@ -26,20 +26,20 @@ private:
 
     int mNbRegMax;
 
-    int NbRegArith(CNoeud* bNoeud,NatureOp bNat);
-    int NbRegObjet(CNoeud* bNoeud,NatureOp bNat);
+    int getNbRegArith(CNoeud* bNoeud,NatureOp bNat);
+    int getNbRegObject(CNoeud* bNoeud,NatureOp bNat);
 
-    void CodeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr);
-    void CodeObjet(CNoeud* bNoeud,NatureOp bNat,Operande** opertr);
+    void codeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr);
+    void codeObject(CNoeud* bNoeud,NatureOp bNat,Operande** opertr);
 
 public:
     GenIL(void);
     ~GenIL(void);
 
-    void TestGenerate();
-    void GenerCode();
+    void testGenerate();
+    void generateCode();
 
-    void SetEnvironnement(Collection* BerrListe,
+    void setEnvironnement(Collection* BerrListe,
                             Collection* BVariablesPublic,
                             Collection* BTypes,
                             Collection* BFonctions);

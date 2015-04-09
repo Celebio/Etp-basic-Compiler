@@ -8,24 +8,24 @@ VirtStack::VirtStack(){
 VirtStack::~VirtStack(){
 }
 
-void VirtStack::PushToStack(VariableItem* bVar){
+void VirtStack::pushToStack(VariableItem* bVar){
     VirtStackElem* aux=new VirtStackElem;
     VirtStackElem* pCour;
     int prevSize,exSize;
-    aux->deepth=0;
+    aux->depth=0;
     aux->var=bVar;
     aux->next=VirtualStackBuffer;
     VirtualStackBuffer=aux;
-    prevSize=aux->var->GetSize();
+    prevSize=aux->var->getSize();
     pCour=aux->next;
     while(pCour)
     {
-        pCour->deepth+=prevSize;
-        exSize=pCour->var->GetSize();
+        pCour->depth+=prevSize;
+        exSize=pCour->var->getSize();
         pCour=pCour->next;
     }
 }
-VariableItem* VirtStack::Pop(){
+VariableItem* VirtStack::pop(){
     VariableItem* Topest;
     Topest=VirtualStackBuffer->var;
     VirtStackElem* AEffacer=VirtualStackBuffer;
@@ -35,7 +35,7 @@ VariableItem* VirtStack::Pop(){
     return Topest;
 }
 
-void VirtStack::ClearStack(){
+void VirtStack::clearStack(){
 
     VirtStackElem* pCour=VirtualStackBuffer;
     VirtStackElem* precCour=pCour;
@@ -46,13 +46,13 @@ void VirtStack::ClearStack(){
     }
     VirtualStackBuffer=NULL;
 }
-int VirtStack::GetStackPos(char* VarNom)
+int VirtStack::getStackPos(char* varName)
 {
     VirtStackElem* pCour=VirtualStackBuffer;
     while(pCour)
     {
-        if (!strcmp(VarNom,pCour->var->GetTagNom()->GetIdentif()))
-            return pCour->deepth;
+        if (!strcmp(varName,pCour->var->GetTagNom()->GetIdentif()))
+            return pCour->depth;
         pCour=pCour->next;
     }
     return -77777;  // magic number pour dire qu'il n'a pas trouv? alors qu'il est cens?
@@ -63,7 +63,7 @@ void VirtStack::display(){
     printf("Virtual Stack State:\n");
     while(pCour)
     {
-        printf("deepth:%i  \t var_name:%s \t\tde size:%i\n",pCour->deepth,pCour->var->GetTagNom()->GetIdentif(),pCour->var->GetSize());
+        printf("depth:%i  \t var_name:%s \t\tde size:%i\n",pCour->depth,pCour->var->GetTagNom()->GetIdentif(),pCour->var->getSize());
         pCour=pCour->next;
     }
     //VirtualStackBuffer=NULL;

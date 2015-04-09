@@ -138,23 +138,23 @@ void Compiler::VerifSyntax(){
 }
 void Compiler::VerifSemantik(){
     Semantique = new VeriSem();
-    Semantique->SetEnvironnement(&errListe,mVarPublic,mUDTypes,mFonctions);
+    Semantique->setEnvironnement(&errListe,mVarPublic,mUDTypes,mFonctions);
     Semantique->VerifSem();
 }
 
 void Compiler::Gener68k(const char* outputFileName){
     if (!errListe.estVide()) return;
     Gen68k generator(outputFileName);
-    //generator.TestGenerate();
-    generator.SetEnvironnement(&errListe,mVarPublic,mUDTypes,mFonctions);
-    generator.GenerCode();
+    //generator.testGenerate();
+    generator.setEnvironnement(&errListe,mVarPublic,mUDTypes,mFonctions);
+    generator.generateCode();
 }
 void Compiler::Generz80(const char* outputFileName){
     if (!errListe.estVide()) return;
     Genz80 generz80(outputFileName);
-    generz80.SetEnvironnement(&errListe,mVarPublic,mUDTypes,mFonctions);
-    //generz80.TestGenerate();
-    generz80.GenerCode();
+    generz80.setEnvironnement(&errListe,mVarPublic,mUDTypes,mFonctions);
+    //generz80.testGenerate();
+    generz80.generateCode();
 }
 
 }

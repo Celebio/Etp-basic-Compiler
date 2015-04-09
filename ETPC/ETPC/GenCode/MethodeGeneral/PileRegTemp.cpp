@@ -90,12 +90,12 @@ Operande* PileRegTemp::allocateTemp(int size){
     retVal=mIL->createOp(0,SP_REG);
     mIL->add("Creation de temporaire");
     mIL->add(SUB,mIL->createOpVal(size),mIL->createOp(SP_REG),SZ_L);
-    mStack->PushToStack(StackVar);
+    mStack->pushToStack(StackVar);
     return retVal;
 }
 void PileRegTemp::freeTemp(Operande* T,int size){
     VariableItem* AEffacer;
-    AEffacer=mStack->Pop();
+    AEffacer=mStack->pop();
     mIL->add("Liberation de temporaire");
     mIL->add(ADD,mIL->createOpVal(size),mIL->createOp(SP_REG),SZ_L);
 

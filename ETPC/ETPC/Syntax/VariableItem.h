@@ -42,7 +42,7 @@ private:
     VarTypeType Type;   // Integer,Float,User-defined,etc..
     TAG* bTAGType;      // le TAG dont le champ Identif donne d?finit le type
     FonctionItem* Func;     // La fonction qui la contient (pour les variables locales)
-    int Size;           // size en octet
+    int size;           // size en octet
     bool Pointed;
 public:
     // CONSTRUCTEUR/DESTRUCTEUR
@@ -60,7 +60,7 @@ public:
     VarTypeType getType() {return Type;}
     TAG* GetTagType() {return bTAGType;}
     FonctionItem* GetFunc() {return Func;}
-    int GetSize() {return Size;}
+    int getSize() {return size;}
     bool GetPointed() {return Pointed;}
 
     // Set
@@ -70,7 +70,7 @@ public:
     void setType(VarTypeType bType) {Type=bType;}
     void SetTagType(TAG* nTAGType) {bTAGType=nTAGType;}
     void SetFunc(FonctionItem* bFunc) {Func=bFunc;}
-    void SetSize(int bSize) {Size=bSize;}
+    void SetSize(int bSize) {size=bSize;}
     void SetPointed(bool ptd) {Pointed=ptd;}
 };
 
