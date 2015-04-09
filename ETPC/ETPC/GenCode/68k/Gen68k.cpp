@@ -547,7 +547,9 @@ void Gen68k::CodeInstr(InstructionETPB* bInstr){
             Stack.PushToStack(SizeOfArgument);
         }
         ilCoder.add(BSR,ilCoder.createOpLabel(CallNoeud->getTag()->GetIdentif()),SZ_NA);
-        ilCoder.add(ADD,ilCoder.createOpVal(somme),ilCoder.createOp(SP_REG),SZ_L);
+        if (somme){
+            ilCoder.add(ADD,ilCoder.createOpVal(somme),ilCoder.createOp(SP_REG),SZ_L);
+        }
         //Stack.display();
         for (int i=CallNoeud->getSuccNmbr()-1;i>=0;i--){
             Stack.Pop();

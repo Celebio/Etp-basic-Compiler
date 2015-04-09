@@ -29,16 +29,13 @@ _main:
 	CMP.W	(A7),D1
 	BGT	.sysetiq1
 	BSR	clearscreen
-	ADD.L	#0,A7
 	MOVE.W	2(A7),D1
 	MULS.W	8(A7),D1
 	MOVE.W	D1,-(A7)
 	BSR	dispint
 	ADD.L	#2,A7
 	BSR	afficheuntruc
-	ADD.L	#0,A7
 	BSR	waitkey
-	ADD.L	#0,A7
 	ADD.W	#1,2(A7)
 	BRA	.sysetiq0
 .sysetiq1:
