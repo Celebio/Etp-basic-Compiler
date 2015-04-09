@@ -63,7 +63,7 @@ void VirtStack::display(){
     printf("Virtual Stack State:\n");
     while(pCour)
     {
-        printf("deepth:%i  \t var_name:%s \t\tde taille:%i\n",pCour->deepth,pCour->var->GetTagNom()->GetIdentif(),pCour->var->GetSize());
+        printf("deepth:%i  \t var_name:%s \t\tde size:%i\n",pCour->deepth,pCour->var->GetTagNom()->GetIdentif(),pCour->var->GetSize());
         pCour=pCour->next;
     }
     //VirtualStackBuffer=NULL;

@@ -81,27 +81,27 @@ void VeriSyn::NetoyerArbreParentheses(CNoeud *CurNoeud)
     CNoeud* filsG;
     if (CurNoeud==NULL) return;
 
-    filsD=CurNoeud->GetFilsD();
-    filsG=CurNoeud->GetFilsG();
+    filsD=CurNoeud->getRightChild();
+    filsG=CurNoeud->getLeftChild();
 
     if (filsD)
     {
-        if (filsD->GetTAG()->GetToken() == TOKEN_OPENPAR)
+        if (filsD->getTag()->GetToken() == TOKEN_OPENPAR)
         {
-            CurNoeud->SetFilsD(filsD->GetFilsD());
+            CurNoeud->setRightChild(filsD->getRightChild());
             delete filsD;
         }
-        NetoyerArbreParentheses(CurNoeud->GetFilsD());
+        NetoyerArbreParentheses(CurNoeud->getRightChild());
 
     }
     if (filsG)
     {
-        if (filsG->GetTAG()->GetToken() == TOKEN_OPENPAR)
+        if (filsG->getTag()->GetToken() == TOKEN_OPENPAR)
         {
-            CurNoeud->SetFilsG(filsG->GetFilsD());
+            CurNoeud->setLeftChild(filsG->getRightChild());
             delete filsG;
         }
-        NetoyerArbreParentheses(CurNoeud->GetFilsG());
+        NetoyerArbreParentheses(CurNoeud->getLeftChild());
     }
 
     return;
@@ -142,10 +142,10 @@ bool VeriSyn::VerifyExpression(bool requis,
 
 
         aux = new CNoeud(Cour);
-        //crTokType=aux->GetOperType();
+        //crTokType=aux->getOperType();
 
 
-        if (aux->GetNature()==NOEUD_UNKNOWN)
+        if (aux->getNature()==NOEUD_UNKNOWN)
         {
             errListe->add("Mot reserve non permis dans une expression",Cour);
             return false;
@@ -154,9 +154,9 @@ bool VeriSyn::VerifyExpression(bool requis,
         {
             if (Cour->GetToken()==TOKEN_MOINS)      // si le premier terme est un token_moins, ce token_moins est un operateur unaire droite
             {
-                aux->SetOperatorMoinsUnaire();
+                aux->setOperatorUnaryMinus();
             }
-            if (aux->GetOperType()==OPBIN || aux->GetOperType()==OPUNG)
+            if (aux->getOperType()==OPBIN || aux->getOperType()==OPUNG)
             {
                 // on a commenc? par un op?rateur binaire ou unaire_gauche-> faux
                 errListe->add("Inattendu ici ",Cour);
@@ -189,19 +189,19 @@ bool VeriSyn::VerifyExpression(bool requis,
                         errListe->add("Il manque un ')' ",Cour);
                         return false;
                     }
-                    aux=lastAdded->GetFilsD();
+                    aux=lastAdded->getRightChild();
                     VerifyExpression(false,Cour->GetNext(),CourEnd,true,&aux);
                     #ifdef _DEBUGARBRES
                         printf("dondum openpar basta\n");
                     #endif
-                    Arbre->SetFilsD(aux);
+                    Arbre->setRightChild(aux);
                     Cour=CourEnd;
                 }
             }
         }
         else
         {
-            if (aux->GetOperType()==OPBIN || aux->GetOperType()==OPUNG)
+            if (aux->getOperType()==OPBIN || aux->getOperType()==OPUNG)
             {
                 courNoeud=Arbre;
                 precNoeud=Arbre;
@@ -209,53 +209,53 @@ bool VeriSyn::VerifyExpression(bool requis,
                 // ? faire..
 
                 // insertion du noeud de l'op?rateur ? la bonne place en fonction de sa priorit?
-                while (courNoeud->GetOperator()> GiveOperatorType(Cour->GetToken()))
+                while (courNoeud->getOperator()> GiveOperatorType(Cour->GetToken()))
                 {
                     precNoeud=courNoeud;
-                    courNoeud=courNoeud->GetFilsD();
+                    courNoeud=courNoeud->getRightChild();
                 }
                 if (precNoeud==Arbre && courNoeud==Arbre)
                 {
                     Arbre=aux;
-                    aux->SetFilsG(courNoeud);
+                    aux->setLeftChild(courNoeud);
                 }
                 else
                 {
-                    aux->SetFilsG(courNoeud);
-                    precNoeud->SetFilsD(aux);
+                    aux->setLeftChild(courNoeud);
+                    precNoeud->setRightChild(aux);
                 }
             }
-            if (aux->GetOperType()==OPUND)
+            if (aux->getOperType()==OPUND)
             {
-                //if (!(GetOperatorType(lastAdded->GetTAG())==OPBIN || GetOperatorType(lastAdded->GetTAG())==OPUND))
-                if (!(lastAdded->GetOperType()==OPBIN || lastAdded->GetOperType()==OPUND))
+                //if (!(GetOperatorType(lastAdded->getTag())==OPBIN || GetOperatorType(lastAdded->getTag())==OPUND))
+                if (!(lastAdded->getOperType()==OPBIN || lastAdded->getOperType()==OPUND))
                 {
                     errListe->add("Operateur mal place ",Cour);
                     return false;
                 }
-                if (lastAdded->GetFilsD()==NULL)
-                    lastAdded->SetFilsD(aux);
+                if (lastAdded->getRightChild()==NULL)
+                    lastAdded->setRightChild(aux);
                 else
                 {   // impossible normalement
                     errListe->add("Erreur interne ",Cour);
                     return false;
                 }
             }
-            else if (aux->GetOperType()==NOTOP)
+            else if (aux->getOperType()==NOTOP)
             {
                 //if (lastAdded)
-                if (lastAdded->GetTAG()->GetToken()!=TOKEN_OPENPAR && lastAdded->GetOperType()!=OPBIN && lastAdded->GetOperType()!=OPUND && lastAdded->GetOperType()!=NOTOP)
+                if (lastAdded->getTag()->GetToken()!=TOKEN_OPENPAR && lastAdded->getOperType()!=OPBIN && lastAdded->getOperType()!=OPUND && lastAdded->getOperType()!=NOTOP)
                 {
                     errListe->add("Inattendu: Pas d'operateur pour cet operande ",Cour);
                     return false;
                 }
 
                 // une expression entre parentheses
-                if (Cour->GetToken()==TOKEN_OPENPAR && lastAdded->GetOperType()!=NOTOP)
+                if (Cour->GetToken()==TOKEN_OPENPAR && lastAdded->getOperType()!=NOTOP)
                 {
-                    if (lastAdded->GetFilsD()==NULL)    // ajout de l'operateur virtuel
+                    if (lastAdded->getRightChild()==NULL)    // ajout de l'operateur virtuel
                     {
-                        lastAdded->SetFilsD(aux);
+                        lastAdded->setRightChild(aux);
                         lastAdded=aux;
                     }
                     CourEnd = Cour;
@@ -274,17 +274,17 @@ bool VeriSyn::VerifyExpression(bool requis,
                         errListe->add("Il manque un ')' ",Cour);
                         return false;
                     }
-                    aux=lastAdded->GetFilsD();
+                    aux=lastAdded->getRightChild();
                     VerifyExpression(false,Cour->GetNext(),CourEnd,true,&aux);
                     #ifdef _DEBUGARBRES
                         printf("dondum \n");
                     #endif
                     Cour=CourEnd;
-                    if (lastAdded->GetFilsD()==NULL)
-                        lastAdded->SetFilsD(aux);
+                    if (lastAdded->getRightChild()==NULL)
+                        lastAdded->setRightChild(aux);
                 }
                 // appel de fonction
-                else if (Cour->GetToken()==TOKEN_OPENPAR && lastAdded->GetOperType()==NOTOP)
+                else if (Cour->GetToken()==TOKEN_OPENPAR && lastAdded->getOperType()==NOTOP)
                 {
                     #ifdef _DEBUGARBRES
                         printf("appel de fonction\n");
@@ -306,7 +306,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                             #ifdef _DEBUGARBRES
                                 printf("verification de l'expression pour l'argument %i\n",argCtr+1);
                             #endif
-                            VerifyExpression(false,Cour->GetNext(),CourEnd,true,lastAdded->GetSuccPtr(argCtr));
+                            VerifyExpression(false,Cour->GetNext(),CourEnd,true,lastAdded->getSuccPtr(argCtr));
                             argCtr++;
                             Cour=CourEnd;
                         }
@@ -316,8 +316,8 @@ bool VeriSyn::VerifyExpression(bool requis,
                         errListe->add("Il manque un ')' ",Cour);
                         return false;
                     }
-                    lastAdded->SetFilsD(NULL);
-                    lastAdded->SetFilsG(NULL);
+                    lastAdded->setRightChild(NULL);
+                    lastAdded->setLeftChild(NULL);
                     //argCtr=0;
                     //while (lastAdded->Successeur[argCtr])
                     //{
@@ -325,12 +325,12 @@ bool VeriSyn::VerifyExpression(bool requis,
                     //  argCtr++;
                     //}
 
-                    lastAdded->SetAsFonction();
+                    lastAdded->setAsFunction();
                     delete aux;
                     Cour=CourEnd;
                 }
                 // appel d'un tableau
-                else if (Cour->GetToken()==TOKEN_OPENCRO && lastAdded->GetOperType()==NOTOP)
+                else if (Cour->GetToken()==TOKEN_OPENCRO && lastAdded->getOperType()==NOTOP)
                 {
                     #ifdef _DEBUGARBRES
                         printf("appel d'un tableau\n");
@@ -352,7 +352,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                             #ifdef _DEBUGARBRES
                                 printf("verification de l'expression pour l'index %i\n",argCtr+1);
                             #endif
-                            VerifyExpression(true,Cour->GetNext(),CourEnd,true,lastAdded->GetSuccPtr(argCtr));
+                            VerifyExpression(true,Cour->GetNext(),CourEnd,true,lastAdded->getSuccPtr(argCtr));
                             argCtr++;
                             Cour=CourEnd;
                         }
@@ -362,21 +362,21 @@ bool VeriSyn::VerifyExpression(bool requis,
                         errListe->add("Il manque un ']' ",Cour);
                         return false;
                     }
-                    lastAdded->SetFilsD(NULL);
-                    lastAdded->SetFilsG(NULL);
-                    lastAdded->SetAsArray();
+                    lastAdded->setRightChild(NULL);
+                    lastAdded->setLeftChild(NULL);
+                    lastAdded->setAsArray();
                     delete aux;
                     Cour=CourEnd;
                 }
-                else if (Cour->GetToken()==TOKEN_OPENCRO && lastAdded->GetOperType()!=NOTOP)
+                else if (Cour->GetToken()==TOKEN_OPENCRO && lastAdded->getOperType()!=NOTOP)
                 {
                     errListe->add("Crochet non permis ici ",Cour);
                     return false;
                 }
                 else
                 {
-                    if (lastAdded->GetFilsD()==NULL)
-                        lastAdded->SetFilsD(aux);
+                    if (lastAdded->getRightChild()==NULL)
+                        lastAdded->setRightChild(aux);
                     else
                     {
                         // impossible normalement
@@ -721,7 +721,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         case INST_LOCAL06:
             if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
             {
-                tmpVar->SetType(GetVarType(Cour));
+                tmpVar->setType(GetVarType(Cour));
                 tmpVar->SetTagType(Cour);
                 State = INST_LOCAL07;
             }
@@ -1469,7 +1469,7 @@ void VeriSyn::VerifSyntax()
         case ST_P06:
             if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
             {
-                tmpVar->SetType(GetVarType(Cour));
+                tmpVar->setType(GetVarType(Cour));
                 tmpVar->SetTagType(Cour);
                 State = ST_P07;
             }
@@ -1618,7 +1618,7 @@ void VeriSyn::VerifSyntax()
         case ST_T08:
             if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
             {
-                tmpVar->SetType(GetVarType(Cour));
+                tmpVar->setType(GetVarType(Cour));
                 tmpVar->SetTagType(Cour);
                 State = ST_T09;
             }
@@ -1770,7 +1770,7 @@ void VeriSyn::VerifSyntax()
         case ST_PROC05:
             if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
             {
-                tmpVar->SetType(GetVarType(Cour));
+                tmpVar->setType(GetVarType(Cour));
                 tmpVar->SetTagType(Cour);
                 tmpVar->SetCar(VR_ARGU);
                 tmpVar->SetFunc(tmpFonc);
@@ -1908,7 +1908,7 @@ void VeriSyn::VerifSyntax()
         case ST_FUNC05:
             if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
             {
-                tmpVar->SetType(GetVarType(Cour));
+                tmpVar->setType(GetVarType(Cour));
                 tmpVar->SetTagType(Cour);
                 tmpVar->SetCar(VR_ARGU);
                 tmpVar->SetFunc(tmpFonc);

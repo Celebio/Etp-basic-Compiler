@@ -70,7 +70,7 @@ asm68kCoder::~asm68kCoder(void){
     *******************************************************************/
 InsOpEnum68k asm68kCoder::nodeToOp(CNoeud* bNoeud)
 {
-    switch(bNoeud->GetOperator())
+    switch(bNoeud->getOperator())
     {
     case OPTOR_NOT:
         return NOT;

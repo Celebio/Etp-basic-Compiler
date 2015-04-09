@@ -19,16 +19,16 @@ public:
     PileRegTemp(IL* bIL,VirtStack* bStack);
     ~PileRegTemp(void);
 
-    void Init(int nbReg);
+    void init(int nbReg);
     void Echange(void);
 
-    Operande* Sommet();
+    Operande* front();
 
-    void Allouer(Operande* M);
-    void Liberer(Operande* M);
+    void allocate(Operande* M);
+    void freeOperand(Operande* M);
 
-    Operande* AllouerTemp(int taille);
-    void LibererTemp(Operande* T,int taille);
+    Operande* allocateTemp(int size);
+    void freeTemp(Operande* T,int size);
 };
 
 #endif

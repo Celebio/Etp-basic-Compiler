@@ -28,7 +28,7 @@ void PileRegTemp::Empiler(reg_id R){
 }
 
 
-void PileRegTemp::Init(int nbReg){
+void PileRegTemp::init(int nbReg){
     int i;
     for(i=0;i<nbReg;i++){
         Pile[i]=i;
@@ -43,11 +43,11 @@ void PileRegTemp::Echange(void){
     Pile[1]=aux;
 }
 
-Operande* PileRegTemp::Sommet(){
+Operande* PileRegTemp::front(){
     return mIL->createOp(Pile[0]);
 }
 
-void PileRegTemp::Allouer(Operande* M){
+void PileRegTemp::allocate(Operande* M){
     if (M->nat==OP_DIRECT){
         depiler();
     }
@@ -62,7 +62,7 @@ void PileRegTemp::Allouer(Operande* M){
     else{
     }
 }
-void PileRegTemp::Liberer(Operande* M){
+void PileRegTemp::freeOperand(Operande* M){
     if (M->nat==OP_DIRECT){
         Empiler(M->val.directRegister);
     }
@@ -78,7 +78,7 @@ void PileRegTemp::Liberer(Operande* M){
     }
 }
 
-Operande* PileRegTemp::AllouerTemp(int taille){
+Operande* PileRegTemp::allocateTemp(int size){
     Operande* retVal;
     VariableItem* StackVar=new VariableItem();
     TAG *tagNomVar=new TAG();
@@ -86,18 +86,18 @@ Operande* PileRegTemp::AllouerTemp(int taille){
     sprintf(buffer,"_systVar%i",mTempCtr++);
     tagNomVar->SetIdentif(buffer);
     StackVar->SetTagNom(tagNomVar);
-    StackVar->SetSize(taille);
+    StackVar->SetSize(size);
     retVal=mIL->createOp(0,SP_REG);
     mIL->add("Creation de temporaire");
-    mIL->add(SUB,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
+    mIL->add(SUB,mIL->createOpVal(size),mIL->createOp(SP_REG),SZ_L);
     mStack->PushToStack(StackVar);
     return retVal;
 }
-void PileRegTemp::LibererTemp(Operande* T,int taille){
+void PileRegTemp::freeTemp(Operande* T,int size){
     VariableItem* AEffacer;
     AEffacer=mStack->Pop();
     mIL->add("Liberation de temporaire");
-    mIL->add(ADD,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
+    mIL->add(ADD,mIL->createOpVal(size),mIL->createOp(SP_REG),SZ_L);
 
     delete AEffacer->GetTagNom();
 }

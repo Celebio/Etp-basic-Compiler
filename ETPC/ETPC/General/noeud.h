@@ -109,7 +109,7 @@ private:
     bool valConstBool;
     char* valConstString;
 
-    natureOperator GetOperType(TAG* bTag);
+    natureOperator getOperType(TAG* bTag);
 public:
 
     CNoeud(void);
@@ -117,39 +117,39 @@ public:
     ~CNoeud(void);
 
 
-    CNoeud* AddFilsG(TAG* bTAG);
-    CNoeud* AddFilsD(TAG* bTAG);
+    CNoeud* addLeftChild(TAG* bTAG);
+    CNoeud* addRightChild(TAG* bTAG);
 
     void display(const char *S,const char *SD,const char *SG);
     void display();
     void display(int indent);
-    const char *ImageNoeud();
+    const char *getNodeRepr();
 
-    void DestroyArbre();
-    void SetFilsG(CNoeud* bNoeud);
-    void SetFilsD(CNoeud* bNoeud);
-    void SetType(VarTypeType bType);
-    void SetAsFonction();   // identifiant est une fonction
-    void SetAsArray();      // identifiant est un tableau
-    void SetOperatorMoinsUnaire();
-    void SetOperatorArith();    // cmp_and devient ari_and etc..
-    void SetNbReg(int Nb);
+    void destroyTree();
+    void setLeftChild(CNoeud* bNoeud);
+    void setRightChild(CNoeud* bNoeud);
+    void setType(VarTypeType bType);
+    void setAsFunction();   // identifiant est une fonction
+    void setAsArray();      // identifiant est un tableau
+    void setOperatorUnaryMinus();
+    void setOperatorArith();    // cmp_and devient ari_and etc..
+    void setNbReg(int nb);
 
-    bool EstFeuille();
-    bool EstCommutatif();
-    bool EstConstant();
-    void SimplifyConstantExpression();
+    bool isLeaf();
+    bool isCommutative();
+    bool isConstant();
+    void simplifyConstantExpression();
 
-    CNoeud* GetFilsG();
-    CNoeud* GetFilsD();
-    CNoeud** GetSuccPtr(int index);
-    int GetSuccNmbr();
-    NatureNoeud GetNature();
-    VarTypeType GetType();
-    TAG* GetTAG();
-    TypeOptor GetOperator();
-    int GetNbReg();
-    natureOperator GetOperType();
+    CNoeud* getLeftChild();
+    CNoeud* getRightChild();
+    CNoeud** getSuccPtr(int index);
+    int getSuccNmbr();
+    NatureNoeud getNature();
+    VarTypeType getType();
+    TAG* getTag();
+    TypeOptor getOperator();
+    int getNbReg();
+    natureOperator getOperType();
 };
 
 

@@ -18,16 +18,16 @@
 #define _PILEREGTEMP_H_1
 
 #include "asm68kCoder.h"
-#define TAILLE_PILED (D7-D1+1)
-#define TAILLE_PILEA (A6-A0+1)
+#define D_STACK_SIZE (D7-D1+1)
+#define A_STACK_SIZE (A6-A0+1)
 
 class PileRegTemp68k{
 private:
-    reg_id PileD[TAILLE_PILED];
-    reg_id PileA[TAILLE_PILEA];
+    reg_id stackForD[D_STACK_SIZE];
+    reg_id stackForA[A_STACK_SIZE];
 
-    void depilerD(void);
-    void EmpilerD(reg_id R);
+    void popD(void);
+    void pushD(reg_id R);
     int nb_reg;
     asm68kCoder* mIL;
     VirtStack68k* mStack;
@@ -37,16 +37,16 @@ public:
     PileRegTemp68k(asm68kCoder* bIL,VirtStack68k* bStack);
     ~PileRegTemp68k(void);
 
-    void Init();
-    void EchangeD(void);
+    void init();
+    void switchD(void);
 
-    Operande68k* Sommet();
+    Operande68k* front();
 
-    void Allouer(Operande68k* M);
-    void Liberer(Operande68k* M);
+    void allocate(Operande68k* M);
+    void freeOperand(Operande68k* M);
 
-    Operande68k* AllouerTemp(int taille);
-    void LibererTemp(Operande68k* T,int taille);
+    Operande68k* allocateTemp(int size);
+    void freeTemp(Operande68k* T,int size);
 };
 
 #endif

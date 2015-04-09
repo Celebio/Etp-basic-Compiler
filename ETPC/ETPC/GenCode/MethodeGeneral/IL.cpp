@@ -33,7 +33,7 @@ IL::~IL(void){
     *******************************************************************/
 InsOpEnum IL::nodeToOp(CNoeud* bNoeud)
 {
-    switch(bNoeud->GetOperator())
+    switch(bNoeud->getOperator())
     {
     case OPTOR_NOT:
         return NOT;

@@ -28,73 +28,73 @@ PileRegTemp68k::PileRegTemp68k(asm68kCoder* bIL,VirtStack68k* bStack){
     mStack=bStack;
 }
 
-void PileRegTemp68k::depilerD(void){
+void PileRegTemp68k::popD(void){
     int i;
-    for (i=0;i<TAILLE_PILED-1;i++){
-        PileD[i]=PileD[i+1];
+    for (i=0;i<D_STACK_SIZE-1;i++){
+        stackForD[i]=stackForD[i+1];
     }
-    PileD[TAILLE_PILED-1]=UNDEFREG;
+    stackForD[D_STACK_SIZE-1]=UNDEFREG;
 }
-void PileRegTemp68k::EmpilerD(reg_id R){
+void PileRegTemp68k::pushD(reg_id R){
     int i;
-    for (i=TAILLE_PILED;i>0;i--){
-        PileD[i]=PileD[i-1];
+    for (i=D_STACK_SIZE;i>0;i--){
+        stackForD[i]=stackForD[i-1];
     }
-    PileD[0]=R;
+    stackForD[0]=R;
 }
 
 
-void PileRegTemp68k::Init(){
+void PileRegTemp68k::init(){
     int i;
-    for(i=0;i<TAILLE_PILED;i++){
-        PileD[i]=(reg_id)(i+D1);
+    for(i=0;i<D_STACK_SIZE;i++){
+        stackForD[i]=(reg_id)(i+D1);
     }
-    for(;i<TAILLE_PILED;i++){
-        PileD[i]=UNDEFREG;
+    for(;i<D_STACK_SIZE;i++){
+        stackForD[i]=UNDEFREG;
     }
 }
-void PileRegTemp68k::EchangeD(void){
-    reg_id aux=PileD[0];
-    PileD[0]=PileD[1];
-    PileD[1]=aux;
+void PileRegTemp68k::switchD(void){
+    reg_id aux=stackForD[0];
+    stackForD[0]=stackForD[1];
+    stackForD[1]=aux;
 }
 
-Operande68k* PileRegTemp68k::Sommet(){
-    return mIL->createOp(PileD[0]);
+Operande68k* PileRegTemp68k::front(){
+    return mIL->createOp(stackForD[0]);
 }
 
-void PileRegTemp68k::Allouer(Operande68k* M){
+void PileRegTemp68k::allocate(Operande68k* M){
     if (M->nat==OP_DIRECT){
-        depilerD();
+        popD();
     }
     else if (M->nat==OP_INDIRECT){
         if (M->val.indirect.baseRegister!=SP_REG){
-            depilerD();
+            popD();
         }
     }
     else if (M->nat==OP_INDEXE){
-        depilerD();
+        popD();
     }
     else{
     }
 }
-void PileRegTemp68k::Liberer(Operande68k* M){
+void PileRegTemp68k::freeOperand(Operande68k* M){
     if (M->nat==OP_DIRECT){
-        EmpilerD(M->val.directRegister);
+        pushD(M->val.directRegister);
     }
     else if (M->nat==OP_INDIRECT){
         if (M->val.indirect.baseRegister!=SP_REG){
-            EmpilerD(M->val.indirect.baseRegister);
+            pushD(M->val.indirect.baseRegister);
         }
     }
     else if (M->nat==OP_INDEXE){
-        EmpilerD(M->val.indexed.indexRegister);
+        pushD(M->val.indexed.indexRegister);
     }
     else{
     }
 }
 
-Operande68k* PileRegTemp68k::AllouerTemp(int taille){
+Operande68k* PileRegTemp68k::allocateTemp(int size){
     Operande68k* retVal;
     VariableItem* StackVar=new VariableItem();
     TAG *tagNomVar=new TAG();
@@ -102,18 +102,18 @@ Operande68k* PileRegTemp68k::AllouerTemp(int taille){
     sprintf(buffer,"_systVar%i",mTempCtr++);
     tagNomVar->SetIdentif(buffer);
     StackVar->SetTagNom(tagNomVar);
-    StackVar->SetSize(taille);
+    StackVar->SetSize(size);
     retVal=mIL->createOp(0,SP_REG);
     mIL->add("Creation de temporaire");
-    mIL->add(SUB,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
+    mIL->add(SUB,mIL->createOpVal(size),mIL->createOp(SP_REG),SZ_L);
     mStack->PushToStack(StackVar);
     return retVal;
 }
-void PileRegTemp68k::LibererTemp(Operande68k* T,int taille){
+void PileRegTemp68k::freeTemp(Operande68k* T,int size){
     VariableItem* AEffacer;
     AEffacer=mStack->Pop();
     mIL->add("Liberation de temporaire");
-    mIL->add(ADD,mIL->createOpVal(taille),mIL->createOp(SP_REG),SZ_L);
+    mIL->add(ADD,mIL->createOpVal(size),mIL->createOp(SP_REG),SZ_L);
 
     delete AEffacer->GetTagNom();
 }

@@ -40,7 +40,7 @@ public:
     ~VirtStackz80(void);
 
     void PushToStack(VariableItem* bVar);
-    void PushToStack(int taille);
+    void PushToStack(int size);
     VariableItem* Pop();
 
     void ClearStack();

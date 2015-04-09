@@ -69,7 +69,7 @@ CNoeud::CNoeud(TAG* bTAG)
     // faut faire des trucs du style... (pour la g?n?ration de code)
     //if (bTAG->Token ==
     mOperator=GiveOperatorType(bTAG->GetToken());
-    mOperType=GetOperType(bTAG);
+    mOperType=getOperType(bTAG);
     if (mOperator!=OPTOR_UNKNOWN)
         mNature=NOEUD_OPERATOR;
     else
@@ -95,29 +95,29 @@ CNoeud::CNoeud(TAG* bTAG)
 
 CNoeud::~CNoeud(void)
 {
-    DestroyArbre();
+    destroyTree();
 }
 
-void CNoeud::DestroyArbre(){
+void CNoeud::destroyTree(){
     if (mFilsG)
     {
-        mFilsG->DestroyArbre();
+        mFilsG->destroyTree();
         delete mFilsG;
     }
     if (mFilsD)
     {
-        mFilsD->DestroyArbre();
+        mFilsD->destroyTree();
         delete mFilsD;
     }
     for(int i=0;i<30;i++)
         if (Successeur[i])
         {
-            Successeur[i]->DestroyArbre();
+            Successeur[i]->destroyTree();
             delete Successeur[i];
         }
 }
 
-const char *CNoeud::ImageNoeud(){
+const char *CNoeud::getNodeRepr(){
     if (mOperator==OPTOR_MOINSUNAIRE)
         return "-U";
     if (!(mTAG->GetToken() ==TOKEN_IDENTIF || mTAG->GetToken() ==TOKEN_NOMBRE || mTAG->GetToken() ==TOKEN_STRINGCONSTANT))
@@ -134,7 +134,7 @@ void CNoeud::display(const char *S,const char *SD,const char *SG){
     char str3[300];
     char Ind[300];
     unsigned int i,j;
-    for (i=0;i<strlen(ImageNoeud());i++)
+    for (i=0;i<strlen(getNodeRepr());i++)
         Ind[i]=32;
     Ind[i]=0;
 
@@ -147,19 +147,19 @@ void CNoeud::display(const char *S,const char *SD,const char *SG){
     for(j=0;j<30 && !Successeur[j];j++);
 
     if (mFilsD==NULL && mFilsG==NULL && j==30)
-        printf("%s+-<%s >\n",S,ImageNoeud());
+        printf("%s+-<%s >\n",S,getNodeRepr());
     else if (j<30)
     {
         if (mNature==NOEUD_OPERANDE_FONCTION)
-            printf("%s+-<%s >-(\n",S,ImageNoeud());
+            printf("%s+-<%s >-(\n",S,getNodeRepr());
         else if (mNature==NOEUD_OPERANDE_ARRAY)
-            printf("%s+-<%s >-[\n",S,ImageNoeud());
+            printf("%s+-<%s >-[\n",S,getNodeRepr());
         else
-            printf("%s+-<%s >-?\n",S,ImageNoeud());
+            printf("%s+-<%s >-?\n",S,getNodeRepr());
 
     }
     else
-        printf("%s+-<%s >-|\n",S,ImageNoeud());
+        printf("%s+-<%s >-|\n",S,getNodeRepr());
 
 
     sprintf(str1,"%s%s     ",SG,Ind);
@@ -188,7 +188,7 @@ void CNoeud::display(){
 void CNoeud::display(int indent){
     for(int i=0;i<indent;i++)
         printf(" ");
-    printf("<%s>\n",ImageNoeud());
+    printf("<%s>\n",getNodeRepr());
     if (mFilsG)
         mFilsG->display(indent+5);
     if (mFilsD)
@@ -200,11 +200,11 @@ void CNoeud::display(int indent){
         }
 }
 
-CNoeud* CNoeud::AddFilsD(TAG* bTAG){
+CNoeud* CNoeud::addRightChild(TAG* bTAG){
     mFilsD = new CNoeud(bTAG);
     return mFilsD;
 }
-CNoeud* CNoeud::AddFilsG(TAG* bTAG){
+CNoeud* CNoeud::addLeftChild(TAG* bTAG){
     mFilsG = new CNoeud(bTAG);
     return mFilsG;
 }
@@ -264,29 +264,29 @@ TypeOptor GiveOperatorType(enumTokenType bToken)
 }
 
 
-void CNoeud::SetFilsD(CNoeud *bNoeud){
+void CNoeud::setRightChild(CNoeud *bNoeud){
     mFilsD=bNoeud;
 }
-void CNoeud::SetFilsG(CNoeud *bNoeud){
+void CNoeud::setLeftChild(CNoeud *bNoeud){
     mFilsG=bNoeud;
 }
-void CNoeud::SetAsFonction(){
+void CNoeud::setAsFunction(){
     mNature=NOEUD_OPERANDE_FONCTION;
     #ifdef _DEBUGARBRES
         printf("finalement function\n");
     #endif
 }
-void CNoeud::SetAsArray(){
+void CNoeud::setAsArray(){
     mNature=NOEUD_OPERANDE_ARRAY;
     #ifdef _DEBUGARBRES
         printf("finalement array\n");
     #endif
 }
-void CNoeud::SetOperatorMoinsUnaire(){
+void CNoeud::setOperatorUnaryMinus(){
     mOperator=OPTOR_MOINSUNAIRE;
     mOperType=OPUND;
 }
-void CNoeud::SetOperatorArith(){
+void CNoeud::setOperatorArith(){
     if (mOperator==OPTOR_CMP_AND){
         mOperator=OPTOR_ARI_AND;
     }
@@ -297,61 +297,61 @@ void CNoeud::SetOperatorArith(){
         mOperator=OPTOR_ARI_XOR;
     }
 }
-void CNoeud::SetType(VarTypeType bType){
+void CNoeud::setType(VarTypeType bType){
     if (bType.Type!=TP_USER)
         bType.Expr=NULL;
     mType=bType;
 }
-void CNoeud::SetNbReg(int Nb){
-    nbReg=Nb;
+void CNoeud::setNbReg(int nb){
+    nbReg=nb;
 }
 
-bool CNoeud::EstFeuille(){
+bool CNoeud::isLeaf(){
     return (mFilsG==NULL && mFilsD==NULL);
 };
 
-int CNoeud::GetNbReg(){
+int CNoeud::getNbReg(){
     return nbReg;
 }
 
-CNoeud* CNoeud::GetFilsG(){
+CNoeud* CNoeud::getLeftChild(){
     return mFilsG;
 }
-CNoeud* CNoeud::GetFilsD(){
+CNoeud* CNoeud::getRightChild(){
     return mFilsD;
 }
-CNoeud** CNoeud::GetSuccPtr(int index){
+CNoeud** CNoeud::getSuccPtr(int index){
     return &Successeur[index];
 }
-int CNoeud::GetSuccNmbr(){
+int CNoeud::getSuccNmbr(){
     int i;
     for(i=0;Successeur[i]!=NULL;i++);
     return i;
 }
-NatureNoeud CNoeud::GetNature(){
+NatureNoeud CNoeud::getNature(){
     return mNature;
 }
-VarTypeType CNoeud::GetType(){
+VarTypeType CNoeud::getType(){
     return mType;
 }
-TAG* CNoeud::GetTAG(){
+TAG* CNoeud::getTag(){
     return mTAG;
 }
-TypeOptor CNoeud::GetOperator(){
+TypeOptor CNoeud::getOperator(){
     return mOperator;
 }
 
-natureOperator CNoeud::GetOperType(){
+natureOperator CNoeud::getOperType(){
     return mOperType;
 }
-bool CNoeud::EstCommutatif(){
+bool CNoeud::isCommutative(){
     if (mOperator== OPTOR_MULT || mOperator== OPTOR_ADD || mOperator== OPTOR_CONCAT ||
         mOperator== OPTOR_EQUAL || mOperator== OPTOR_DIFFERENT || mOperator== OPTOR_CMP_AND ||
         mOperator== OPTOR_CMP_OR)
         return true;
     return false;
 }
-natureOperator CNoeud::GetOperType(TAG* bTag)
+natureOperator CNoeud::getOperType(TAG* bTag)
 {
     enumTokenType bToken = bTag->GetToken();
     if ((bToken >= TOKEN_PLUS && bToken <= TOKEN_CONCAT) ||
@@ -367,19 +367,19 @@ natureOperator CNoeud::GetOperType(TAG* bTag)
         return NOTOP;
 }
 
-bool CNoeud::EstConstant(){
+bool CNoeud::isConstant(){
     if (mNature==NOEUD_OPERANDE_CTE){
         return true;
     }
     else if (mNature==NOEUD_OPERATOR){
         if (mFilsG && mFilsD){
-            return (mFilsG->EstConstant() && mFilsD->EstConstant());
+            return (mFilsG->isConstant() && mFilsD->isConstant());
         }
         else if (mFilsG){
-            return mFilsG->EstConstant();
+            return mFilsG->isConstant();
         }
         else if (mFilsD){
-            return mFilsD->EstConstant();
+            return mFilsD->isConstant();
         }
         else {
             return false;   // un operateur sans fils, normalement impossible
@@ -388,8 +388,8 @@ bool CNoeud::EstConstant(){
     return false;
 }
 
-void CNoeud::SimplifyConstantExpression(){
-    if (!EstConstant()) return;
+void CNoeud::simplifyConstantExpression(){
+    if (!isConstant()) return;
     printf("ok on va simplifier\n");
     this->display();
     VarTypeType unknownVal(TP_UNKNOWN);
@@ -406,13 +406,13 @@ void CNoeud::SimplifyConstantExpression(){
     {
     case NOEUD_OPERATOR:
         if (mOperType==OPBIN){
-            mFilsG->SimplifyConstantExpression();
-            mFilsD->SimplifyConstantExpression();
+            mFilsG->simplifyConstantExpression();
+            mFilsD->simplifyConstantExpression();
 
-            if (mFilsG->EstConstant() && mFilsD->EstConstant()){
-                this->GetType();
-                courIdentif1=mFilsG->GetTAG()->GetIdentif();
-                courIdentif2=mFilsD->GetTAG()->GetIdentif();
+            if (mFilsG->isConstant() && mFilsD->isConstant()){
+                this->getType();
+                courIdentif1=mFilsG->getTag()->GetIdentif();
+                courIdentif2=mFilsD->getTag()->GetIdentif();
                 if (mType==intVal || mType==longVal || mType==byteVal){
                     if (mOperator==OPTOR_ADD){
                         *this = *mFilsG;
@@ -486,8 +486,8 @@ void CNoeud::SimplifyConstantExpression(){
         }
         else if (mOperType==OPUND){
             if (mOperator==OPTOR_MOINSUNAIRE){
-                if (mFilsD->EstConstant()){
-                    courIdentif1=mFilsD->GetTAG()->GetIdentif();
+                if (mFilsD->isConstant()){
+                    courIdentif1=mFilsD->getTag()->GetIdentif();
                     if (mType == intVal || mType==longVal || mType==byteVal){
                         sprintf(courIdentif1,"%i",-atoi(courIdentif1));
                     }

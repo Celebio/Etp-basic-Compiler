@@ -42,14 +42,14 @@ void VirtStack68k::PushToStack(VariableItem* bVar){
         pCour=pCour->next;
     }
 }
-void VirtStack68k::PushToStack(int taille){
+void VirtStack68k::PushToStack(int size){
     VariableItem* StackVar=new VariableItem();
     TAG *tagNomVar=new TAG();
     char* buffer= new char[200];
     sprintf(buffer,"_systArgVar%i",mTempCtr++);
     tagNomVar->SetIdentif(buffer);
     StackVar->SetTagNom(tagNomVar);
-    StackVar->SetSize(taille);
+    StackVar->SetSize(size);
     PushToStack(StackVar);
 }
 VariableItem* VirtStack68k::Pop(){
@@ -102,7 +102,7 @@ void VirtStack68k::display(){
     printf("Virtual Stack State:\n");
     while(pCour)
     {
-        printf("deepth:%i  \t var_name:%s \t\tde taille:%i\n",pCour->deepth,pCour->var->GetTagNom()->GetIdentif(),pCour->var->GetSize());
+        printf("deepth:%i  \t var_name:%s \t\tde size:%i\n",pCour->deepth,pCour->var->GetTagNom()->GetIdentif(),pCour->var->GetSize());
         pCour=pCour->next;
     }
     //VirtualStackBuffer=NULL;

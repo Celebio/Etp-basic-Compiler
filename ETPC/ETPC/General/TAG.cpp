@@ -78,7 +78,7 @@ const char *ReservedWords[] = {
     "/",
     "&",    // concat
     "!",
-    "'",    // commentaire .. tout ce qui suit cest juste pour avoir un tableau de meme taille que le tableau de token
+    "'",    // commentaire .. tout ce qui suit cest juste pour avoir un tableau de meme size que le tableau de token
     " ",    // espace
     " ",    // END OF MODULE
     " ",    //crlf

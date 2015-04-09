@@ -23,7 +23,7 @@ DimElemItem::~DimElemItem(void){}
 
 void DimElemItem::destroy()
 {
-    expr->DestroyArbre();
+    expr->destroyTree();
 }
 void DimElemItem::display()
 {
