@@ -67,9 +67,9 @@ private:
             Collection* body;
         } instrDo;
 
-        VariableItem* declaredVariable;     // la variable d?clar?e
-        CNoeud* exprFunctionCall;       // l'expression de l'appel de procedure
-        CNoeud* exprReturn;     // l'expression retourn?e
+        VariableItem* declaredVariable;
+        CNoeud* exprFunctionCall;
+        CNoeud* exprReturn;
     } val;
 
     void printProblem();
@@ -79,11 +79,9 @@ public:
     InstructionETPB(InstrTypeEnum bNat);
     ~InstructionETPB(void);
 
-    // les oblig?s
     void destroy();
     void display();
 
-    // divers
     void ChangeNatINS_STRUCT_DOWH()
     {
         if (nat==INS_STRUCT_DOLPWH)
@@ -98,137 +96,137 @@ public:
     InstrTypeEnum getNat(){ return nat;}
 
     /* AFFECTATION  */
-    CNoeud* GetAffectExprAssigned(){
+    CNoeud* getAssignmentExprAssigned(){
         if (nat==INS_AFFECTATION) return val.instrAssignment.exprAssigned;
         /*...else */printProblem(); return NULL;
     }
-    void SetAffectExprAssigned(CNoeud* bNoeud){
+    void setAssignmentExprAssigned(CNoeud* bNoeud){
         val.instrAssignment.exprAssigned=bNoeud;
     }
-    CNoeud** GetAffectExprAssignedPtr(){
+    CNoeud** getAssignmentExprAssignedPtr(){
         if (nat==INS_AFFECTATION) return &(val.instrAssignment.exprAssigned);
         /*...else */printProblem(); return NULL;
     }
-    CNoeud* GetAffectExprArbre(){
+    CNoeud* getAssignmentExprTree(){
         if (nat==INS_AFFECTATION) return val.instrAssignment.exprTree;
         /*...else */printProblem(); return NULL;
     }
-    CNoeud** GetAffectExprArbrePtr(){
+    CNoeud** getAssignmentExprTreePtr(){
         if (nat==INS_AFFECTATION) return &(val.instrAssignment.exprTree);
         /*...else */printProblem(); return NULL;
     }
 
     /* IF   */
-    CNoeud* GetIFExprArbre(){
+    CNoeud* getIfExprTree(){
         if (nat==INS_IF) return val.instrIfCondition.exprTree;
         /*...else */printProblem(); return NULL;
     }
-    CNoeud** GetIFExprArbrePtr(){
+    CNoeud** getIfExprTreePtr(){
         if (nat==INS_IF) return &(val.instrIfCondition.exprTree);
         /*...else */printProblem(); return NULL;
     }
-    Collection* GetIFIfCorps(){
+    Collection* getIfIfBody(){
         if (nat==INS_IF) return val.instrIfCondition.ifBody;
         /*...else */printProblem(); return NULL;
     }
-    Collection* GetIFExprElseIf(){
+    Collection* getIfExprElseIf(){
         if (nat==INS_IF) return val.instrIfCondition.exprElseIf;
         /*...else */printProblem(); return NULL;
     }
-    Collection* GetIFElseCorps(){
+    Collection* getIfElseBody(){
         if (nat==INS_IF) return val.instrIfCondition.elseBody;
         /*...else */printProblem(); return NULL;
     }
-    Collection* GetIFElseIfCorps(){
+    Collection* getIfElseIfBody(){
         if (nat==INS_IF) return val.instrIfCondition.elseIfBody;
         /*...else */printProblem(); return NULL;
     }
 
     /* FOR  */
-    CNoeud* GetFORExprAssigned(){
+    CNoeud* getForExprAssigned(){
         if (nat==INS_STRUCT_FOR) return val.instrFor.exprAssigned;
         /*...else */printProblem(); return NULL;
     }
-    void SetFORExprAssigned(CNoeud* bNoeud){
+    void setForExprAssigned(CNoeud* bNoeud){
         val.instrFor.exprAssigned=bNoeud;
     }
-    CNoeud** GetFORExprAssignedPtr(){
+    CNoeud** getForExprAssignedPtr(){
         if (nat==INS_STRUCT_FOR) return &(val.instrFor.exprAssigned);
         /*...else */printProblem(); return NULL;
     }
 
-    CNoeud* GetFORExprArbreINIT(){
+    CNoeud* getForExprInitTree(){
         if (nat==INS_STRUCT_FOR) return val.instrFor.exprInitTree;
         /*...else */printProblem(); return NULL;
     }
-    void SetFORExprArbreINIT(CNoeud* bNoeud){
+    void setForExprInitTree(CNoeud* bNoeud){
         val.instrFor.exprInitTree=bNoeud;
     }
-    CNoeud** GetFORExprArbreINITPtr(){
+    CNoeud** getForExprInitTreePtr(){
         if (nat==INS_STRUCT_FOR) return &(val.instrFor.exprInitTree);
         /*...else */printProblem(); return NULL;
     }
-    CNoeud* GetFORExprArbreTO(){
+    CNoeud* getForExprToTree(){
         if (nat==INS_STRUCT_FOR) return val.instrFor.exprToTree;
         /*...else */printProblem(); return NULL;
     }
-    void SetFORExprArbreTO(CNoeud* bNoeud)
+    void setForExprToTree(CNoeud* bNoeud)
     {
         val.instrFor.exprToTree=bNoeud;
     }
-    CNoeud** GetFORExprArbreTOPtr(){
+    CNoeud** getForExprToTreePtr(){
         if (nat==INS_STRUCT_FOR) return &(val.instrFor.exprToTree);
         /*...else */printProblem(); return NULL;
     }
-    CNoeud* GetFORExprArbreSTEP(){
+    CNoeud* getForExprStepTree(){
         if (nat==INS_STRUCT_FOR) return val.instrFor.exprStepTree;
         /*...else */printProblem(); return NULL;
     }
-    CNoeud** GetFORExprArbreSTEPPtr(){
+    CNoeud** getForExprStepTreePtr(){
         if (nat==INS_STRUCT_FOR) return &(val.instrFor.exprStepTree);
         /*...else */printProblem(); return NULL;
     }
-    Collection* GetFORCorps(){
+    Collection* getForBody(){
         if (nat==INS_STRUCT_FOR) return val.instrFor.body;
         /*...else */printProblem(); return NULL;
     }
 
     /*  DO  */
-    CNoeud* GetDOExprCondition(){
+    CNoeud* getDoExprCondition(){
         if (nat==INS_STRUCT_DOWH || nat==INS_STRUCT_DOLPWH) return val.instrDo.exprCondition;
         /*...else */printProblem(); return NULL;
     }
-    CNoeud** GetDOExprConditionPtr(){
+    CNoeud** getDoExprConditionPtr(){
         if (nat==INS_STRUCT_DOWH || nat==INS_STRUCT_DOLPWH) return &(val.instrDo.exprCondition);
         /*...else */printProblem(); return NULL;
     }
 
-    Collection* GetDOCorps(){
+    Collection* getDoBody(){
         if (nat==INS_STRUCT_DOWH || nat==INS_STRUCT_DOLPWH) return val.instrDo.body;
         /*...else */printProblem(); return NULL;
     }
 
-    VariableItem* GetDeclDeclared(){
+    VariableItem* getDeclaredVariable(){
         if (nat==INS_DECLARATION) return val.declaredVariable;
         /*...else */printProblem(); return NULL;
     }
-    CNoeud* GetCallExpr(){
+    CNoeud* getExprFunctionCall(){
         if (nat==INS_CALL) return val.exprFunctionCall;
         /*...else */printProblem(); return NULL;
     }
-    CNoeud** GetCallExprPtr(){
+    CNoeud** getExprFunctionCallPtr(){
         if (nat==INS_CALL) return &(val.exprFunctionCall);
         /*...else */printProblem(); return NULL;
     }
-    CNoeud* GetReturnExpr(){
+    CNoeud* getExprReturn(){
         if (nat==INS_RETURN) return val.exprReturn;
         /*...else */printProblem(); return NULL;
     }
-    CNoeud** GetReturnExprPtr(){
+    CNoeud** getExprReturnPtr(){
         if (nat==INS_RETURN) return &(val.exprReturn);
         /*...else */printProblem(); return NULL;
     }
-    void SetReturnExpr(CNoeud* bExpr){
+    void setExprReturn(CNoeud* bExpr){
         val.exprReturn=bExpr;
     }
 

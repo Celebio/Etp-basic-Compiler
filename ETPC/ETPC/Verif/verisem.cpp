@@ -645,14 +645,14 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
     case INS_AFFECTATION:
         typePro.Type=TP_UNKNOWN;
         typePro.Expr=NULL;
-        typeAux=GetTypeExpression(bInstr->GetAffectExprAssigned(),typePro,foncEnCours);
-        if (bInstr->GetAffectExprArbre()){
-            GetTypeExpression(bInstr->GetAffectExprArbre(),typeAux,foncEnCours);
-            bInstr->GetAffectExprArbre()->simplifyConstantExpression();
+        typeAux=GetTypeExpression(bInstr->getAssignmentExprAssigned(),typePro,foncEnCours);
+        if (bInstr->getAssignmentExprTree()){
+            GetTypeExpression(bInstr->getAssignmentExprTree(),typeAux,foncEnCours);
+            bInstr->getAssignmentExprTree()->simplifyConstantExpression();
         }
         else
         {
-            errListe->add("Expression d'assignement vide",bInstr->GetAffectExprAssigned()->getTag());
+            errListe->add("Expression d'assignement vide",bInstr->getAssignmentExprAssigned()->getTag());
             break;
         }
         break;
@@ -660,47 +660,47 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
         //printf("For\n");
         typePro.Type=TP_UNKNOWN;
         typePro.Expr=NULL;
-        typeAux=GetTypeExpression(bInstr->GetFORExprAssigned(),typePro,foncEnCours);
+        typeAux=GetTypeExpression(bInstr->getForExprAssigned(),typePro,foncEnCours);
         if (typeAux != intVal && typeAux != longVal && typeAux != byteVal){
-            errListe->add("L'iterateur doit etre Integer ou Long",bInstr->GetFORExprAssigned()->getTag());
+            errListe->add("L'iterateur doit etre Integer ou Long",bInstr->getForExprAssigned()->getTag());
             break;
         }
 
-        GetTypeExpression(bInstr->GetFORExprArbreINIT(),typeAux,foncEnCours);
-        GetTypeExpression(bInstr->GetFORExprArbreTO(),typeAux,foncEnCours);
-        GetTypeExpression(bInstr->GetFORExprArbreSTEP(),typeAux,foncEnCours);
-        bInstr->GetFORExprArbreINIT()->simplifyConstantExpression();
-        bInstr->GetFORExprArbreTO()->simplifyConstantExpression();
-        forExprTreestep = bInstr->GetFORExprArbreSTEP();
+        GetTypeExpression(bInstr->getForExprInitTree(),typeAux,foncEnCours);
+        GetTypeExpression(bInstr->getForExprToTree(),typeAux,foncEnCours);
+        GetTypeExpression(bInstr->getForExprStepTree(),typeAux,foncEnCours);
+        bInstr->getForExprInitTree()->simplifyConstantExpression();
+        bInstr->getForExprToTree()->simplifyConstantExpression();
+        forExprTreestep = bInstr->getForExprStepTree();
         if (forExprTreestep){
             forExprTreestep->simplifyConstantExpression();
         }
-        VerifSemInstr(bInstr->GetFORCorps(),foncEnCours);
+        VerifSemInstr(bInstr->getForBody(),foncEnCours);
         break;
     case INS_STRUCT_DOLPWH:
         typePro.Type=TP_BOOLEAN;
         typePro.Expr=NULL;
-        GetTypeExpression(bInstr->GetDOExprCondition(),typePro,foncEnCours);
-        bInstr->GetDOExprCondition()->simplifyConstantExpression();
-        VerifSemInstr(bInstr->GetDOCorps(),foncEnCours);
+        GetTypeExpression(bInstr->getDoExprCondition(),typePro,foncEnCours);
+        bInstr->getDoExprCondition()->simplifyConstantExpression();
+        VerifSemInstr(bInstr->getDoBody(),foncEnCours);
         break;
     case INS_STRUCT_DOWH:
         typePro.Type=TP_BOOLEAN;
         typePro.Expr=NULL;
-        GetTypeExpression(bInstr->GetDOExprCondition(),typePro,foncEnCours);
-        bInstr->GetDOExprCondition()->simplifyConstantExpression();
-        VerifSemInstr(bInstr->GetDOCorps(),foncEnCours);
+        GetTypeExpression(bInstr->getDoExprCondition(),typePro,foncEnCours);
+        bInstr->getDoExprCondition()->simplifyConstantExpression();
+        VerifSemInstr(bInstr->getDoBody(),foncEnCours);
         break;
     case INS_IF:
         typePro.Type=TP_BOOLEAN;
         typePro.Expr=NULL;
-        GetTypeExpression(bInstr->GetIFExprArbre(),typePro,foncEnCours);
-        bInstr->GetIFExprArbre()->simplifyConstantExpression();
+        GetTypeExpression(bInstr->getIfExprTree(),typePro,foncEnCours);
+        bInstr->getIfExprTree()->simplifyConstantExpression();
 
-        VerifSemInstr(bInstr->GetIFIfCorps(),foncEnCours);
+        VerifSemInstr(bInstr->getIfIfBody(),foncEnCours);
 
-        listElseIfExpr=bInstr->GetIFExprElseIf();
-        listElseIfCorps=bInstr->GetIFElseIfCorps();
+        listElseIfExpr=bInstr->getIfExprElseIf();
+        listElseIfCorps=bInstr->getIfElseIfBody();
 
         listElseIfExpr->bindIterator(&iterElseIfExpr);
         listElseIfCorps->bindIterator(&iterElseIfCorps);
@@ -713,16 +713,16 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
         {
             printf("ERREUR!!!!");           // car normalement ils s'annulent en meme temps
         }
-        VerifSemInstr(bInstr->GetIFElseCorps(),foncEnCours);
+        VerifSemInstr(bInstr->getIfElseBody(),foncEnCours);
         break;
     case INS_CALL:
         typePro.Type=TP_VOID;
         typePro.Expr=NULL;
-        GetTypeExpression(bInstr->GetCallExpr(),typePro,foncEnCours);
+        GetTypeExpression(bInstr->getExprFunctionCall(),typePro,foncEnCours);
         break;
     case INS_RETURN:
-        GetTypeExpression(bInstr->GetReturnExpr(),foncEnCours->GetRetType(),foncEnCours);
-        bInstr->GetReturnExpr()->simplifyConstantExpression();
+        GetTypeExpression(bInstr->getExprReturn(),foncEnCours->GetRetType(),foncEnCours);
+        bInstr->getExprReturn()->simplifyConstantExpression();
         break;
     }
 }

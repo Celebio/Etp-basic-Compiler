@@ -528,7 +528,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else
             {
-                VerifyInstruction(Cour,CourEnd,pFunc,instrCour->GetDOCorps());
+                VerifyInstruction(Cour,CourEnd,pFunc,instrCour->getDoBody());
                 State = INST_DO03;
             }
             Cour = CourEnd;
@@ -558,7 +558,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 CourEnd = CourEnd->GetNext();
 
             // signaler les erreurs dans l'expression
-            VerifyExpression(true,Cour,CourEnd,true,instrCour->GetDOExprConditionPtr());
+            VerifyExpression(true,Cour,CourEnd,true,instrCour->getDoExprConditionPtr());
             State = INST_00;
             Cour = CourEnd;
             rpCour = Cour;
@@ -579,7 +579,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 CourEnd = CourEnd->GetNext();
 
             // signaler les erreurs dans l'expression
-            VerifyExpression(true,Cour,CourEnd,true,instrCour->GetDOExprConditionPtr());
+            VerifyExpression(true,Cour,CourEnd,true,instrCour->getDoExprConditionPtr());
             State = INST_DO06;
             Cour = CourEnd;
             break;
@@ -608,7 +608,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else
             {
-                VerifyInstruction(Cour,CourEnd,pFunc,instrCour->GetDOCorps());
+                VerifyInstruction(Cour,CourEnd,pFunc,instrCour->getDoBody());
                 State = INST_DO07;
             }
             Cour = CourEnd;
@@ -758,7 +758,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             while (!(CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
                 CourEnd = CourEnd->GetNext();
             // signaler les erreurs dans l'expression
-            VerifyExpression(false,Cour,CourEnd,true,instrCour->GetReturnExprPtr());
+            VerifyExpression(false,Cour,CourEnd,true,instrCour->getExprReturnPtr());
             State = INST_00;
             Cour = CourEnd;
             break;
@@ -787,7 +787,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 else
                 {
                     // signaler les erreurs dans l'expression
-                    VerifyExpression(true,Cour,CourEnd,true,instrCour->GetFORExprAssignedPtr());
+                    VerifyExpression(true,Cour,CourEnd,true,instrCour->getForExprAssignedPtr());
                 }
                 Cour = CourEnd;
                 rpCour = Cour;
@@ -826,7 +826,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             else
             {
                 // construire l'arbre de l'expression entre "=" et "TO"
-                VerifyExpression(true,debExpression,CourEnd,true,instrCour->GetFORExprArbreINITPtr());
+                VerifyExpression(true,debExpression,CourEnd,true,instrCour->getForExprInitTreePtr());
                 State = INST_FOR06;
             }
             Cour = CourEnd;
@@ -847,7 +847,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             else
             {
                 // construire l'arbre de l'expression entre TO et STEP ou entre TO et CRLF
-                VerifyExpression(true,debExpression,CourEnd,true,instrCour->GetFORExprArbreTOPtr());
+                VerifyExpression(true,debExpression,CourEnd,true,instrCour->getForExprToTreePtr());
 
                 if (CourEnd->GetToken() == TOKEN_STEP)
                     State = INST_FOR07;
@@ -872,7 +872,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             else
             {
                 // construire l'arbre de l'expression entre STEP et CRLF
-                VerifyExpression(true,debExpression,CourEnd,true,instrCour->GetFORExprArbreSTEPPtr());
+                VerifyExpression(true,debExpression,CourEnd,true,instrCour->getForExprStepTreePtr());
                 State = INST_FOR08;
             }
             Cour = CourEnd;
@@ -903,7 +903,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else
             {
-                VerifyInstruction(Cour,CourEnd,pFunc,instrCour->GetFORCorps());
+                VerifyInstruction(Cour,CourEnd,pFunc,instrCour->getForBody());
                 State = INST_FOR09;
             }
             Cour = CourEnd;
@@ -941,7 +941,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             else
             {
                 // signaler les erreurs dans l'expression
-                VerifyExpression(true,Cour,CourEnd,true,instrCour->GetIFExprArbrePtr());
+                VerifyExpression(true,Cour,CourEnd,true,instrCour->getIfExprTreePtr());
                 State = INST_IF01;
             }
             Cour = CourEnd;
@@ -999,13 +999,13 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             {
                 if (debugCour->GetToken()==TOKEN_IF)
                 {
-                    VerifyInstruction(Cour,CourEnd,pFunc,instrCour->GetIFIfCorps());
+                    VerifyInstruction(Cour,CourEnd,pFunc,instrCour->getIfIfBody());
                 }
                 else if (debugCour->GetToken()==TOKEN_ELSEIF)
                 {
                     Collection* CorpsT=new Collection();
                     VerifyInstruction(Cour,CourEnd,pFunc,CorpsT);
-                    instrCour->GetIFElseIfCorps()->add(CorpsT);
+                    instrCour->getIfElseIfBody()->add(CorpsT);
                 }
                 State = INST_IF03;
                 debugCour = CourEnd;
@@ -1015,13 +1015,13 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             {
                 if (debugCour->GetToken()==TOKEN_IF)
                 {
-                    VerifyInstruction(Cour,CourEnd,pFunc,instrCour->GetIFIfCorps());
+                    VerifyInstruction(Cour,CourEnd,pFunc,instrCour->getIfIfBody());
                 }
                 else if (debugCour->GetToken()==TOKEN_ELSEIF)
                 {
                     Collection* CorpsT=new Collection();
                     VerifyInstruction(Cour,CourEnd,pFunc,CorpsT);
-                    instrCour->GetIFElseIfCorps()->add(CorpsT);
+                    instrCour->getIfElseIfBody()->add(CorpsT);
                 }
                 State = INST_IF04;
                 debugCour = CourEnd;
@@ -1031,13 +1031,13 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             {
                 if (debugCour->GetToken()==TOKEN_IF)
                 {
-                    VerifyInstruction(Cour,precCour,pFunc,instrCour->GetIFIfCorps());
+                    VerifyInstruction(Cour,precCour,pFunc,instrCour->getIfIfBody());
                 }
                 else if (debugCour->GetToken()==TOKEN_ELSEIF)
                 {
                     Collection* CorpsT=new Collection();
                     VerifyInstruction(Cour,precCour,pFunc,CorpsT);
-                    instrCour->GetIFElseIfCorps()->add(CorpsT);
+                    instrCour->getIfElseIfBody()->add(CorpsT);
                 }
                 State = INST_IF05;
                 Cour = CourEnd;
@@ -1060,10 +1060,10 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             {
                 // signaler les erreurs dans l'expression
 
-                //VerifyExpression(true,Cour,CourEnd,true,instrCour->GetIFExprArbrePtr());
+                //VerifyExpression(true,Cour,CourEnd,true,instrCour->getIfExprTreePtr());
                 CNoeud* exprElseIf=NULL;
                 VerifyExpression(true,Cour,CourEnd,true,&exprElseIf);
-                instrCour->GetIFExprElseIf()->add(exprElseIf);
+                instrCour->getIfExprElseIf()->add(exprElseIf);
                 State = INST_IF01;
             }
             Cour = CourEnd;
@@ -1118,7 +1118,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             }
             else    // on a rencontr? End If
             {
-                VerifyInstruction(Cour,precCour,pFunc,instrCour->GetIFElseCorps());
+                VerifyInstruction(Cour,precCour,pFunc,instrCour->getIfElseBody());
                 State = INST_IF05;
                 Cour = CourEnd;
             }
@@ -1145,7 +1145,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
 
                 instrCour = new InstructionETPB(INS_CALL);
                 instrCollect->add(instrCour);
-                VerifyExpression(true,precCour,Cour,true,instrCour->GetCallExprPtr());
+                VerifyExpression(true,precCour,Cour,true,instrCour->getExprFunctionCallPtr());
                 State = INST_00;
                 break;
             }
@@ -1189,14 +1189,14 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 instrCour = new InstructionETPB(INS_AFFECTATION);
                 instrCollect->add(instrCour);
 
-                VerifyExpression(true,precCour,CourEnd,true,instrCour->GetAffectExprAssignedPtr());
+                VerifyExpression(true,precCour,CourEnd,true,instrCour->getAssignmentExprAssignedPtr());
                 Cour=CourEnd->GetNext();
                 CourEnd=Cour;
                 while (CourEnd !=finTag && CourEnd->GetToken()!=TOKEN_CRLF)
                 {
                     CourEnd=CourEnd->GetNext();
                 }
-                VerifyExpression(true,Cour,CourEnd,true,instrCour->GetAffectExprArbrePtr());
+                VerifyExpression(true,Cour,CourEnd,true,instrCour->getAssignmentExprTreePtr());
                 Cour=CourEnd;
                 State = INST_00;
             }
@@ -1239,7 +1239,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             // il faut v?rifier l'expression entre les parentheses
             instrCour = new InstructionETPB(INS_CALL);
             instrCollect->add(instrCour);
-            if (!(VerifyExpression(true,precCour,CourEnd->GetNext(),true,instrCour->GetCallExprPtr())))
+            if (!(VerifyExpression(true,precCour,CourEnd->GetNext(),true,instrCour->getExprFunctionCallPtr())))
             {
                 AvanceNextLigne(&Cour);
                 State = INST_00;

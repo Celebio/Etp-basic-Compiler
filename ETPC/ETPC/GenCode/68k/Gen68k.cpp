@@ -504,29 +504,29 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         Operande68k* ExprArbrAffected;
         int nG,nD;
 
-        nG=getNbRegArith(bInstr->GetAffectExprAssigned(),NO_REG);
-        nD=getNbRegArith(bInstr->GetAffectExprArbre(),NO_REG);
+        nG=getNbRegArith(bInstr->getAssignmentExprAssigned(),NO_REG);
+        nD=getNbRegArith(bInstr->getAssignmentExprTree(),NO_REG);
 
         if (nD >= nG){
-            codeArith(bInstr->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
+            codeArith(bInstr->getAssignmentExprTree(),NO_REG,&ExprArbrAff);
             registerStack->allocate(ExprArbrAff);
-            codeArith(bInstr->GetAffectExprAssigned(),NO_DADR,&ExprArbrAffected);
+            codeArith(bInstr->getAssignmentExprAssigned(),NO_DADR,&ExprArbrAffected);
             registerStack->freeOperand(ExprArbrAff);
-            ilCoder.add(MOVE,ExprArbrAff,ExprArbrAffected,getSize(bInstr->GetAffectExprAssigned()));
+            ilCoder.add(MOVE,ExprArbrAff,ExprArbrAffected,getSize(bInstr->getAssignmentExprAssigned()));
         }
         else{
-            codeArith(bInstr->GetAffectExprAssigned(),NO_DADR,&ExprArbrAffected);
+            codeArith(bInstr->getAssignmentExprAssigned(),NO_DADR,&ExprArbrAffected);
             registerStack->allocate(ExprArbrAffected);
-            codeArith(bInstr->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
+            codeArith(bInstr->getAssignmentExprTree(),NO_REG,&ExprArbrAff);
             registerStack->freeOperand(ExprArbrAffected);
-            ilCoder.add(MOVE,ExprArbrAff,ExprArbrAffected,getSize(bInstr->GetAffectExprAssigned()));
+            ilCoder.add(MOVE,ExprArbrAff,ExprArbrAffected,getSize(bInstr->getAssignmentExprAssigned()));
         }
         break;
     case INS_RETURN:
         Operande68k* OpResReturn;
-        if (bInstr->GetReturnExpr()){
-            codeArith(bInstr->GetReturnExpr(),NO_REG,&OpResReturn);
-            ilCoder.add(MOVE,OpResReturn,ilCoder.createOp(D0),getSize(bInstr->GetReturnExpr()));
+        if (bInstr->getExprReturn()){
+            codeArith(bInstr->getExprReturn(),NO_REG,&OpResReturn);
+            ilCoder.add(MOVE,OpResReturn,ilCoder.createOp(D0),getSize(bInstr->getExprReturn()));
         }
         ilCoder.add(RTS);
         break;
@@ -536,7 +536,7 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
 
         somme=0;        // la somme des tailles de ce qui est pouss? dans la pile
         size_op68k SizeOfArgument;
-        CallNoeud=bInstr->GetCallExpr();
+        CallNoeud=bInstr->getExprFunctionCall();
         Operande68k* Op2;
         for (int i=CallNoeud->getSuccNmbr()-1;i>=0;i--){
             SizeOfArgument=getSize(*CallNoeud->getSuccPtr(i));
@@ -567,11 +567,11 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         Operande68k* TexpTO;
         Collection* CorpsFor;
 
-        initExpr = bInstr->GetFORExprArbreINIT();
-        finExpr = bInstr->GetFORExprArbreTO();
-        stepExpr = bInstr->GetFORExprArbreSTEP();
-        varExpr = bInstr->GetFORExprAssigned();
-        CorpsFor = bInstr->GetFORCorps();
+        initExpr = bInstr->getForExprInitTree();
+        finExpr = bInstr->getForExprToTree();
+        stepExpr = bInstr->getForExprStepTree();
+        varExpr = bInstr->getForExprAssigned();
+        CorpsFor = bInstr->getForBody();
         SizeVarIter =getSize(varExpr);
         EtiqForDebTest = ilCoder.createOpLabel();
         EtiqForFin = ilCoder.createOpLabel();
@@ -658,8 +658,8 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         Collection* CorpsDo;
         CNoeud* exprDo;
         Operande68k* EtiqDebut;
-        CorpsDo = bInstr->GetDOCorps();
-        exprDo = bInstr->GetDOExprCondition();
+        CorpsDo = bInstr->getDoBody();
+        exprDo = bInstr->getDoExprCondition();
         EtiqDebut = ilCoder.createOpLabel();
         ilCoder.addLabel(EtiqDebut->val.valLabel);
         codeInstr(CorpsDo);
@@ -671,8 +671,8 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         Operande68k* EtiqWhileDebut;
         Operande68k* EtiqWhileFin;
 
-        CorpsWhile = bInstr->GetDOCorps();
-        exprWhile = bInstr->GetDOExprCondition();
+        CorpsWhile = bInstr->getDoBody();
+        exprWhile = bInstr->getDoExprCondition();
         EtiqWhileDebut = ilCoder.createOpLabel();
         EtiqWhileFin = ilCoder.createOpLabel();      // juste avant le test de la condition
 
@@ -685,7 +685,7 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         break;
     case INS_IF:
         CNoeud* exprIf;
-        exprIf = bInstr->GetIFExprArbre();
+        exprIf = bInstr->getIfExprTree();
         //printf("codeInstr IF\n");
         //printf("Expression du If:\n");
         //exprIf->display();
@@ -696,10 +696,10 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         Operande68k* EtiqFinBloc;
 
 
-        Collection* InstrCorpsIf = bInstr->GetIFIfCorps();
-        Collection* InstrCorpsElse = bInstr->GetIFElseCorps();
-        Collection* listExprElseIf = bInstr->GetIFExprElseIf();
-        Collection* listCorpsElseIf = bInstr->GetIFElseIfCorps();
+        Collection* InstrCorpsIf = bInstr->getIfIfBody();
+        Collection* InstrCorpsElse = bInstr->getIfElseBody();
+        Collection* listExprElseIf = bInstr->getIfExprElseIf();
+        Collection* listCorpsElseIf = bInstr->getIfElseIfBody();
 
         ColIterator iterExprElseIf;
         ColIterator iterCorpsElseIf;

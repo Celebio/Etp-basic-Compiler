@@ -285,8 +285,8 @@ void GenIL::generateCode(){
             switch(Instr1->getNat()){
             case INS_AFFECTATION:
                 Operande* ExprArbrAff=registerStack->front();
-                getNbRegArith(Instr1->GetAffectExprArbre(),NO_REG);
-                codeArith(Instr1->GetAffectExprArbre(),NO_REG,&ExprArbrAff);
+                getNbRegArith(Instr1->getAssignmentExprTree(),NO_REG);
+                codeArith(Instr1->getAssignmentExprTree(),NO_REG,&ExprArbrAff);
 
                 break;
             }
