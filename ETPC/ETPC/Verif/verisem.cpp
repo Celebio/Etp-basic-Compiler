@@ -319,13 +319,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
                     retVal=typeAttendu;
                     break;
                 }
-                if (abs(atoi(expr->getTag()->GetIdentif()))<(1<<8)){
-                    if (typeAttendu.Type==TP_BYTE || typeAttendu.Type==TP_INTEGER || typeAttendu.Type==TP_LONG)
-                        retVal=typeAttendu;
-                    else
-                        retVal.Type=TP_BYTE;
-                }
-                else if (abs(atoi(expr->getTag()->GetIdentif()))<(1<<15))
+                if (abs(atoi(expr->getTag()->GetIdentif()))<(1<<15))
                 {
                     if (typeAttendu.Type==TP_INTEGER || typeAttendu.Type==TP_LONG)
                         retVal=typeAttendu;

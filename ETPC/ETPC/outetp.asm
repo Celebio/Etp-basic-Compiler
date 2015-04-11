@@ -47,17 +47,15 @@ _main:
 	ADD.L	#8,A7
 	RTS	
 multanddisplay:
-	SUB.L	#6,A7
-	MOVE.W	10(A7),D1
-	MULS.W	12(A7),D1
-	MOVE.W	D1,4(A7)
-	MOVE.W	#3,D1
-	MOVE.W	D1,(A7)
+	SUB.L	#4,A7
+	MOVE.W	8(A7),D1
+	MULS.W	10(A7),D1
+	MOVE.W	D1,2(A7)
 	BSR	clearscreen
-	MOVE.W	4(A7),D1
+	MOVE.W	2(A7),D1
 	ADD.W	#30,D1
 	MOVE.W	D1,-(A7)
-	MOVE.W	12(A7),D1
+	MOVE.W	10(A7),D1
 	MULS.W	#3,D1
 	ADD.W	#3,D1
 	MOVE.W	D1,-(A7)
@@ -66,8 +64,8 @@ multanddisplay:
 	BSR	dispintxy
 	ADD.L	#6,A7
 	BSR	afficheuntruc
-	MOVE.W	10(A7),D1
-	CMP.W	(A7),D1
+	MOVE.W	8(A7),D1
+	CMP.W	#3,D1
 	BGE	.sysetiq2
 	MOVE.W	#1337,D1
 	MOVE.W	D1,-(A7)
@@ -79,7 +77,7 @@ multanddisplay:
 	ADD.L	#6,A7
 .sysetiq2:
 	BSR	waitkey
-	ADD.L	#6,A7
+	ADD.L	#4,A7
 	RTS	
 
 
