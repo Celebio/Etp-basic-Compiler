@@ -21,7 +21,7 @@ private:
     Collection* Fonctions;
 
     IL ilCoder;
-    VirtStack Stack;
+    VirtStack virtualStack;
     PileRegTemp* registerStack;
 
     int mNbRegMax;

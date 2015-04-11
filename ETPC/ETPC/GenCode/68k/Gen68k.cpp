@@ -27,11 +27,11 @@
 #define max3(a,b,c) (max(a,max(b,c)))
 
 Gen68k::Gen68k(void){
-    registerStack = new PileRegTemp68k(&ilCoder,&Stack);
+    registerStack = new PileRegTemp68k(&ilCoder,&virtualStack);
 }
 Gen68k::Gen68k(const char *oFileName){
     sprintf(outputFileName,"%s%s",oFileName,".asm");
-    registerStack= new PileRegTemp68k(&ilCoder,&Stack);
+    registerStack= new PileRegTemp68k(&ilCoder,&virtualStack);
 }
 
 Gen68k::~Gen68k(void){
@@ -165,12 +165,12 @@ void Gen68k::codeObject(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
 
     if (bNoeud->getNature()==NODE_OPERAND_VARIABLE){
         if (bNat==NO_REG){
-            ilCoder.add(MOVE,ilCoder.createOp(Stack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG),registerStack->front(),size);
+            ilCoder.add(MOVE,ilCoder.createOp(virtualStack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG),registerStack->front(),size);
             *opertr=registerStack->front();
         }
         else if (bNat==NO_DVAL || bNat==NO_DADR){
 
-            *opertr=ilCoder.createOp(Stack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG);
+            *opertr=ilCoder.createOp(virtualStack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG);
         }
     }
     else{
@@ -323,15 +323,15 @@ void Gen68k::codeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
             somme+=(int)SizeOfArgument;
             codeArith(*bNoeud->getSuccPtr(i),NO_REG,&Op2);
             ilCoder.add(MOVE,Op2,ilCoder.createOp(A7,false,true),SizeOfArgument);
-            Stack.pushToStack(SizeOfArgument);
+            virtualStack.pushToStack(SizeOfArgument);
         }
         ilCoder.add(BSR,ilCoder.createOpLabel(bNoeud->getTag()->GetIdentif()),SZ_NA);
         ilCoder.add(ADD,ilCoder.createOpVal(somme),ilCoder.createOp(SP_REG),SZ_L);
 
-        //Stack.display();
+        //virtualStack.display();
         for (int i=bNoeud->getSuccNmbr()-1;i>=0;i--){
-            Stack.pop();
-            //Stack.display();
+            virtualStack.pop();
+            //virtualStack.display();
         }
         ilCoder.add(MOVE,ilCoder.createOp(D0),registerStack->front(),size);
         *opertr=registerStack->front();
@@ -485,6 +485,7 @@ void Gen68k::codeInstr(Collection* bInstrSuite){
     InstructionETPB* Instr1;
 
     while(iter2.elemExists()){
+        returnInstrAsLastInstr = false;
         Instr1=(InstructionETPB*)iter2.getNext();
         codeInstr(Instr1);
     }
@@ -528,7 +529,11 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
             codeArith(bInstr->getExprReturn(),NO_REG,&OpResReturn);
             ilCoder.add(MOVE,OpResReturn,ilCoder.createOp(D0),getSize(bInstr->getExprReturn()));
         }
+
+        if (currentStackVariablesSize)
+            ilCoder.add(ADD,ilCoder.createOpVal(currentStackVariablesSize),ilCoder.createOp(SP_REG),SZ_L);
         ilCoder.add(RTS);
+        returnInstrAsLastInstr = true;
         break;
     case INS_CALL:
         int somme;
@@ -543,16 +548,16 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
             somme+=(int)SizeOfArgument;
             codeArith(*CallNoeud->getSuccPtr(i),NO_REG,&Op2);
             ilCoder.add(MOVE,Op2,ilCoder.createOp(A7,false,true),SizeOfArgument);
-            Stack.pushToStack(SizeOfArgument);
+            virtualStack.pushToStack(SizeOfArgument);
         }
         ilCoder.add(BSR,ilCoder.createOpLabel(CallNoeud->getTag()->GetIdentif()),SZ_NA);
         if (somme){
             ilCoder.add(ADD,ilCoder.createOpVal(somme),ilCoder.createOp(SP_REG),SZ_L);
         }
-        //Stack.display();
+        //virtualStack.display();
         for (int i=CallNoeud->getSuccNmbr()-1;i>=0;i--){
-            Stack.pop();
-            //Stack.display();
+            virtualStack.pop();
+            //virtualStack.display();
         }
         break;
     case INS_STRUCT_FOR:
@@ -795,7 +800,7 @@ void Gen68k::generateCode(){
     ilCoder.displayHeader();
 
 
-    int tailleVarLocales;
+    currentStackVariablesSize = 0;
     Fonctions->bindIterator(&iter1);
     while(iter1.elemExists()){
         Fonc1=(FonctionItem*)iter1.getNext();
@@ -807,38 +812,43 @@ void Gen68k::generateCode(){
             }
             else {
                 ilCoder.addLabel(Fonc1->getName());
-                Stack.clearStack();
+                virtualStack.clearStack();
                 Fonc1->getArgumentList()->bindIterator(&iter2);
                 while (iter2.elemExists()){
                     Var1=(VariableItem*)iter2.getElem();
                     // used? unused?
-                    Stack.pushToStack(Var1);
+                    virtualStack.pushToStack(Var1);
                     iter2.getNext();
                 }
-                Stack.pushToStack(4);   // l'adresse de retour de la fonction
-                //Stack.display();
+                virtualStack.pushToStack(4);   // l'adresse de retour de la fonction
+                //virtualStack.display();
 
-                tailleVarLocales=0;
+                currentStackVariablesSize=0;
                 Fonc1->getVariableList()->bindIterator(&iter2);
                 while (iter2.elemExists()){
                     Var1=(VariableItem*)iter2.getElem();
-                    Stack.pushToStack(Var1);
-                    tailleVarLocales+=Var1->getSize();
+                    virtualStack.pushToStack(Var1);
+                    currentStackVariablesSize+=Var1->getSize();
                     iter2.getNext();
                 }
-                if (tailleVarLocales)
-                    ilCoder.add(SUB,ilCoder.createOpVal(tailleVarLocales),ilCoder.createOp(SP_REG),SZ_L);
+                if (currentStackVariablesSize)
+                    ilCoder.add(SUB,ilCoder.createOpVal(currentStackVariablesSize),ilCoder.createOp(SP_REG),SZ_L);
 
-                Stack.display();
+                virtualStack.display();
+
+                returnInstrAsLastInstr = false;
 
                 Collection* instructionList = Fonc1->getInstructionList();
                 codeInstr(instructionList);
 
 
-                Stack.clearStack();
-                if (tailleVarLocales)
-                    ilCoder.add(ADD,ilCoder.createOpVal(tailleVarLocales),ilCoder.createOp(SP_REG),SZ_L);
-                ilCoder.add(RTS);
+                virtualStack.clearStack();
+
+                if (!returnInstrAsLastInstr){
+                    if (currentStackVariablesSize)
+                        ilCoder.add(ADD,ilCoder.createOpVal(currentStackVariablesSize),ilCoder.createOp(SP_REG),SZ_L);
+                    ilCoder.add(RTS);
+                }
             }
         }
     }// prochaine fonction

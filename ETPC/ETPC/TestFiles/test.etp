@@ -16,7 +16,7 @@ function multAndDisplay:(i as integer, j as integer) as integer
 
     waitkey()
 
-    ' return a
+    return a
 
 
 
@@ -43,7 +43,8 @@ procedure main:
     next
 
     clearscreen()
-    afficheuntruc()
+    dispintXY(55, 40, c)
+    'afficheuntruc()
     waitkey()
 
     'dispint(10)

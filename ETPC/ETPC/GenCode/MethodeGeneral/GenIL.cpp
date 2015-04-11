@@ -3,7 +3,7 @@
 #include "GenIL.h"
 
 GenIL::GenIL(void){
-    registerStack=new PileRegTemp(&ilCoder,&Stack);
+    registerStack=new PileRegTemp(&ilCoder,&virtualStack);
 }
 GenIL::~GenIL(void){
 }
@@ -106,12 +106,12 @@ void GenIL::codeObject(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
 
     if (bNoeud->getNature()==NODE_OPERAND_VARIABLE){
         if (bNat==NO_REG){
-            ilCoder.add(LOAD,ilCoder.createOp(Stack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG),registerStack->front(),size);
+            ilCoder.add(LOAD,ilCoder.createOp(virtualStack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG),registerStack->front(),size);
             *opertr=registerStack->front();
         }
         else if (bNat==NO_DVAL || bNat==NO_DADR){
 
-            *opertr=ilCoder.createOp(Stack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG);
+            *opertr=ilCoder.createOp(virtualStack.getStackPos(bNoeud->getTag()->GetIdentif()),SP_REG);
         }
     }
     else{
@@ -258,23 +258,23 @@ void GenIL::generateCode(){
     Fonctions->bindIterator(&iter1);
     while(iter1.elemExists()){
         Fonc1=(FonctionItem*)iter1.getNext();
-        Stack.clearStack();
+        virtualStack.clearStack();
         ilCoder.addLabel(Fonc1->getName());
         Fonc1->getArgumentList()->bindIterator(&iter2);
         while (iter2.elemExists()){
             Var1=(VariableItem*)iter2.getElem();
-            Stack.pushToStack(Var1);
+            virtualStack.pushToStack(Var1);
             iter2.getNext();
         }
         somme=0;
         Fonc1->getVariableList()->bindIterator(&iter2);
         while (iter2.elemExists()){
             Var1=(VariableItem*)iter2.getElem();
-            Stack.pushToStack(Var1);
+            virtualStack.pushToStack(Var1);
             somme+=Var1->getSize();
             iter2.getNext();
         }
-        Stack.display();
+        virtualStack.display();
         if (somme)
             ilCoder.add(SUB,ilCoder.createOpVal(somme),ilCoder.createOp(SP_REG),SZ_L);
 
@@ -295,7 +295,7 @@ void GenIL::generateCode(){
         ilCoder.display();
 
 
-        Stack.clearStack();
+        virtualStack.clearStack();
 
     }// prochaine fonction
 

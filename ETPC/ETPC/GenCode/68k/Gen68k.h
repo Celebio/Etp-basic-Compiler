@@ -45,9 +45,10 @@ private:
     char outputFileName[300];
 
     asm68kCoder ilCoder;
-    VirtStack68k Stack;
+    VirtStack68k virtualStack;
     PileRegTemp68k* registerStack;
-
+    int currentStackVariablesSize;
+    bool returnInstrAsLastInstr;
     int mNbRegMax;
 
     size_op68k getSize(CNoeud* bNoeud);

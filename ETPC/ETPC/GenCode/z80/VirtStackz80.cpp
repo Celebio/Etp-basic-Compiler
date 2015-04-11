@@ -99,7 +99,7 @@ int VirtStackz80::getStackPos(char* varName)
 }
 void VirtStackz80::display(){
     VirtStackElemz80* pCour=VirtualStackBuffer;
-    printf("Virtual Stack State:\n");
+    printf("Virtual virtualStack State:\n");
     while(pCour)
     {
         printf("depth:%i  \t var_name:%s \t\tde size:%i\n",pCour->depth,pCour->var->getTagName()->GetIdentif(),pCour->var->getSize());

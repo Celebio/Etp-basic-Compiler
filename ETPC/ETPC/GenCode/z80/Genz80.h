@@ -44,7 +44,7 @@ private:
 
     char outputFileName[300];
     asmz80Coder ilCoder;
-    //VirtStackz80 Stack;
+    //VirtStackz80 virtualStack;
     //PileRegTempz80* registerStack;
 
     int mNbRegMax;

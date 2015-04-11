@@ -42,7 +42,14 @@ _main:
 	;Liberation de temporaire
 	ADD.L	#2,A7
 	BSR	clearscreen
-	BSR	afficheuntruc
+	MOVE.W	2(A7),D1
+	MOVE.W	D1,-(A7)
+	MOVE.W	#40,D1
+	MOVE.W	D1,-(A7)
+	MOVE.W	#55,D1
+	MOVE.W	D1,-(A7)
+	BSR	dispintxy
+	ADD.L	#6,A7
 	BSR	waitkey
 	ADD.L	#8,A7
 	RTS	
@@ -77,6 +84,8 @@ multanddisplay:
 	ADD.L	#6,A7
 .sysetiq2:
 	BSR	waitkey
+	MOVE.W	2(A7),D1
+	MOVE.W	D1,D0
 	ADD.L	#4,A7
 	RTS	
 
