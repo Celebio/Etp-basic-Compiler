@@ -4,6 +4,9 @@ procedure clearscreen ()
 
 procedure waitkey ()
 
+procedure dispintxy (x as integer, y as integer, a as integer)
+
+
 procedure dispint (a as integer)
 
 procedure dispbyte (a as byte)

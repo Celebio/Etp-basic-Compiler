@@ -30,6 +30,32 @@ dispint:
     LEA 30(a7),a7
     RTS
 
+dispintxy:
+    MOVE.W 8(a7),d0
+    LEA -30(a7),a7
+    MOVE.L a7,a1
+    PEA.L (a1)
+    MOVE.W d0,-(a7)
+    PEA.L dispintformat(pc)
+    PEA.L (a1)
+    MOVE.L $C8,a0
+    MOVE.L sprintf*4(a0),a0
+    JSR (a0)
+    LEA 10(a7),a7
+    MOVE.L (a7)+,a1
+    MOVE.W 36(a7),d1
+    MOVE.W 34(a7),d2
+    MOVE.W #1,-(a7)
+    PEA.L (a1)
+    MOVE.W d1,-(a7)
+    MOVE.W d2,-(a7)
+    MOVE.L $C8,a0
+    MOVE.L DrawStr*4(a0),a0
+    JSR (a0)
+    LEA 10(a7),a7
+    LEA 30(a7),a7
+    RTS
+
 
 afficheuntruc:
     MOVE.L $C8,a5

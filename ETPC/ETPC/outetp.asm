@@ -28,20 +28,58 @@ _main:
 	MOVE.W	2(A7),D1
 	CMP.W	(A7),D1
 	BGT	.sysetiq1
-	BSR	clearscreen
-	MOVE.W	2(A7),D1
-	MULS.W	8(A7),D1
+	MOVE.W	8(A7),D1
 	MOVE.W	D1,-(A7)
-	BSR	dispint
-	ADD.L	#2,A7
-	BSR	afficheuntruc
-	BSR	waitkey
+	MOVE.W	4(A7),D1
+	MOVE.W	D1,-(A7)
+	BSR	multanddisplay
+	ADD.L	#4,A7
+	MOVE.W	D0,D1
+	MOVE.W	D1,4(A7)
 	ADD.W	#1,2(A7)
 	BRA	.sysetiq0
 .sysetiq1:
 	;Liberation de temporaire
 	ADD.L	#2,A7
+	BSR	clearscreen
+	BSR	afficheuntruc
+	BSR	waitkey
 	ADD.L	#8,A7
+	RTS	
+multanddisplay:
+	SUB.L	#6,A7
+	MOVE.W	10(A7),D1
+	MULS.W	12(A7),D1
+	MOVE.W	D1,4(A7)
+	MOVE.W	#3,D1
+	MOVE.W	D1,(A7)
+	BSR	clearscreen
+	MOVE.W	4(A7),D1
+	ADD.W	#30,D1
+	MOVE.W	D1,-(A7)
+	MOVE.W	12(A7),D1
+	MULS.W	#3,D1
+	ADD.W	#3,D1
+	MOVE.W	D1,-(A7)
+	MOVE.W	#5,D1
+	MOVE.W	D1,-(A7)
+	BSR	dispintxy
+	ADD.L	#6,A7
+	BSR	afficheuntruc
+	MOVE.W	10(A7),D1
+	CMP.W	(A7),D1
+	BGE	.sysetiq2
+	MOVE.W	#1337,D1
+	MOVE.W	D1,-(A7)
+	MOVE.W	#80,D1
+	MOVE.W	D1,-(A7)
+	MOVE.W	#5,D1
+	MOVE.W	D1,-(A7)
+	BSR	dispintxy
+	ADD.L	#6,A7
+.sysetiq2:
+	BSR	waitkey
+	ADD.L	#6,A7
 	RTS	
 
 
@@ -68,6 +106,32 @@ dispint:
     PEA.L (a1)
     MOVE.W #5,-(a7)
     MOVE.W #40,-(a7)
+    MOVE.L $C8,a0
+    MOVE.L DrawStr*4(a0),a0
+    JSR (a0)
+    LEA 10(a7),a7
+    LEA 30(a7),a7
+    RTS
+
+dispintxy:
+    MOVE.W 8(a7),d0
+    LEA -30(a7),a7
+    MOVE.L a7,a1
+    PEA.L (a1)
+    MOVE.W d0,-(a7)
+    PEA.L dispintformat(pc)
+    PEA.L (a1)
+    MOVE.L $C8,a0
+    MOVE.L sprintf*4(a0),a0
+    JSR (a0)
+    LEA 10(a7),a7
+    MOVE.L (a7)+,a1
+    MOVE.W 36(a7),d1
+    MOVE.W 34(a7),d2
+    MOVE.W #1,-(a7)
+    PEA.L (a1)
+    MOVE.W d1,-(a7)
+    MOVE.W d2,-(a7)
     MOVE.L $C8,a0
     MOVE.L DrawStr*4(a0),a0
     JSR (a0)

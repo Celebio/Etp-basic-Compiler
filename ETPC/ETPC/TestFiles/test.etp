@@ -1,5 +1,26 @@
 
 
+function multAndDisplay:(i as integer, j as integer) as integer
+    local a as integer
+    local c as boolean
+    local d as integer
+
+    a = i * j
+    d = 3
+
+    clearscreen()
+    dispintXY(5, 3+i*3, a+30)
+    afficheuntruc()
+
+    if i < d then
+        dispintXY(5, 80, 1337)
+    end if
+
+    waitkey()
+
+    ' return a
+
+
 
 procedure main:
 
@@ -16,11 +37,16 @@ procedure main:
 
     'for i=1 to 5 step 1
     for i=1 to 5
-        clearscreen()
-        dispint(i*a)
-        afficheuntruc()
-        waitkey()
+        'clearscreen()
+        'dispint(i*a)
+        c = multAndDisplay(i, a)
+        'afficheuntruc()
+        'waitkey()
     next
+
+    clearscreen()
+    afficheuntruc()
+    waitkey()
 
     'dispint(10)
     'waitkey()
