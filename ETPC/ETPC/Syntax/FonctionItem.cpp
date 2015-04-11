@@ -20,8 +20,8 @@
 
 FonctionItem::FonctionItem(void)
 {
-    IsAssembler=false;
-    Used=false;
+    assembler=false;
+    used=false;
 }
 FonctionItem::~FonctionItem(void)
 {
@@ -31,19 +31,19 @@ void FonctionItem::destroy()
 }
 void FonctionItem::display()
 {
-    printf("Fonction:ligne:%i  nom:%s, arguments:\n",Ligne,Nom);
+    printf("Fonction:line:%i  nom:%s, arguments:\n",line,name);
     printf("Arguments:\n");
-    ArguListe.display();
+    argumentList.display();
     printf("Variables locales:\n");
-    VarListe.display();
+    variableList.display();
 
-    if (RetType.Type != TP_VOID)
+    if (returnType.Type != TP_VOID)
     {
         printf("retourne ");
-        RetType.display();
+        returnType.display();
     }
     printf("\n");
     printf("Instructions:\n");
-    InstrListe.display();
+    instructionList.display();
 }
 

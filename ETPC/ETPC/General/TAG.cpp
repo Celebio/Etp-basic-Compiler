@@ -170,11 +170,11 @@ const char* bT[] = {"TK_RETURN",
                 "TK_UNKNOWN"};
     if (Token!=TOKEN_IDENTIF && Token!=TOKEN_NOMBRE && Token!=TOKEN_STRINGCONSTANT)
     {
-        printf("  %s  (%s)  col: %i \n",bT[Token],ReservedWords[Token],Col);
+        printf("  %s  (%s)  col: %i \n",bT[Token],ReservedWords[Token],column);
     }
     else
     {
-        printf("  %s  (%s)  col: %i \n",bT[Token],Identif,Col);
+        printf("  %s  (%s)  col: %i \n",bT[Token],Identif,column);
     }
         if (isPredefFileTAG) {
             printf("PREDEF\n");

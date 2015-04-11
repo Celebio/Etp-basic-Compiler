@@ -30,7 +30,7 @@ void errorC::destroy()
 }
 void errorC::display()
 {
-    printf("%s  ligne: %i  %s  ",Tag->GetFileName(),Tag->GetLigne(),Descr);
+    printf("%s  line: %i  %s  ",Tag->GetFileName(),Tag->getLine(),Descr);
     if (Tag)
         Tag->display();
 }

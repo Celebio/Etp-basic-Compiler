@@ -29,13 +29,13 @@ void TypeItem::destroy()
 
 void TypeItem::display()
 {
-    printf("Type:%s \n",Nom);
+    printf("Type:%s \n",name);
     printf("les champs:\n");
-    ChampListe.display();
+    fieldList.display();
 }
 
-void TypeItem::SetTagNom(TAG* bTag)
+void TypeItem::setTagName(TAG* bTag)
 {
-    bTAGNom=bTag;
-    Nom=bTag->GetIdentif();
+    bTagName=bTag;
+    name=bTag->GetIdentif();
 }

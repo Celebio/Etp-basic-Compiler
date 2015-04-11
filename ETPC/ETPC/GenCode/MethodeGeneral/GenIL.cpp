@@ -259,15 +259,15 @@ void GenIL::generateCode(){
     while(iter1.elemExists()){
         Fonc1=(FonctionItem*)iter1.getNext();
         Stack.clearStack();
-        ilCoder.addLabel(Fonc1->GetNom());
-        Fonc1->GetArguListe()->bindIterator(&iter2);
+        ilCoder.addLabel(Fonc1->getName());
+        Fonc1->getArgumentList()->bindIterator(&iter2);
         while (iter2.elemExists()){
             Var1=(VariableItem*)iter2.getElem();
             Stack.pushToStack(Var1);
             iter2.getNext();
         }
         somme=0;
-        Fonc1->GetVarListe()->bindIterator(&iter2);
+        Fonc1->getVariableList()->bindIterator(&iter2);
         while (iter2.elemExists()){
             Var1=(VariableItem*)iter2.getElem();
             Stack.pushToStack(Var1);
@@ -278,7 +278,7 @@ void GenIL::generateCode(){
         if (somme)
             ilCoder.add(SUB,ilCoder.createOpVal(somme),ilCoder.createOp(SP_REG),SZ_L);
 
-        Fonc1->GetInstrListe()->bindIterator(&iter2);
+        Fonc1->getInstructionList()->bindIterator(&iter2);
         while(iter2.elemExists()){
             Instr1=(InstructionETPB*)iter2.getNext();
             registerStack->init(mNbRegMax);

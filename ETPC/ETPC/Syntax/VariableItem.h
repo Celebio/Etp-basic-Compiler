@@ -37,7 +37,7 @@ class VariableItem:
 {
 private:
     VarPortEnum Car;    // LOCAL/PUBLIC
-    TAG* bTAGNom;           // le TAG dont le champ Identif contient le nom de la variable
+    TAG* bTagName;           // le TAG dont le champ Identif contient le nom de la variable
     Collection DimListe;    // Liste des expressions des dimensions
     VarTypeType Type;   // Integer,Float,User-defined,etc..
     TAG* bTAGType;      // le TAG dont le champ Identif donne d?finit le type
@@ -55,7 +55,7 @@ public:
 
     // Get
     VarPortEnum GetCar() {return Car;}
-    TAG* GetTagNom() {return bTAGNom;}
+    TAG* getTagName() {return bTagName;}
     Collection* GetDimListe() {return &DimListe;}
     VarTypeType getType() {return Type;}
     TAG* GetTagType() {return bTAGType;}
@@ -65,7 +65,7 @@ public:
 
     // Set
     void SetCar(VarPortEnum bCar) {Car=bCar;}
-    void SetTagNom(TAG* nTAGNom) {bTAGNom=nTAGNom;}
+    void setTagName(TAG* nTAGNom) {bTagName=nTAGNom;}
     void SetDimListe(Collection* bListe) {if (bListe) DimListe=*bListe;}
     void setType(VarTypeType bType) {Type=bType;}
     void SetTagType(TAG* nTAGType) {bTAGType=nTAGType;}

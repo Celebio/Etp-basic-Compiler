@@ -25,14 +25,14 @@ class FonctionItem :
     public ColItem
 {
 private:
-    const char* Nom;
-    int Ligne;
-    Collection ArguListe;   // liste des arguments
-    Collection VarListe;    // liste des variables locales
-    VarTypeType RetType;
-    Collection InstrListe;  // la suite d'instruction
-    bool IsAssembler;
-    bool Used;
+    const char* name;
+    int line;
+    Collection argumentList;
+    Collection variableList;    // liste des variables locales
+    VarTypeType returnType;
+    Collection instructionList;  // la suite d'instruction
+    bool assembler;
+    bool used;
     asm68kCoder* asmCode;
 
 public:
@@ -44,23 +44,23 @@ public:
     void display();
 
     // Get
-    const char* GetNom() {return Nom;}
-    int GetLigne() {return Ligne;}
-    Collection* GetArguListe() {return &ArguListe;}
-    Collection* GetVarListe() {return &VarListe;}
-    VarTypeType GetRetType() {return RetType;}
-    Collection* GetInstrListe() {return &InstrListe;}
-    bool GetUsed() {return Used;}
-    bool GetIsAssembler() {return IsAssembler;}
-    asm68kCoder* GetasmCode() {return asmCode;}
+    const char* getName() {return name;}
+    int getLine() {return line;}
+    Collection* getArgumentList() {return &argumentList;}
+    Collection* getVariableList() {return &variableList;}
+    VarTypeType getReturnType() {return returnType;}
+    Collection* getInstructionList() {return &instructionList;}
+    bool isUsed() {return used;}
+    bool isAssembler() {return assembler;}
+    asm68kCoder* getAsmCode() {return asmCode;}
 
     // Set
-    void SetLigne(int bLigne){Ligne=bLigne;}
-    void SetRetType(VarTypeType bType){RetType=bType;}
-    void SetNom(const char* bNom){Nom=bNom;}
-    void SetUsed(){Used=true;}
-    void SetIsAssembler(){IsAssembler=true;}
-    void SetasmCode(asm68kCoder* bCode){asmCode=bCode;}
+    void setLine(int bLigne){line=bLigne;}
+    void setReturnType(VarTypeType bType){returnType=bType;}
+    void setName(const char* bNom){name=bNom;}
+    void setUsed(){used=true;}
+    void setIsAssembler(){assembler=true;}
+    void setAsmCode(asm68kCoder* bCode){asmCode=bCode;}
 
 };
 

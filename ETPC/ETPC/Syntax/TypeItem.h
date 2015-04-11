@@ -25,9 +25,9 @@ class TypeItem :
     public ColItem
 {
 private:
-    char* Nom;
-    TAG* bTAGNom;           // le TAG dont le champ Identif contient le nom du type
-    Collection ChampListe;
+    char* name;
+    TAG* bTagName;           // le TAG dont le champ Identif contient le nom du type
+    Collection fieldList;
 public:
     TypeItem(void);
     ~TypeItem(void);
@@ -37,12 +37,12 @@ public:
     void display();
 
     // Get
-    char* GetNom() {return Nom;}
-    TAG* GetTagNom() {return bTAGNom;}
-    Collection* GetChampListe() {return &ChampListe;}
+    char* getName() {return name;}
+    TAG* getTagName() {return bTagName;}
+    Collection* getFieldList() {return &fieldList;}
 
     // Set
-    void SetTagNom(TAG* bTag);
+    void setTagName(TAG* bTag);
 };
 
 #endif

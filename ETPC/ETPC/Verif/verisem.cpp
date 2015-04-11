@@ -52,7 +52,7 @@ bool VeriSem::TypeExiste(VariableItem* bVariable)
         Types->bindIterator(&iter1);
         while(iter1.elemExists() && !Found){
             Type1 = (TypeItem*)iter1.getNext();
-            if (!strcmp(Type1->GetNom(),bVariable->getType().Expr)){
+            if (!strcmp(Type1->getName(),bVariable->getType().Expr)){
                 Found = true;
             }
         }
@@ -127,16 +127,16 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
                 Types->bindIterator(&pTypeListe);
                 while (pTypeListe.elemExists()){
                     Type1=(TypeItem*)pTypeListe.getNext();
-                    if (!strcmp(Type1->GetNom(),bType.Expr)){
+                    if (!strcmp(Type1->getName(),bType.Expr)){
                         printf("les champs du type:\n");
-                        Type1->GetChampListe()->display();
+                        Type1->getFieldList()->display();
                         printf("\n\n");
-                        Type1->GetChampListe()->bindIterator(&pVarListe);
+                        Type1->getFieldList()->bindIterator(&pVarListe);
                         while (pVarListe.elemExists()){
                             Var1=(VariableItem*)pVarListe.getNext();
-                            if (!strcmp(Var1->GetTagNom()->GetIdentif(),expr->getRightChild()->getTag()->GetIdentif())){
+                            if (!strcmp(Var1->getTagName()->GetIdentif(),expr->getRightChild()->getTag()->GetIdentif())){
                                 #ifdef _DEBUGSEM
-                                    printf("le champs %s existe dans le type %s\n",Var1->GetTagNom()->GetIdentif(),bType.Expr);
+                                    printf("le champs %s existe dans le type %s\n",Var1->getTagName()->GetIdentif(),bType.Expr);
                                 #endif
                                 // verification eventuelle pour la size du tableau
                                 Var1->GetDimListe()->bindIterator(&pDimListe);
@@ -356,10 +356,10 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             printf("trouve une variable\n");
         #endif
         // EST-CE une variable LOCALE ???
-        foncEnCours->GetVarListe()->bindIterator(&pVarListe);
+        foncEnCours->getVariableList()->bindIterator(&pVarListe);
         while(pVarListe.elemExists()){
             Var1=(VariableItem*)pVarListe.getElem();
-            if (!strcmp(Var1->GetTagNom()->GetIdentif(),expr->getTag()->GetIdentif())){
+            if (!strcmp(Var1->getTagName()->GetIdentif(),expr->getTag()->GetIdentif())){
                 #ifdef _DEBUGSEM
                     printf("c'est une variable locale \n");
                 #endif
@@ -393,10 +393,10 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
 
 
         // EST-CE un parametre de la fonction ???
-        foncEnCours->GetArguListe()->bindIterator(&pVarListe);
+        foncEnCours->getArgumentList()->bindIterator(&pVarListe);
         while (pVarListe.elemExists()){
             Var1=(VariableItem*)pVarListe.getElem();
-            if (!strcmp(Var1->GetTagNom()->GetIdentif(),expr->getTag()->GetIdentif())){
+            if (!strcmp(Var1->getTagName()->GetIdentif(),expr->getTag()->GetIdentif())){
                 #ifdef _DEBUGSEM
                     printf("c'est un parametre de la fonction \n");
                 #endif
@@ -433,7 +433,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
         VariablesPublic->bindIterator(&pVarListe);
         while (pVarListe.elemExists()){
             Var1=(VariableItem*)pVarListe.getElem();
-            if (!strcmp(Var1->GetTagNom()->GetIdentif(),expr->getTag()->GetIdentif())){
+            if (!strcmp(Var1->getTagName()->GetIdentif(),expr->getTag()->GetIdentif())){
                 #ifdef _DEBUGSEM
                     printf("c'est une variable publique \n");
                 #endif
@@ -473,12 +473,12 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
         Fonctions->bindIterator(&pFuncListe);
         while (pFuncListe.elemExists()){
             Fonc1=(FonctionItem*)pFuncListe.getElem();
-            if (!strcmp(Fonc1->GetNom(),expr->getTag()->GetIdentif())){
+            if (!strcmp(Fonc1->getName(),expr->getTag()->GetIdentif())){
                 #ifdef _DEBUGSEM
                     printf("C'est bien declared..\n");
                 #endif
-                retVal=Fonc1->GetRetType();
-                Fonc1->SetUsed();
+                retVal=Fonc1->getReturnType();
+                Fonc1->setUsed();
                 break;
             }
             pFuncListe.getNext();
@@ -486,7 +486,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
         if (!pFuncListe.elemExists()){
             break;
         }
-        Fonc1->GetArguListe()->bindIterator(&pVarListe);
+        Fonc1->getArgumentList()->bindIterator(&pVarListe);
         i=0;
         while (pVarListe.elemExists()){
             i++;
@@ -501,7 +501,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             errListe->add(bufferErrDescr,expr->getTag());
             break;
         }
-        Fonc1->GetArguListe()->bindIterator(&pVarListe);
+        Fonc1->getArgumentList()->bindIterator(&pVarListe);
 
         // il faut verifier ? l'envers, car la liste des arguments est invers?e
         for (i=0;i<expr->getSuccNmbr();i++)
@@ -516,10 +516,10 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             printf("Trouve en tant que array\n");
         #endif
         // EST-CE un tableau LOCAL ???
-        foncEnCours->GetVarListe()->bindIterator(&pVarListe);
+        foncEnCours->getVariableList()->bindIterator(&pVarListe);
         while(pVarListe.elemExists()){
             Var1=(VariableItem*)pVarListe.getElem();
-            if (!strcmp(Var1->GetTagNom()->GetIdentif(),expr->getTag()->GetIdentif())){
+            if (!strcmp(Var1->getTagName()->GetIdentif(),expr->getTag()->GetIdentif())){
                 #ifdef _DEBUGSEM
                     printf("c'est un tableau locale \n");
                 #endif
@@ -536,7 +536,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             VariablesPublic->bindIterator(&pVarListe);
             while (pVarListe.elemExists()){
                 Var1=(VariableItem*)pVarListe.getElem();
-                if (!strcmp(Var1->GetTagNom()->GetIdentif(),expr->getTag()->GetIdentif())){
+                if (!strcmp(Var1->getTagName()->GetIdentif(),expr->getTag()->GetIdentif())){
                     #ifdef _DEBUGSEM
                         printf("c'est un tableau publique \n");
                     #endif
@@ -721,7 +721,7 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
         GetTypeExpression(bInstr->getExprFunctionCall(),typePro,foncEnCours);
         break;
     case INS_RETURN:
-        GetTypeExpression(bInstr->getExprReturn(),foncEnCours->GetRetType(),foncEnCours);
+        GetTypeExpression(bInstr->getExprReturn(),foncEnCours->getReturnType(),foncEnCours);
         bInstr->getExprReturn()->simplifyConstantExpression();
         break;
     }
@@ -751,20 +751,20 @@ void VeriSem::VerifSem(){
         while(iter2.elemExists()){
             Type2 = (TypeItem*)iter2.getNext();
             //Type2->display();
-            if (!strcmp(Type2->GetNom(),Type1->GetNom())){
-                sprintf(errMsgBuf,"%s est declare plusieurs fois",Type2->GetNom());
-                errListe->add(errMsgBuf,Type2->GetTagNom());
+            if (!strcmp(Type2->getName(),Type1->getName())){
+                sprintf(errMsgBuf,"%s est declare plusieurs fois",Type2->getName());
+                errListe->add(errMsgBuf,Type2->getTagName());
             }
         }
         // existence des types des champs
-        Type1->GetChampListe()->bindIterator(&iter2);
+        Type1->getFieldList()->bindIterator(&iter2);
         while (iter2.elemExists()){
             Var1 = (VariableItem*)iter2.getNext();
             //Var1->display();
             TypeExiste(Var1);
         }
         fooType.Type=TP_USER;
-        fooType.Expr=Type1->GetNom();
+        fooType.Expr=Type1->getName();
         UpdateVarSize(NULL,fooType,false);
     }
 
@@ -779,9 +779,9 @@ void VeriSem::VerifSem(){
         Var1=(VariableItem*)iter1.getNext();
         while (iter2.elemExists()){
             Var2=(VariableItem*)iter2.getNext();
-            if (!strcmp(Var1->GetTagNom()->GetIdentif(),Var2->GetTagNom()->GetIdentif())){
-                sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->GetTagNom()->GetIdentif());
-                errListe->add(errMsgBuf,Var2->GetTagNom());
+            if (!strcmp(Var1->getTagName()->GetIdentif(),Var2->getTagName()->GetIdentif())){
+                sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->getTagName()->GetIdentif());
+                errListe->add(errMsgBuf,Var2->getTagName());
             }
         }
         TypeExiste(Var1);
@@ -791,15 +791,15 @@ void VeriSem::VerifSem(){
     while (iter1.elemExists()){
         Fonc1=(FonctionItem*)iter1.getNext();
         // Verification de double definition des parametres
-        Fonc1->GetArguListe()->bindIterator(&iter2);
+        Fonc1->getArgumentList()->bindIterator(&iter2);
         while (iter2.elemExists()){
             iter3.initHead(iter2.getCour()->next);
             Var1=(VariableItem*)iter2.getNext();
             while (iter3.elemExists()){
                 Var2=(VariableItem*)iter3.getNext();
-                if (!strcmp(Var1->GetTagNom()->GetIdentif(),Var2->GetTagNom()->GetIdentif())){
-                    sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->GetTagNom()->GetIdentif());
-                    errListe->add(errMsgBuf,Var2->GetTagNom());
+                if (!strcmp(Var1->getTagName()->GetIdentif(),Var2->getTagName()->GetIdentif())){
+                    sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->getTagName()->GetIdentif());
+                    errListe->add(errMsgBuf,Var2->getTagName());
                 }
             }
             if(TypeExiste(Var1))
@@ -811,24 +811,24 @@ void VeriSem::VerifSem(){
         }
 
         // Verification de double definition des variables locales
-        Fonc1->GetVarListe()->bindIterator(&iter2);
+        Fonc1->getVariableList()->bindIterator(&iter2);
         while (iter2.elemExists()){
             iter3.initHead(iter2.getCour()->next);
             Var1=(VariableItem*)iter2.getNext();
             while (iter3.elemExists()){
                 Var2=(VariableItem*)iter3.getNext();
-                if (!strcmp(Var1->GetTagNom()->GetIdentif(),Var2->GetTagNom()->GetIdentif())){
-                    sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->GetTagNom()->GetIdentif());
-                    errListe->add(errMsgBuf,Var2->GetTagNom());
+                if (!strcmp(Var1->getTagName()->GetIdentif(),Var2->getTagName()->GetIdentif())){
+                    sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->getTagName()->GetIdentif());
+                    errListe->add(errMsgBuf,Var2->getTagName());
                 }
             }
             // regarder les similitudes avec les arguments
-            Fonc1->GetArguListe()->bindIterator(&iter3);
+            Fonc1->getArgumentList()->bindIterator(&iter3);
             while (iter3.elemExists()){
                 Var2=(VariableItem*)iter3.getNext();
-                if (!strcmp(Var1->GetTagNom()->GetIdentif(),Var2->GetTagNom()->GetIdentif())){
-                    sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->GetTagNom()->GetIdentif());
-                    errListe->add(errMsgBuf,Var2->GetTagNom());
+                if (!strcmp(Var1->getTagName()->GetIdentif(),Var2->getTagName()->GetIdentif())){
+                    sprintf(errMsgBuf,"%s est declare plusieurs fois",Var2->getTagName()->GetIdentif());
+                    errListe->add(errMsgBuf,Var2->getTagName());
                 }
             }
 
@@ -840,7 +840,7 @@ void VeriSem::VerifSem(){
         }
 
         // verification des expressions contenus dans les instructions
-        VerifSemInstr(Fonc1->GetInstrListe(),Fonc1);
+        VerifSemInstr(Fonc1->getInstructionList(),Fonc1);
 
     }
 
@@ -849,11 +849,11 @@ void VeriSem::VerifSem(){
     {
 
         // verification des expressions contenus dans les instructions
-        InstrListe=FuncListe->Elem->InstrListe;
-        while (InstrListe)
+        instructionList=FuncListe->Elem->instructionList;
+        while (instructionList)
         {
-            VerifSemInstr(InstrListe->Elem,FuncListe->Elem,errListe);
-            InstrListe=InstrListe->next;
+            VerifSemInstr(instructionList->Elem,FuncListe->Elem,errListe);
+            instructionList=instructionList->next;
         }
         FuncListe=FuncListe->next;
     }
@@ -912,8 +912,8 @@ int VeriSem::UpdateVarSize(VariableItem* bVar,VarTypeType bType,bool UDasPtr){
             Types->bindIterator(&iter1);
             while(iter1.elemExists()){
                 Type1 = (TypeItem*)iter1.getNext();
-                if (!strcmp(Type1->GetNom(),bType.Expr)){
-                    Type1->GetChampListe()->bindIterator(&iter2);
+                if (!strcmp(Type1->getName(),bType.Expr)){
+                    Type1->getFieldList()->bindIterator(&iter2);
                     while (iter2.elemExists()){
                         Var1=(VariableItem*)iter2.getNext();
                         somme += UpdateVarSize(Var1,Var1->getType(),true);

@@ -35,12 +35,12 @@ private:
     TAG *pListeCr;
 
     char *programBuffer;
-    char *Fin;
-    const char *CourFileName;
+    char *end;
+    const char *currentFileName;
     errorIsNumeric IsNumeric(TAG* bTag);
 
     void AvanceTokenPtr(char **pText);
-    TAG GetToken(char **Btext,int* Col);
+    TAG GetToken(char **bText,int* column);
     char GiveLowerCase(const char *bC);
 
     bool isPredefFile;

@@ -85,7 +85,7 @@ Operande* PileRegTemp::allocateTemp(int size){
     char buffer[200];
     sprintf(buffer,"_systVar%i",mTempCtr++);
     tagNomVar->SetIdentif(buffer);
-    StackVar->SetTagNom(tagNomVar);
+    StackVar->setTagName(tagNomVar);
     StackVar->SetSize(size);
     retVal=mIL->createOp(0,SP_REG);
     mIL->add("Creation de temporaire");
@@ -99,6 +99,6 @@ void PileRegTemp::freeTemp(Operande* T,int size){
     mIL->add("Liberation de temporaire");
     mIL->add(ADD,mIL->createOpVal(size),mIL->createOp(SP_REG),SZ_L);
 
-    delete AEffacer->GetTagNom();
+    delete AEffacer->getTagName();
 }
 

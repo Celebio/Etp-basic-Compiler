@@ -799,16 +799,16 @@ void Gen68k::generateCode(){
     Fonctions->bindIterator(&iter1);
     while(iter1.elemExists()){
         Fonc1=(FonctionItem*)iter1.getNext();
-        if (Fonc1->GetUsed()){
+        if (Fonc1->isUsed()){
 
 
-            if (Fonc1->GetIsAssembler() ){
+            if (Fonc1->isAssembler() ){
 
             }
             else {
-                ilCoder.addLabel(Fonc1->GetNom());
+                ilCoder.addLabel(Fonc1->getName());
                 Stack.clearStack();
-                Fonc1->GetArguListe()->bindIterator(&iter2);
+                Fonc1->getArgumentList()->bindIterator(&iter2);
                 while (iter2.elemExists()){
                     Var1=(VariableItem*)iter2.getElem();
                     // used? unused?
@@ -819,7 +819,7 @@ void Gen68k::generateCode(){
                 //Stack.display();
 
                 tailleVarLocales=0;
-                Fonc1->GetVarListe()->bindIterator(&iter2);
+                Fonc1->getVariableList()->bindIterator(&iter2);
                 while (iter2.elemExists()){
                     Var1=(VariableItem*)iter2.getElem();
                     Stack.pushToStack(Var1);
@@ -831,8 +831,8 @@ void Gen68k::generateCode(){
 
                 Stack.display();
 
-                Collection* InstrListe = Fonc1->GetInstrListe();
-                codeInstr(InstrListe);
+                Collection* instructionList = Fonc1->getInstructionList();
+                codeInstr(instructionList);
 
 
                 Stack.clearStack();

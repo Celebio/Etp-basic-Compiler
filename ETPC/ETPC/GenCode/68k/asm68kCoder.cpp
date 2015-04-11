@@ -193,10 +193,10 @@ void asm68kCoder::displayFooter(){
 }
 
 void asm68kCoder::display(){
-    LineCode68k* Cour=generatedCode;
-    while (Cour){
-        display(Cour);
-        Cour=Cour->next;
+    LineCode68k* current=generatedCode;
+    while (current){
+        display(current);
+        current=current->next;
     }
 }
 

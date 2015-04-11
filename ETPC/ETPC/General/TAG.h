@@ -98,8 +98,8 @@ class TAG
 private:
     enumTokenType Token;
     char Identif[200];
-    int Col;
-    int Ligne;
+    int column;
+    int line;
     const char *fileName;
     bool isPredefFileTAG;
     TAG* Next;
@@ -110,8 +110,8 @@ public:
     // Get
     enumTokenType GetToken() {return Token;}
     char* GetIdentif() {return Identif;}
-    int GetCol() {return Col;}
-    int GetLigne() {return Ligne;}
+    int GetCol() {return column;}
+    int getLine() {return line;}
     const char* GetFileName() {return fileName;}
     bool GetisPredefFileTAG() {return isPredefFileTAG;}
     TAG* GetNext() {return Next;}
@@ -119,8 +119,8 @@ public:
     // Set
     void SetToken(enumTokenType bToken) {Token=bToken;}
     void SetIdentif(char* bIdentif);
-    void SetCol(int bCol) {Col=bCol;}
-    void SetLigne(int bLigne) {Ligne=bLigne;}
+    void SetCol(int bCol) {column=bCol;}
+    void setLine(int bLigne) {line=bLigne;}
     void SetFileName(const char* bFileName) {fileName=bFileName; }
     void SetisPredefFileTAG(bool bPredef) {isPredefFileTAG=bPredef;}
     void SetNext(TAG* bNext) {Next=bNext;}

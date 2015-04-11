@@ -26,7 +26,7 @@ void VariableItem::destroy()
 }
 void VariableItem::display()
 {
-    printf("Variable NOM:%s:\n",bTAGNom->GetIdentif());
+    printf("Variable NOM:%s:\n",bTagName->GetIdentif());
     if (Car ==VR_PUBLIC)
         printf("PUBLIC ");
     else if (Car==VR_LOCAL)

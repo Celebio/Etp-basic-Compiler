@@ -52,14 +52,14 @@ bool Collection::estVide(){
 
 
 void Collection::Clear(){
-    ArrayElem *Cour=buffer;
-    ArrayElem *precCour=Cour;
-    while (Cour)
+    ArrayElem *current=buffer;
+    ArrayElem *precCur=current;
+    while (current)
     {
-        precCour=Cour;
-        Cour=Cour->next;
-        precCour->Elem->destroy();
-        delete precCour;
+        precCur=current;
+        current=current->next;
+        precCur->Elem->destroy();
+        delete precCur;
     }
     buffer=NULL;
     last = NULL;
@@ -117,11 +117,11 @@ void Collection::add(const char* bDesc,TAG* bTag)
 }
 void Collection::display()
 {
-    ArrayElem *Cour=buffer;
-    while (Cour)
+    ArrayElem *current=buffer;
+    while (current)
     {
-        Cour->Elem->display();
-        Cour=Cour->next;
+        current->Elem->display();
+        current=current->next;
     }
 }
 

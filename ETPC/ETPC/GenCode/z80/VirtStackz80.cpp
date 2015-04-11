@@ -48,7 +48,7 @@ void VirtStackz80::pushToStack(int size){
     char* buffer= new char[200];
     sprintf(buffer,"_systArgVar%i",mTempCtr++);
     tagNomVar->SetIdentif(buffer);
-    StackVar->SetTagNom(tagNomVar);
+    StackVar->setTagName(tagNomVar);
     StackVar->SetSize(size);
     pushToStack(StackVar);
 }
@@ -77,11 +77,11 @@ VariableItem* VirtStackz80::pop(){
 void VirtStackz80::clearStack(){
 
     VirtStackElemz80* pCour=VirtualStackBuffer;
-    VirtStackElemz80* precCour=pCour;
+    VirtStackElemz80* precCur=pCour;
     while (pCour){
-        precCour=pCour;
+        precCur=pCour;
         pCour=pCour->next;
-        delete precCour;
+        delete precCur;
     }
     VirtualStackBuffer=NULL;
 }
@@ -90,7 +90,7 @@ int VirtStackz80::getStackPos(char* varName)
     VirtStackElemz80* pCour=VirtualStackBuffer;
     while(pCour)
     {
-        if (!strcmp(varName,pCour->var->GetTagNom()->GetIdentif()))
+        if (!strcmp(varName,pCour->var->getTagName()->GetIdentif()))
             return pCour->depth;
         pCour=pCour->next;
     }
@@ -102,7 +102,7 @@ void VirtStackz80::display(){
     printf("Virtual Stack State:\n");
     while(pCour)
     {
-        printf("depth:%i  \t var_name:%s \t\tde size:%i\n",pCour->depth,pCour->var->GetTagNom()->GetIdentif(),pCour->var->getSize());
+        printf("depth:%i  \t var_name:%s \t\tde size:%i\n",pCour->depth,pCour->var->getTagName()->GetIdentif(),pCour->var->getSize());
         pCour=pCour->next;
     }
     //VirtualStackBuffer=NULL;

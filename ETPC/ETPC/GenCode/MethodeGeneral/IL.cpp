@@ -95,10 +95,10 @@ void IL::display(Operande* bOperande){
 }
 
 void IL::display(){
-    LigneCode* Cour=generatedCode;
-    while (Cour){
-        display(Cour);
-        Cour=Cour->next;
+    LigneCode* current=generatedCode;
+    while (current){
+        display(current);
+        current=current->next;
     }
 }
 

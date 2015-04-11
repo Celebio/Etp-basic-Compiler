@@ -117,9 +117,9 @@ bool VeriSyn::VerifyExpression(bool requis,
 #ifdef _DEBUGARBRES
     printf("verifying expression...\n");
 #endif
-    TAG* Cour=debTag;
-    TAG* CourEnd;
-    TAG* precCour=Cour;
+    TAG* current=debTag;
+    TAG* currentEnd;
+    TAG* precCur=current;
     int mCtr,cCtr,argCtr;
     CNoeud* Arbre=*ArbreExpress;
     CNoeud* lastAdded=NULL;
@@ -131,71 +131,71 @@ bool VeriSyn::VerifyExpression(bool requis,
     {
         //*ArbreExpress=NULL;
         //return true;
-        errListe->add("On attend une expression",precCour);
+        errListe->add("On attend une expression",precCur);
         return false;
     }
-    while (Cour && Cour!=(finTag))
+    while (current && current!=(finTag))
     {
 #ifdef _DEBUGARBRES
-        Cour->display();
+        current->display();
 #endif
 
 
-        aux = new CNoeud(Cour);
+        aux = new CNoeud(current);
         //crTokType=aux->getOperType();
 
 
         if (aux->getNature()==NODE_UNKNOWN)
         {
-            errListe->add("Mot reserve non permis dans une expression",Cour);
+            errListe->add("Mot reserve non permis dans une expression",current);
             return false;
         }
         if (!Arbre)
         {
-            if (Cour->GetToken()==TOKEN_MOINS)      // si le premier terme est un token_moins, ce token_moins est un operateur unaire droite
+            if (current->GetToken()==TOKEN_MOINS)      // si le premier terme est un token_moins, ce token_moins est un operateur unaire droite
             {
                 aux->setOperatorUnaryMinus();
             }
             if (aux->getOperType()==OPBIN || aux->getOperType()==OPUNG)
             {
                 // on a commenc? par un op?rateur binaire ou unaire_gauche-> faux
-                errListe->add("Inattendu ici ",Cour);
+                errListe->add("Inattendu ici ",current);
                 return false;
             }
             else
             {
                 Arbre = aux;
-                if (Cour->GetToken()==TOKEN_OPENCRO)
+                if (current->GetToken()==TOKEN_OPENCRO)
                 {
-                    errListe->add("Crochet non permis ici",Cour);
+                    errListe->add("Crochet non permis ici",current);
                     return false;
                 }
-                if (Cour->GetToken()==TOKEN_OPENPAR)
+                if (current->GetToken()==TOKEN_OPENPAR)
                 {   // une expression entre parentheses
                     lastAdded=Arbre;
-                    CourEnd = Cour;
+                    currentEnd = current;
                     mCtr = 0;
                     cCtr = 0;
-                    while (!(( CourEnd->GetToken() == TOKEN_CLOSEPAR && mCtr==1 && cCtr==0)  || CourEnd == finTag))
+                    while (!(( currentEnd->GetToken() == TOKEN_CLOSEPAR && mCtr==1 && cCtr==0)  || currentEnd == finTag))
                     {
-                        if (CourEnd->GetToken() == TOKEN_OPENPAR)           mCtr++;
-                        else if (CourEnd->GetToken() == TOKEN_CLOSEPAR)     mCtr--;
-                        else if (CourEnd->GetToken() == TOKEN_OPENCRO)      cCtr++;
-                        else if (CourEnd->GetToken() == TOKEN_CLOSECRO)     cCtr--;
-                        CourEnd = CourEnd->GetNext();
+                        if (currentEnd->GetToken() == TOKEN_OPENPAR)           mCtr++;
+                        else if (currentEnd->GetToken() == TOKEN_CLOSEPAR)     mCtr--;
+                        else if (currentEnd->GetToken() == TOKEN_OPENCRO)      cCtr++;
+                        else if (currentEnd->GetToken() == TOKEN_CLOSECRO)     cCtr--;
+                        currentEnd = currentEnd->GetNext();
                     }
-                    if (CourEnd==finTag)
+                    if (currentEnd==finTag)
                     {
-                        errListe->add("Il manque un ')' ",Cour);
+                        errListe->add("Il manque un ')' ",current);
                         return false;
                     }
                     aux=lastAdded->getRightChild();
-                    VerifyExpression(false,Cour->GetNext(),CourEnd,true,&aux);
+                    VerifyExpression(false,current->GetNext(),currentEnd,true,&aux);
                     #ifdef _DEBUGARBRES
                         printf("dondum openpar basta\n");
                     #endif
                     Arbre->setRightChild(aux);
-                    Cour=CourEnd;
+                    current=currentEnd;
                 }
             }
         }
@@ -209,7 +209,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                 // ? faire..
 
                 // insertion du noeud de l'op?rateur ? la bonne place en fonction de sa priorit?
-                while (courNoeud->getOperator()> getOperatorType(Cour->GetToken()))
+                while (courNoeud->getOperator()> getOperatorType(current->GetToken()))
                 {
                     precNoeud=courNoeud;
                     courNoeud=courNoeud->getRightChild();
@@ -230,14 +230,14 @@ bool VeriSyn::VerifyExpression(bool requis,
                 //if (!(GetOperatorType(lastAdded->getTag())==OPBIN || GetOperatorType(lastAdded->getTag())==OPUND))
                 if (!(lastAdded->getOperType()==OPBIN || lastAdded->getOperType()==OPUND))
                 {
-                    errListe->add("Operateur mal place ",Cour);
+                    errListe->add("Operateur mal place ",current);
                     return false;
                 }
                 if (lastAdded->getRightChild()==NULL)
                     lastAdded->setRightChild(aux);
                 else
                 {   // impossible normalement
-                    errListe->add("Erreur interne ",Cour);
+                    errListe->add("Erreur interne ",current);
                     return false;
                 }
             }
@@ -246,74 +246,74 @@ bool VeriSyn::VerifyExpression(bool requis,
                 //if (lastAdded)
                 if (lastAdded->getTag()->GetToken()!=TOKEN_OPENPAR && lastAdded->getOperType()!=OPBIN && lastAdded->getOperType()!=OPUND && lastAdded->getOperType()!=NOTOP)
                 {
-                    errListe->add("Inattendu: Pas d'operateur pour cet operande ",Cour);
+                    errListe->add("Inattendu: Pas d'operateur pour cet operande ",current);
                     return false;
                 }
 
                 // une expression entre parentheses
-                if (Cour->GetToken()==TOKEN_OPENPAR && lastAdded->getOperType()!=NOTOP)
+                if (current->GetToken()==TOKEN_OPENPAR && lastAdded->getOperType()!=NOTOP)
                 {
                     if (lastAdded->getRightChild()==NULL)    // ajout de l'operateur virtuel
                     {
                         lastAdded->setRightChild(aux);
                         lastAdded=aux;
                     }
-                    CourEnd = Cour;
+                    currentEnd = current;
                     mCtr = 0;
                     cCtr = 0;
-                    while (!(( CourEnd->GetToken() == TOKEN_CLOSEPAR && mCtr==1 && cCtr==0)  || CourEnd == finTag))
+                    while (!(( currentEnd->GetToken() == TOKEN_CLOSEPAR && mCtr==1 && cCtr==0)  || currentEnd == finTag))
                     {
-                        if (CourEnd->GetToken() == TOKEN_OPENPAR)           mCtr++;
-                        else if (CourEnd->GetToken() == TOKEN_CLOSEPAR)     mCtr--;
-                        else if (CourEnd->GetToken() == TOKEN_OPENCRO)      cCtr++;
-                        else if (CourEnd->GetToken() == TOKEN_CLOSECRO)     cCtr--;
-                        CourEnd = CourEnd->GetNext();
+                        if (currentEnd->GetToken() == TOKEN_OPENPAR)           mCtr++;
+                        else if (currentEnd->GetToken() == TOKEN_CLOSEPAR)     mCtr--;
+                        else if (currentEnd->GetToken() == TOKEN_OPENCRO)      cCtr++;
+                        else if (currentEnd->GetToken() == TOKEN_CLOSECRO)     cCtr--;
+                        currentEnd = currentEnd->GetNext();
                     }
-                    if (CourEnd==finTag)
+                    if (currentEnd==finTag)
                     {
-                        errListe->add("Il manque un ')' ",Cour);
+                        errListe->add("Il manque un ')' ",current);
                         return false;
                     }
                     aux=lastAdded->getRightChild();
-                    VerifyExpression(false,Cour->GetNext(),CourEnd,true,&aux);
+                    VerifyExpression(false,current->GetNext(),currentEnd,true,&aux);
                     #ifdef _DEBUGARBRES
                         printf("dondum \n");
                     #endif
-                    Cour=CourEnd;
+                    current=currentEnd;
                     if (lastAdded->getRightChild()==NULL)
                         lastAdded->setRightChild(aux);
                 }
                 // appel de fonction
-                else if (Cour->GetToken()==TOKEN_OPENPAR && lastAdded->getOperType()==NOTOP)
+                else if (current->GetToken()==TOKEN_OPENPAR && lastAdded->getOperType()==NOTOP)
                 {
                     #ifdef _DEBUGARBRES
                         printf("appel de fonction\n");
                     #endif
-                    CourEnd = Cour;
+                    currentEnd = current;
                     mCtr = 0;
                     cCtr = 0;
                     argCtr=0;
-                    while (!( (CourEnd->GetToken() == TOKEN_CLOSEPAR && mCtr==1 && cCtr==0)  || CourEnd == finTag ))
+                    while (!( (currentEnd->GetToken() == TOKEN_CLOSEPAR && mCtr==1 && cCtr==0)  || currentEnd == finTag ))
                     {
-                        if (CourEnd->GetToken() == TOKEN_OPENPAR)           mCtr++;
-                        else if (CourEnd->GetToken() == TOKEN_CLOSEPAR)     mCtr--;
-                        else if (CourEnd->GetToken() == TOKEN_OPENCRO)      cCtr++;
-                        else if (CourEnd->GetToken() == TOKEN_CLOSECRO)     cCtr--;
-                        CourEnd = CourEnd->GetNext();
+                        if (currentEnd->GetToken() == TOKEN_OPENPAR)           mCtr++;
+                        else if (currentEnd->GetToken() == TOKEN_CLOSEPAR)     mCtr--;
+                        else if (currentEnd->GetToken() == TOKEN_OPENCRO)      cCtr++;
+                        else if (currentEnd->GetToken() == TOKEN_CLOSECRO)     cCtr--;
+                        currentEnd = currentEnd->GetNext();
 
-                        if ((CourEnd->GetToken() == TOKEN_VIRGULE && mCtr==1 && cCtr==0) || (CourEnd->GetToken() == TOKEN_CLOSEPAR && mCtr==1 && cCtr==0))
+                        if ((currentEnd->GetToken() == TOKEN_VIRGULE && mCtr==1 && cCtr==0) || (currentEnd->GetToken() == TOKEN_CLOSEPAR && mCtr==1 && cCtr==0))
                         {
                             #ifdef _DEBUGARBRES
                                 printf("verification de l'expression pour l'argument %i\n",argCtr+1);
                             #endif
-                            VerifyExpression(false,Cour->GetNext(),CourEnd,true,lastAdded->getSuccPtr(argCtr));
+                            VerifyExpression(false,current->GetNext(),currentEnd,true,lastAdded->getSuccPtr(argCtr));
                             argCtr++;
-                            Cour=CourEnd;
+                            current=currentEnd;
                         }
                     }
-                    if (CourEnd==finTag)
+                    if (currentEnd==finTag)
                     {
-                        errListe->add("Il manque un ')' ",Cour);
+                        errListe->add("Il manque un ')' ",current);
                         return false;
                     }
                     lastAdded->setRightChild(NULL);
@@ -327,50 +327,50 @@ bool VeriSyn::VerifyExpression(bool requis,
 
                     lastAdded->setAsFunction();
                     delete aux;
-                    Cour=CourEnd;
+                    current=currentEnd;
                 }
                 // appel d'un tableau
-                else if (Cour->GetToken()==TOKEN_OPENCRO && lastAdded->getOperType()==NOTOP)
+                else if (current->GetToken()==TOKEN_OPENCRO && lastAdded->getOperType()==NOTOP)
                 {
                     #ifdef _DEBUGARBRES
                         printf("appel d'un tableau\n");
                     #endif
-                    CourEnd = Cour;
+                    currentEnd = current;
                     mCtr = 0;
                     cCtr = 0;
                     argCtr=0;
-                    while (!( (CourEnd->GetToken() == TOKEN_CLOSECRO && mCtr==0 && cCtr==1)  || CourEnd == finTag ))
+                    while (!( (currentEnd->GetToken() == TOKEN_CLOSECRO && mCtr==0 && cCtr==1)  || currentEnd == finTag ))
                     {
-                        if (CourEnd->GetToken() == TOKEN_OPENPAR)           mCtr++;
-                        else if (CourEnd->GetToken() == TOKEN_CLOSEPAR)     mCtr--;
-                        else if (CourEnd->GetToken() == TOKEN_OPENCRO)      cCtr++;
-                        else if (CourEnd->GetToken() == TOKEN_CLOSECRO)     cCtr--;
-                        CourEnd = CourEnd->GetNext();
+                        if (currentEnd->GetToken() == TOKEN_OPENPAR)           mCtr++;
+                        else if (currentEnd->GetToken() == TOKEN_CLOSEPAR)     mCtr--;
+                        else if (currentEnd->GetToken() == TOKEN_OPENCRO)      cCtr++;
+                        else if (currentEnd->GetToken() == TOKEN_CLOSECRO)     cCtr--;
+                        currentEnd = currentEnd->GetNext();
 
-                        if ((CourEnd->GetToken() == TOKEN_VIRGULE && mCtr==0 && cCtr==1) || (CourEnd->GetToken() == TOKEN_CLOSECRO && mCtr==0 && cCtr==1))
+                        if ((currentEnd->GetToken() == TOKEN_VIRGULE && mCtr==0 && cCtr==1) || (currentEnd->GetToken() == TOKEN_CLOSECRO && mCtr==0 && cCtr==1))
                         {
                             #ifdef _DEBUGARBRES
                                 printf("verification de l'expression pour l'index %i\n",argCtr+1);
                             #endif
-                            VerifyExpression(true,Cour->GetNext(),CourEnd,true,lastAdded->getSuccPtr(argCtr));
+                            VerifyExpression(true,current->GetNext(),currentEnd,true,lastAdded->getSuccPtr(argCtr));
                             argCtr++;
-                            Cour=CourEnd;
+                            current=currentEnd;
                         }
                     }
-                    if (CourEnd==finTag)
+                    if (currentEnd==finTag)
                     {
-                        errListe->add("Il manque un ']' ",Cour);
+                        errListe->add("Il manque un ']' ",current);
                         return false;
                     }
                     lastAdded->setRightChild(NULL);
                     lastAdded->setLeftChild(NULL);
                     lastAdded->setAsArray();
                     delete aux;
-                    Cour=CourEnd;
+                    current=currentEnd;
                 }
-                else if (Cour->GetToken()==TOKEN_OPENCRO && lastAdded->getOperType()!=NOTOP)
+                else if (current->GetToken()==TOKEN_OPENCRO && lastAdded->getOperType()!=NOTOP)
                 {
-                    errListe->add("Crochet non permis ici ",Cour);
+                    errListe->add("Crochet non permis ici ",current);
                     return false;
                 }
                 else
@@ -380,7 +380,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                     else
                     {
                         // impossible normalement
-                        errListe->add("Erreur interne1 ",Cour);
+                        errListe->add("Erreur interne1 ",current);
                         return false;
                     }
                 }
@@ -394,13 +394,13 @@ bool VeriSyn::VerifyExpression(bool requis,
             Arbre->display();
         printf("\n\n");
 #endif
-        precCour = Cour;
-        Cour = Cour->GetNext();
+        precCur = current;
+        current = current->GetNext();
     }// fin while
 
-    //if (GetOperatorType(precCour)==OPBIN || GetOperatorType(precCour)==OPUND)
+    //if (GetOperatorType(precCur)==OPBIN || GetOperatorType(precCur)==OPUND)
     //{
-    //  errListe->add("Un manque un operande pour cet operateur",precCour);
+    //  errListe->add("Un manque un operande pour cet operateur",precCur);
     //  return false;
     //}
     NetoyerArbreParentheses(Arbre);     // il faut absolument mettre ca en dehors du while
@@ -420,9 +420,9 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                        Collection* instrCollect)
 {
 
-    TAG* Cour=debTag;
-    TAG* CourEnd;
-    TAG* precCour=Cour;
+    TAG* current=debTag;
+    TAG* currentEnd;
+    TAG* precCur=current;
     TAG* rpCour;
     enumETATInstr State=INST_00;
     int mCtr,cCtr;
@@ -439,47 +439,47 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
     TypeItem* tmpType=NULL;
     FonctionItem* tmpFonc=NULL;
 
-    while (Cour && Cour!=finTag)
+    while (current && current!=finTag)
     {
         switch (State)
         {
         case INST_00:
             debugCour = NULL;
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 State = INST_00;
             }
-            else if (Cour->GetToken() == TOKEN_DO)
+            else if (current->GetToken() == TOKEN_DO)
             {
-                debugCour = Cour;
+                debugCour = current;
                 State = INST_DO01;
             }
-            else if (Cour->GetToken() == TOKEN_IDENTIF)
+            else if (current->GetToken() == TOKEN_IDENTIF)
                 State = INST_IDENTIF;
-            else if (Cour->GetToken() == TOKEN_LOCAL)
+            else if (current->GetToken() == TOKEN_LOCAL)
                 State = INST_LOCAL00;
-            else if (Cour->GetToken() == TOKEN_RETURN)
+            else if (current->GetToken() == TOKEN_RETURN)
                 State = INST_RET00;
-            else if (Cour->GetToken() == TOKEN_FOR)
+            else if (current->GetToken() == TOKEN_FOR)
             {
-                debugCour = Cour;
+                debugCour = current;
                 State = INST_FOR00;
             }
-            else if (Cour->GetToken() == TOKEN_IF)
+            else if (current->GetToken() == TOKEN_IF)
             {
-                debugCour = Cour;
+                debugCour = current;
                 State = INST_IF00;
             }
-            else if (Cour->GetToken() == TOKEN_PUBLIC)
+            else if (current->GetToken() == TOKEN_PUBLIC)
             {
-                errListe->add("Declaration publique dans un corps ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Declaration publique dans un corps ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             else
             {
-                errListe->add("Inattendu dans une fonction: ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu dans une fonction: ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             break;
@@ -489,135 +489,135 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         case INST_DO01:
             instrCour = new InstructionETPB(INS_STRUCT_DOLPWH);
             instrCollect->add(instrCour);
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 State = INST_DO02;
-                rpCour = Cour;
+                rpCour = current;
             }
-            else if (Cour->GetToken() == TOKEN_WHILE)
+            else if (current->GetToken() == TOKEN_WHILE)
                 State = INST_DO05;
             else
             {
-                errListe->add("Apres 'Do' on attend 'While' ou rien",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Apres 'Do' on attend 'While' ou rien",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             break;
         case INST_DO02:
             ifCtr = 0;
             ifFound = false;
-            CourEnd = Cour;
-            precCour = CourEnd;
-            while (!(ifCtr==-1 || (CourEnd->GetToken()==TOKEN_LOOP && ifCtr==0) || CourEnd==finTag))
+            currentEnd = current;
+            precCur = currentEnd;
+            while (!(ifCtr==-1 || (currentEnd->GetToken()==TOKEN_LOOP && ifCtr==0) || currentEnd==finTag))
             {
-                if (CourEnd->GetToken() == TOKEN_DO)
+                if (currentEnd->GetToken() == TOKEN_DO)
                     ifCtr++;
-                else if (CourEnd->GetToken() == TOKEN_LOOP)
+                else if (currentEnd->GetToken() == TOKEN_LOOP)
                 {
                     ifCtr--;
                 }
-                precCour = CourEnd;
-                CourEnd = CourEnd->GetNext();
+                precCur = currentEnd;
+                currentEnd = currentEnd->GetNext();
             }
-            if (CourEnd == finTag)
+            if (currentEnd == finTag)
             {
                 errListe->add("Il manque 'Loop' (Do) ",debugCour);
                 State = INST_00;
-                Cour = rpCour;
+                current = rpCour;
                 break;
             }
             else
             {
-                VerifyInstruction(Cour,CourEnd,pFunc,instrCour->getDoBody());
+                VerifyInstruction(current,currentEnd,pFunc,instrCour->getDoBody());
                 State = INST_DO03;
             }
-            Cour = CourEnd;
+            current = currentEnd;
             break;
         case INST_DO03:
-            if (Cour->GetToken() == TOKEN_WHILE)
+            if (current->GetToken() == TOKEN_WHILE)
                 State = INST_DO04;
             else
             {
-                errListe->add("On attend 'While'",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'While'",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
                 break;
             }
             break;
         case INST_DO04:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
-                errListe->add("On attend une expression de condition apres 'While'",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une expression de condition apres 'While'",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
                 break;
             }
             // il faut avoir expression suivi de CRLF
-            CourEnd = Cour;
-            while (!(CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
-                CourEnd = CourEnd->GetNext();
+            currentEnd = current;
+            while (!(currentEnd->GetToken() == TOKEN_CRLF || currentEnd == finTag))
+                currentEnd = currentEnd->GetNext();
 
             // signaler les erreurs dans l'expression
-            VerifyExpression(true,Cour,CourEnd,true,instrCour->getDoExprConditionPtr());
+            VerifyExpression(true,current,currentEnd,true,instrCour->getDoExprConditionPtr());
             State = INST_00;
-            Cour = CourEnd;
-            rpCour = Cour;
+            current = currentEnd;
+            rpCour = current;
             break;
         case INST_DO05:
-            rpCour = Cour;
+            rpCour = current;
             instrCour->ChangeNatINS_STRUCT_DOWH();
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
-                errListe->add("On attend une expression de condition apres 'While'",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une expression de condition apres 'While'",current);
+                AvanceNextLigne(&current);
                 State = INST_DO06;
                 break;
             }
             // il faut avoir expression suivi de CRLF
-            CourEnd = Cour;
-            while (!(CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
-                CourEnd = CourEnd->GetNext();
+            currentEnd = current;
+            while (!(currentEnd->GetToken() == TOKEN_CRLF || currentEnd == finTag))
+                currentEnd = currentEnd->GetNext();
 
             // signaler les erreurs dans l'expression
-            VerifyExpression(true,Cour,CourEnd,true,instrCour->getDoExprConditionPtr());
+            VerifyExpression(true,current,currentEnd,true,instrCour->getDoExprConditionPtr());
             State = INST_DO06;
-            Cour = CourEnd;
+            current = currentEnd;
             break;
         case INST_DO06:
             ifCtr = 0;
             ifFound = false;
-            CourEnd = Cour;
-            precCour = CourEnd;
-            while (!(ifCtr==-1 || (CourEnd->GetToken()==TOKEN_LOOP && ifCtr==0) || CourEnd==finTag))
+            currentEnd = current;
+            precCur = currentEnd;
+            while (!(ifCtr==-1 || (currentEnd->GetToken()==TOKEN_LOOP && ifCtr==0) || currentEnd==finTag))
             {
-                if (CourEnd->GetToken() == TOKEN_DO)
+                if (currentEnd->GetToken() == TOKEN_DO)
                     ifCtr++;
-                else if (CourEnd->GetToken() == TOKEN_LOOP)
+                else if (currentEnd->GetToken() == TOKEN_LOOP)
                 {
                     ifCtr--;
                 }
-                precCour = CourEnd;
-                CourEnd = CourEnd->GetNext();
+                precCur = currentEnd;
+                currentEnd = currentEnd->GetNext();
             }
-            if (CourEnd == finTag)
+            if (currentEnd == finTag)
             {
                 errListe->add("Il manque 'Loop' (Do) ",debugCour);
                 State = INST_00;
-                Cour = rpCour;
+                current = rpCour;
                 break;
             }
             else
             {
-                VerifyInstruction(Cour,CourEnd,pFunc,instrCour->getDoBody());
+                VerifyInstruction(current,currentEnd,pFunc,instrCour->getDoBody());
                 State = INST_DO07;
             }
-            Cour = CourEnd;
+            current = currentEnd;
             break;
         case INST_DO07:
-            if (!(Cour->GetToken() == TOKEN_CRLF))
+            if (!(current->GetToken() == TOKEN_CRLF))
             {
-                errListe->add("Inattendu apres 'Loop':",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu apres 'Loop':",current);
+                AvanceNextLigne(&current);
             }
             State = INST_00;
             break;
@@ -630,120 +630,120 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             /* comment? car pas besoin d'ajouter les déclarations en tant qu'instruction    */
             //instrCour = new InstructionETPB(INS_DECLARATION);
             //instrCollect->add(instrCour);
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
                 tmpVar= new VariableItem();
-                pFunc->GetVarListe()->add(tmpVar);
+                pFunc->getVariableList()->add(tmpVar);
                 tmpVar->SetCar(VR_PUBLIC);
                 tmpVar->SetFunc(NULL);
-                tmpVar->SetTagNom(Cour);
+                tmpVar->setTagName(current);
                 tmpVar->SetTagType(NULL);
                 State = INST_LOCAL01;
             }
             else
             {
-                errListe->add("On attend un identifiant:",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un identifiant:",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             break;
         case INST_LOCAL01:
-            if (Cour->GetToken() == TOKEN_AS)
+            if (current->GetToken() == TOKEN_AS)
                 State = INST_LOCAL06;
-            else if (Cour->GetToken() == TOKEN_OPENCRO)
+            else if (current->GetToken() == TOKEN_OPENCRO)
                 State = INST_LOCAL02;
             else
             {
-                errListe->add("On attend 'as' ou '['",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'as' ou '['",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             break;
         case INST_LOCAL02:
-            CourEnd = Cour;
+            currentEnd = current;
             mCtr = 0;
             cCtr = 0;
-            while (!(((CourEnd->GetToken() == TOKEN_CLOSECRO || CourEnd->GetToken() == TOKEN_VIRGULE) && mCtr==0 && cCtr==0)  || CourEnd == finTag))
+            while (!(((currentEnd->GetToken() == TOKEN_CLOSECRO || currentEnd->GetToken() == TOKEN_VIRGULE) && mCtr==0 && cCtr==0)  || currentEnd == finTag))
             {
-                if (CourEnd->GetToken() == TOKEN_OPENPAR)
+                if (currentEnd->GetToken() == TOKEN_OPENPAR)
                     mCtr++;
-                else if (CourEnd->GetToken() == TOKEN_CLOSEPAR)
+                else if (currentEnd->GetToken() == TOKEN_CLOSEPAR)
                     mCtr--;
-                else if (CourEnd->GetToken() == TOKEN_OPENCRO)
+                else if (currentEnd->GetToken() == TOKEN_OPENCRO)
                     cCtr++;
-                else if (CourEnd->GetToken() == TOKEN_CLOSECRO)
+                else if (currentEnd->GetToken() == TOKEN_CLOSECRO)
                     cCtr--;
-                CourEnd = CourEnd->GetNext();
+                currentEnd = currentEnd->GetNext();
             }
-            if (Cour == CourEnd)
+            if (current == currentEnd)
             {
-                errListe->add("Vous devez sp?cifier la dimension",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Vous devez sp?cifier la dimension",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
                 break;
             }
-            if (CourEnd->GetToken()==TOKEN_CLOSECRO)
+            if (currentEnd->GetToken()==TOKEN_CLOSECRO)
             {
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
-                VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
+                VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
                 tmpVar->GetDimListe()->add(tmpDim);
                 State= INST_LOCAL05;
-                Cour=CourEnd;
+                current=currentEnd;
             }
-            else if (CourEnd->GetToken()==TOKEN_VIRGULE)
+            else if (currentEnd->GetToken()==TOKEN_VIRGULE)
             {
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
-                VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
+                VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
                 tmpVar->GetDimListe()->add(tmpDim);
                 State= INST_LOCAL02;
-                Cour=CourEnd;
+                current=currentEnd;
             }
             else
             {
-                errListe->add("On attend une expression de dimension",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une expression de dimension",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             break;
         case INST_LOCAL05:
-            if (Cour->GetToken() == TOKEN_AS)
+            if (current->GetToken() == TOKEN_AS)
                 State = INST_LOCAL06;
             else
             {
-                errListe->add("On attend 'as' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'as' ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
                 break;
             }
             break;
         case INST_LOCAL06:
-            if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
+            if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
-                tmpVar->setType(GetVarType(Cour));
-                tmpVar->SetTagType(Cour);
+                tmpVar->setType(GetVarType(current));
+                tmpVar->SetTagType(current);
                 State = INST_LOCAL07;
             }
             else
             {
-                errListe->add("On attend un type ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un type ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             break;
         case INST_LOCAL07:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 // On a d?clar? une variable locale
                 tmpVar->SetCar(VR_LOCAL);
-                AvanceNextLigne(&Cour);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             else
             {
-                errListe->add("Inattendu ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             break;
@@ -753,14 +753,14 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         case INST_RET00:
             instrCour = new InstructionETPB(INS_RETURN);
             instrCollect->add(instrCour);
-            CourEnd = Cour;
+            currentEnd = current;
             // il faut avoir une expression puis CRLF
-            while (!(CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
-                CourEnd = CourEnd->GetNext();
+            while (!(currentEnd->GetToken() == TOKEN_CRLF || currentEnd == finTag))
+                currentEnd = currentEnd->GetNext();
             // signaler les erreurs dans l'expression
-            VerifyExpression(false,Cour,CourEnd,true,instrCour->getExprReturnPtr());
+            VerifyExpression(false,current,currentEnd,true,instrCour->getExprReturnPtr());
             State = INST_00;
-            Cour = CourEnd;
+            current = currentEnd;
             break;
         // -------------------------------------------------------------------------
         // GESTION DES FOR... ------------------------------------------------------
@@ -769,152 +769,152 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             instrCour = new InstructionETPB(INS_STRUCT_FOR);
             instrCollect->add(instrCour);
 
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
-                debExpression = Cour;   // c'est le premier GetToken() du exprAssigned
-                CourEnd = Cour;
-                // il faut avoir =, sans aller ? la ligne
+                debExpression = current;   // c'est le premier GetToken() du exprAssigned
+                currentEnd = current;
+                // il faut avoir =, sans aller ? la line
 
-                while (!(CourEnd->GetToken() == TOKEN_EQUAL || CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
-                    CourEnd = CourEnd->GetNext();
-                if (CourEnd->GetToken() != TOKEN_EQUAL)
+                while (!(currentEnd->GetToken() == TOKEN_EQUAL || currentEnd->GetToken() == TOKEN_CRLF || currentEnd == finTag))
+                    currentEnd = currentEnd->GetNext();
+                if (currentEnd->GetToken() != TOKEN_EQUAL)
                 {
-                    errListe->add("On attend '=' ",Cour);
-                    AvanceNextLigne(&Cour);
+                    errListe->add("On attend '=' ",current);
+                    AvanceNextLigne(&current);
                     State = INST_FOR08;
                     break;
                 }
                 else
                 {
                     // signaler les erreurs dans l'expression
-                    VerifyExpression(true,Cour,CourEnd,true,instrCour->getForExprAssignedPtr());
+                    VerifyExpression(true,current,currentEnd,true,instrCour->getForExprAssignedPtr());
                 }
-                Cour = CourEnd;
-                rpCour = Cour;
+                current = currentEnd;
+                rpCour = current;
                 State = INST_FOR05;
                 break;
             }
-            else if (Cour->GetToken() == TOKEN_EQUAL)
+            else if (current->GetToken() == TOKEN_EQUAL)
             {
-                errListe->add("On attend une variable a affecter ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une variable a affecter ",current);
+                AvanceNextLigne(&current);
                 State = INST_FOR08;
-                rpCour = Cour;
+                rpCour = current;
             }
             else
             {
-                errListe->add("On attend une affectation ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une affectation ",current);
+                AvanceNextLigne(&current);
                 State = INST_FOR08;
-                rpCour = Cour;
+                rpCour = current;
             }
             break;
         case INST_FOR05:
             // on a eu un "=" pour arriver ici
 
-            // il faut avoir expr.TO, sans aller ? la ligne
-            debExpression= Cour;
-            CourEnd = Cour;
-            while (!(CourEnd->GetToken() == TOKEN_TO || CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
-                CourEnd = CourEnd->GetNext();
-            if (CourEnd->GetToken() != TOKEN_TO)
+            // il faut avoir expr.TO, sans aller ? la line
+            debExpression= current;
+            currentEnd = current;
+            while (!(currentEnd->GetToken() == TOKEN_TO || currentEnd->GetToken() == TOKEN_CRLF || currentEnd == finTag))
+                currentEnd = currentEnd->GetNext();
+            if (currentEnd->GetToken() != TOKEN_TO)
             {
-                errListe->add("On attend 'To' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'To' ",current);
+                AvanceNextLigne(&current);
                 State = INST_FOR08;
             }
             else
             {
                 // construire l'arbre de l'expression entre "=" et "TO"
-                VerifyExpression(true,debExpression,CourEnd,true,instrCour->getForExprInitTreePtr());
+                VerifyExpression(true,debExpression,currentEnd,true,instrCour->getForExprInitTreePtr());
                 State = INST_FOR06;
             }
-            Cour = CourEnd;
-            rpCour = Cour;
+            current = currentEnd;
+            rpCour = current;
             break;
         case INST_FOR06:
-            CourEnd = Cour;
-            debExpression= Cour;
-            // il faut avoir Step, sans aller ? la ligne
-            while (!(CourEnd->GetToken() == TOKEN_STEP || CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
-                CourEnd = CourEnd->GetNext();
-            if (CourEnd == finTag)
+            currentEnd = current;
+            debExpression= current;
+            // il faut avoir Step, sans aller ? la line
+            while (!(currentEnd->GetToken() == TOKEN_STEP || currentEnd->GetToken() == TOKEN_CRLF || currentEnd == finTag))
+                currentEnd = currentEnd->GetNext();
+            if (currentEnd == finTag)
             {
-                errListe->add("On attend une expression pour la fin",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une expression pour la fin",current);
+                AvanceNextLigne(&current);
                 State = INST_FOR08;
             }
             else
             {
                 // construire l'arbre de l'expression entre TO et STEP ou entre TO et CRLF
-                VerifyExpression(true,debExpression,CourEnd,true,instrCour->getForExprToTreePtr());
+                VerifyExpression(true,debExpression,currentEnd,true,instrCour->getForExprToTreePtr());
 
-                if (CourEnd->GetToken() == TOKEN_STEP)
+                if (currentEnd->GetToken() == TOKEN_STEP)
                     State = INST_FOR07;
                 else
                     State = INST_FOR08;
             }
-            Cour = CourEnd;
-            rpCour = Cour;
+            current = currentEnd;
+            rpCour = current;
             break;
         case INST_FOR07:
-            CourEnd = Cour;
-            debExpression= Cour;
-            // il faut aller ? la ligne
-            while (!(CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
-                CourEnd = CourEnd->GetNext();
-            if (CourEnd == finTag)
+            currentEnd = current;
+            debExpression= current;
+            // il faut aller ? la line
+            while (!(currentEnd->GetToken() == TOKEN_CRLF || currentEnd == finTag))
+                currentEnd = currentEnd->GetNext();
+            if (currentEnd == finTag)
             {
-                errListe->add("On attend une expression pour la fin",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une expression pour la fin",current);
+                AvanceNextLigne(&current);
                 State = INST_FOR08;
             }
             else
             {
                 // construire l'arbre de l'expression entre STEP et CRLF
-                VerifyExpression(true,debExpression,CourEnd,true,instrCour->getForExprStepTreePtr());
+                VerifyExpression(true,debExpression,currentEnd,true,instrCour->getForExprStepTreePtr());
                 State = INST_FOR08;
             }
-            Cour = CourEnd;
-            rpCour = Cour;
+            current = currentEnd;
+            rpCour = current;
             break;
         case INST_FOR08:
             ifCtr = 0;
             ifFound = false;
-            CourEnd = Cour;
-            precCour = CourEnd;
-            while (!(ifCtr==-1 || (CourEnd->GetToken()==TOKEN_NEXT && ifCtr==0) || CourEnd==finTag))
+            currentEnd = current;
+            precCur = currentEnd;
+            while (!(ifCtr==-1 || (currentEnd->GetToken()==TOKEN_NEXT && ifCtr==0) || currentEnd==finTag))
             {
-                if (CourEnd->GetToken() == TOKEN_FOR)
+                if (currentEnd->GetToken() == TOKEN_FOR)
                     ifCtr++;
-                else if (CourEnd->GetToken() == TOKEN_NEXT)
+                else if (currentEnd->GetToken() == TOKEN_NEXT)
                 {
                     ifCtr--;
                 }
-                precCour = CourEnd;
-                CourEnd = CourEnd->GetNext();
+                precCur = currentEnd;
+                currentEnd = currentEnd->GetNext();
             }
-            if (CourEnd == finTag)
+            if (currentEnd == finTag)
             {
                 errListe->add("Il manque 'Next' (For) ",debugCour);
                 State = INST_00;
-                Cour = rpCour;
+                current = rpCour;
                 break;
             }
             else
             {
-                VerifyInstruction(Cour,CourEnd,pFunc,instrCour->getForBody());
+                VerifyInstruction(current,currentEnd,pFunc,instrCour->getForBody());
                 State = INST_FOR09;
             }
-            Cour = CourEnd;
+            current = currentEnd;
             break;
         case INST_FOR09:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
                 State = INST_00;
             else
             {
-                errListe->add("Inattendu apres 'Next' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu apres 'Next' ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             break;
@@ -927,35 +927,35 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             instrCour = new InstructionETPB(INS_IF);
             instrCollect->add(instrCour);
 
-            CourEnd = Cour;
-            // il faut avoir Then, sans aller ? la ligne
+            currentEnd = current;
+            // il faut avoir Then, sans aller ? la line
 
-            while (!(CourEnd->GetToken() == TOKEN_THEN || CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
-                CourEnd = CourEnd->GetNext();
-            if (CourEnd->GetToken() != TOKEN_THEN)
+            while (!(currentEnd->GetToken() == TOKEN_THEN || currentEnd->GetToken() == TOKEN_CRLF || currentEnd == finTag))
+                currentEnd = currentEnd->GetNext();
+            if (currentEnd->GetToken() != TOKEN_THEN)
             {
-                errListe->add("On attend 'Then' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'Then' ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             else
             {
                 // signaler les erreurs dans l'expression
-                VerifyExpression(true,Cour,CourEnd,true,instrCour->getIfExprTreePtr());
+                VerifyExpression(true,current,currentEnd,true,instrCour->getIfExprTreePtr());
                 State = INST_IF01;
             }
-            Cour = CourEnd;
-            rpCour = Cour;
+            current = currentEnd;
+            rpCour = current;
             break;
         case INST_IF01:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 State = INST_IF02;
             }
             else
             {
-                errListe->add("Inattendu apres 'Then' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu apres 'Then' ",current);
+                AvanceNextLigne(&current);
                 State = INST_IF02;
             }
             break;
@@ -963,96 +963,96 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         case INST_IF02:
             ifCtr = 0;
             ifFound = false;
-            CourEnd = Cour;
-            precCour = CourEnd;
-            while (!(ifCtr==-1 || (CourEnd->GetToken()==TOKEN_ELSEIF && ifCtr==0) || (CourEnd->GetToken()==TOKEN_ELSE && ifCtr==0) || CourEnd==finTag))
+            currentEnd = current;
+            precCur = currentEnd;
+            while (!(ifCtr==-1 || (currentEnd->GetToken()==TOKEN_ELSEIF && ifCtr==0) || (currentEnd->GetToken()==TOKEN_ELSE && ifCtr==0) || currentEnd==finTag))
             {
-                if (CourEnd->GetToken() == TOKEN_IF && precCour->GetToken() != TOKEN_END)
+                if (currentEnd->GetToken() == TOKEN_IF && precCur->GetToken() != TOKEN_END)
                     ifFound = true;
-                else if (CourEnd->GetToken() == TOKEN_CRLF)
+                else if (currentEnd->GetToken() == TOKEN_CRLF)
                 {
                     if (ifFound)
                         ifCtr++;
                     ifFound = false;
                 }
-                else if (CourEnd->GetToken() == TOKEN_END)
+                else if (currentEnd->GetToken() == TOKEN_END)
                 {
-                    if (CourEnd->GetNext() != finTag)
+                    if (currentEnd->GetNext() != finTag)
                     {
-                        if (CourEnd->GetNext()->GetToken() == TOKEN_IF)
+                        if (currentEnd->GetNext()->GetToken() == TOKEN_IF)
                         {
                             ifCtr--;
                             ifFound = false;
                         }
                     }
                 }
-                precCour = CourEnd;
-                CourEnd = CourEnd->GetNext();
+                precCur = currentEnd;
+                currentEnd = currentEnd->GetNext();
             }
-            if (CourEnd == finTag)
+            if (currentEnd == finTag)
             {
                 errListe->add("Il manque 'End If'  ",debugCour);
                 State = INST_00;
-                Cour = rpCour;
+                current = rpCour;
             }
-            else if (CourEnd->GetToken() == TOKEN_ELSEIF)
+            else if (currentEnd->GetToken() == TOKEN_ELSEIF)
             {
                 if (debugCour->GetToken()==TOKEN_IF)
                 {
-                    VerifyInstruction(Cour,CourEnd,pFunc,instrCour->getIfIfBody());
+                    VerifyInstruction(current,currentEnd,pFunc,instrCour->getIfIfBody());
                 }
                 else if (debugCour->GetToken()==TOKEN_ELSEIF)
                 {
                     Collection* CorpsT=new Collection();
-                    VerifyInstruction(Cour,CourEnd,pFunc,CorpsT);
+                    VerifyInstruction(current,currentEnd,pFunc,CorpsT);
                     instrCour->getIfElseIfBody()->add(CorpsT);
                 }
                 State = INST_IF03;
-                debugCour = CourEnd;
-                Cour = CourEnd;
+                debugCour = currentEnd;
+                current = currentEnd;
             }
-            else if (CourEnd->GetToken() == TOKEN_ELSE)
+            else if (currentEnd->GetToken() == TOKEN_ELSE)
             {
                 if (debugCour->GetToken()==TOKEN_IF)
                 {
-                    VerifyInstruction(Cour,CourEnd,pFunc,instrCour->getIfIfBody());
+                    VerifyInstruction(current,currentEnd,pFunc,instrCour->getIfIfBody());
                 }
                 else if (debugCour->GetToken()==TOKEN_ELSEIF)
                 {
                     Collection* CorpsT=new Collection();
-                    VerifyInstruction(Cour,CourEnd,pFunc,CorpsT);
+                    VerifyInstruction(current,currentEnd,pFunc,CorpsT);
                     instrCour->getIfElseIfBody()->add(CorpsT);
                 }
                 State = INST_IF04;
-                debugCour = CourEnd;
-                Cour = CourEnd;
+                debugCour = currentEnd;
+                current = currentEnd;
             }
             else    // on a rencontr? End If
             {
                 if (debugCour->GetToken()==TOKEN_IF)
                 {
-                    VerifyInstruction(Cour,precCour,pFunc,instrCour->getIfIfBody());
+                    VerifyInstruction(current,precCur,pFunc,instrCour->getIfIfBody());
                 }
                 else if (debugCour->GetToken()==TOKEN_ELSEIF)
                 {
                     Collection* CorpsT=new Collection();
-                    VerifyInstruction(Cour,precCour,pFunc,CorpsT);
+                    VerifyInstruction(current,precCur,pFunc,CorpsT);
                     instrCour->getIfElseIfBody()->add(CorpsT);
                 }
                 State = INST_IF05;
-                Cour = CourEnd;
+                current = currentEnd;
             }
             break;
         case INST_IF03:
-            CourEnd = Cour;
-            // il faut avoir Then, sans aller ? la ligne
+            currentEnd = current;
+            // il faut avoir Then, sans aller ? la line
 
-            while (!(CourEnd->GetToken() == TOKEN_THEN || CourEnd->GetToken() == TOKEN_CRLF || CourEnd == finTag))
-                CourEnd = CourEnd->GetNext();
-            if (CourEnd->GetToken() != TOKEN_THEN)
+            while (!(currentEnd->GetToken() == TOKEN_THEN || currentEnd->GetToken() == TOKEN_CRLF || currentEnd == finTag))
+                currentEnd = currentEnd->GetNext();
+            if (currentEnd->GetToken() != TOKEN_THEN)
             {
-                errListe->add("On attend 'Then' ",Cour);
-                Cour = rpCour;
+                errListe->add("On attend 'Then' ",current);
+                current = rpCour;
                 State = INST_00;
                 break;
             }
@@ -1060,78 +1060,78 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             {
                 // signaler les erreurs dans l'expression
 
-                //VerifyExpression(true,Cour,CourEnd,true,instrCour->getIfExprTreePtr());
+                //VerifyExpression(true,current,currentEnd,true,instrCour->getIfExprTreePtr());
                 CNoeud* exprElseIf=NULL;
-                VerifyExpression(true,Cour,CourEnd,true,&exprElseIf);
+                VerifyExpression(true,current,currentEnd,true,&exprElseIf);
                 instrCour->getIfExprElseIf()->add(exprElseIf);
                 State = INST_IF01;
             }
-            Cour = CourEnd;
-            rpCour = Cour;
+            current = currentEnd;
+            rpCour = current;
             break;
         case INST_IF04:
             ifCtr = 0;
             ifFound = false;
-            CourEnd = Cour;
-            precCour = CourEnd;
-            while (!(ifCtr==-1 || (CourEnd->GetToken()==TOKEN_ELSEIF && ifCtr==0) || (CourEnd->GetToken()==TOKEN_ELSE && ifCtr==0) || CourEnd==finTag))
+            currentEnd = current;
+            precCur = currentEnd;
+            while (!(ifCtr==-1 || (currentEnd->GetToken()==TOKEN_ELSEIF && ifCtr==0) || (currentEnd->GetToken()==TOKEN_ELSE && ifCtr==0) || currentEnd==finTag))
             {
-                if (CourEnd->GetToken() == TOKEN_IF && precCour->GetToken() != TOKEN_END)
+                if (currentEnd->GetToken() == TOKEN_IF && precCur->GetToken() != TOKEN_END)
                     ifFound = true;
-                else if (CourEnd->GetToken() == TOKEN_CRLF)
+                else if (currentEnd->GetToken() == TOKEN_CRLF)
                 {
                     if (ifFound)
                         ifCtr++;
                     ifFound = false;
                 }
-                else if (CourEnd->GetToken() == TOKEN_END)
+                else if (currentEnd->GetToken() == TOKEN_END)
                 {
-                    if (CourEnd->GetNext() != finTag)
+                    if (currentEnd->GetNext() != finTag)
                     {
-                        if (CourEnd->GetNext()->GetToken() == TOKEN_IF)
+                        if (currentEnd->GetNext()->GetToken() == TOKEN_IF)
                         {
                             ifCtr--;
                             ifFound = false;
                         }
                     }
                 }
-                precCour = CourEnd;
-                CourEnd = CourEnd->GetNext();
+                precCur = currentEnd;
+                currentEnd = currentEnd->GetNext();
             }
-            if (CourEnd == finTag)
+            if (currentEnd == finTag)
             {
                 errListe->add("Il manque 'End If'  ",debugCour);
                 State = INST_00;
-                Cour = rpCour;
+                current = rpCour;
             }
-            else if (CourEnd->GetToken() == TOKEN_ELSEIF)
+            else if (currentEnd->GetToken() == TOKEN_ELSEIF)
             {
                 errListe->add("Impossible d'avoir 'ElseIf' suite ? 'Else' ",debugCour);
                 State = INST_00;
-                Cour = rpCour;
+                current = rpCour;
             }
-            else if (CourEnd->GetToken() == TOKEN_ELSE)
+            else if (currentEnd->GetToken() == TOKEN_ELSE)
             {
                 errListe->add("Impossible d'avoir 'Else' suite ? 'Else' ",debugCour);
                 State = INST_00;
-                Cour = rpCour;
+                current = rpCour;
             }
             else    // on a rencontr? End If
             {
-                VerifyInstruction(Cour,precCour,pFunc,instrCour->getIfElseBody());
+                VerifyInstruction(current,precCur,pFunc,instrCour->getIfElseBody());
                 State = INST_IF05;
-                Cour = CourEnd;
+                current = currentEnd;
             }
             break;
         case INST_IF05:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 State = INST_00;
             }
             else
             {
-                errListe->add("Inattendu apres 'End If': ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu apres 'End If': ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             break;
@@ -1140,48 +1140,48 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
         // -------------------------------------------------------------------------
         case INST_IDENTIF:
 
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {   // appel de proc?dure sans argument
 
                 instrCour = new InstructionETPB(INS_CALL);
                 instrCollect->add(instrCour);
-                VerifyExpression(true,precCour,Cour,true,instrCour->getExprFunctionCallPtr());
+                VerifyExpression(true,precCur,current,true,instrCour->getExprFunctionCallPtr());
                 State = INST_00;
                 break;
             }
-            if (Cour->GetToken() == TOKEN_OPENPAR){
+            if (current->GetToken() == TOKEN_OPENPAR){
                 State = INST_IDOPENPAR;
-                Cour=precCour;
+                current=precCur;
                 break;
             }
-            CourEnd=Cour;
-            while (CourEnd->GetToken()!=TOKEN_EQUAL && CourEnd !=finTag && CourEnd->GetToken()!=TOKEN_CRLF)
+            currentEnd=current;
+            while (currentEnd->GetToken()!=TOKEN_EQUAL && currentEnd !=finTag && currentEnd->GetToken()!=TOKEN_CRLF)
             {
-                CourEnd=CourEnd->GetNext();
+                currentEnd=currentEnd->GetNext();
             }
-            if (CourEnd==finTag || CourEnd->GetToken()==TOKEN_CRLF) // on n'a pas trouv? de TOKEN_EQUAL
+            if (currentEnd==finTag || currentEnd->GetToken()==TOKEN_CRLF) // on n'a pas trouv? de TOKEN_EQUAL
             {
                 // lecture des arguments sans parenthese
                 // on va lui faire croire qu'il y a des parentheses
                 // sauf s'il y a deja
 
                 aux=new TAG;
-                *aux=*Cour;
+                *aux=*current;
                 aux->SetToken(TOKEN_OPENPAR);
-                aux->SetNext(Cour);
-                precCour->SetNext(aux);
-                CourEnd=aux;
-                while (CourEnd->GetToken() != TOKEN_CRLF)
+                aux->SetNext(current);
+                precCur->SetNext(aux);
+                currentEnd=aux;
+                while (currentEnd->GetToken() != TOKEN_CRLF)
                 {
-                    Cour=CourEnd;
-                    CourEnd=CourEnd->GetNext();
+                    current=currentEnd;
+                    currentEnd=currentEnd->GetNext();
                 }
                 aux=new TAG;
-                *aux=*Cour;
+                *aux=*current;
                 aux->SetToken(TOKEN_CLOSEPAR);
-                Cour->SetNext(aux);
-                aux->SetNext(CourEnd);
-                Cour=precCour;
+                current->SetNext(aux);
+                aux->SetNext(currentEnd);
+                current=precCur;
                 State = INST_IDOPENPAR;
             }
             else        // on a trouv? un TOKEN_EQUAL
@@ -1189,86 +1189,86 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 instrCour = new InstructionETPB(INS_AFFECTATION);
                 instrCollect->add(instrCour);
 
-                VerifyExpression(true,precCour,CourEnd,true,instrCour->getAssignmentExprAssignedPtr());
-                Cour=CourEnd->GetNext();
-                CourEnd=Cour;
-                while (CourEnd !=finTag && CourEnd->GetToken()!=TOKEN_CRLF)
+                VerifyExpression(true,precCur,currentEnd,true,instrCour->getAssignmentExprAssignedPtr());
+                current=currentEnd->GetNext();
+                currentEnd=current;
+                while (currentEnd !=finTag && currentEnd->GetToken()!=TOKEN_CRLF)
                 {
-                    CourEnd=CourEnd->GetNext();
+                    currentEnd=currentEnd->GetNext();
                 }
-                VerifyExpression(true,Cour,CourEnd,true,instrCour->getAssignmentExprTreePtr());
-                Cour=CourEnd;
+                VerifyExpression(true,current,currentEnd,true,instrCour->getAssignmentExprTreePtr());
+                current=currentEnd;
                 State = INST_00;
             }
             break;
         case INST_IDOPENPAR:
-            if (Cour->GetToken() == TOKEN_CLOSEPAR && precCour->GetToken() == TOKEN_OPENPAR)
+            if (current->GetToken() == TOKEN_CLOSEPAR && precCur->GetToken() == TOKEN_OPENPAR)
             {
                 State = INST_IDCLOSEPAR;
                 break;
             }
-            CourEnd = Cour;
+            currentEnd = current;
             mCtr = 0;
             cCtr = 0;
-            while (!((CourEnd->GetToken() == TOKEN_CLOSEPAR && mCtr==1 && cCtr==0) || (CourEnd->GetToken() == TOKEN_VIRGULE && mCtr==0 && cCtr==0)  || CourEnd->GetToken() == TOKEN_CRLF))
+            while (!((currentEnd->GetToken() == TOKEN_CLOSEPAR && mCtr==1 && cCtr==0) || (currentEnd->GetToken() == TOKEN_VIRGULE && mCtr==0 && cCtr==0)  || currentEnd->GetToken() == TOKEN_CRLF))
             {
-                if (CourEnd->GetToken() == TOKEN_OPENPAR)
+                if (currentEnd->GetToken() == TOKEN_OPENPAR)
                     mCtr++;
-                else if (CourEnd->GetToken() == TOKEN_CLOSEPAR)
+                else if (currentEnd->GetToken() == TOKEN_CLOSEPAR)
                     mCtr--;
-                else if (CourEnd->GetToken() == TOKEN_OPENCRO)
+                else if (currentEnd->GetToken() == TOKEN_OPENCRO)
                     cCtr++;
-                else if (CourEnd->GetToken() == TOKEN_CLOSECRO)
+                else if (currentEnd->GetToken() == TOKEN_CLOSECRO)
                     cCtr--;
-                CourEnd = CourEnd->GetNext();
+                currentEnd = currentEnd->GetNext();
             }
-            if (CourEnd->GetToken() == TOKEN_CRLF)
+            if (currentEnd->GetToken() == TOKEN_CRLF)
             {
-                errListe->add("Il manque un ')' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Il manque un ')' ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
                 break;
             }
-            if (Cour == CourEnd)
+            if (current == currentEnd)
             {
-                errListe->add("Vous devez sp?cifier l'argument apres une , ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Vous devez sp?cifier l'argument apres une , ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
                 break;
             }
             // il faut v?rifier l'expression entre les parentheses
             instrCour = new InstructionETPB(INS_CALL);
             instrCollect->add(instrCour);
-            if (!(VerifyExpression(true,precCour,CourEnd->GetNext(),true,instrCour->getExprFunctionCallPtr())))
+            if (!(VerifyExpression(true,precCur,currentEnd->GetNext(),true,instrCour->getExprFunctionCallPtr())))
             {
-                AvanceNextLigne(&Cour);
+                AvanceNextLigne(&current);
                 State = INST_00;
                 break;
             }
 
-            Cour = CourEnd;
-            if (Cour->GetToken() == TOKEN_VIRGULE)
+            current = currentEnd;
+            if (current->GetToken() == TOKEN_VIRGULE)
                 State = INST_IDOPENPAR;
             else
                 State = INST_IDCLOSEPAR;
             break;
         case INST_IDCLOSEPAR:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 State = INST_00;
             }
             else
             {
-                errListe->add("Inattendu: ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu: ",current);
+                AvanceNextLigne(&current);
                 State = INST_00;
             }
             break;
         default:
             break;
         }   // fin switch
-        precCour=Cour;
-        Cour=Cour->GetNext();
+        precCur=current;
+        current=current->GetNext();
     }
 
 }
@@ -1279,9 +1279,9 @@ void VeriSyn::VerifSyntax()
     enumETAT State = ST_DEHORS;
 
     // parcours
-    TAG* Cour=tagListe;
-    TAG* CourEnd;
-    TAG* precCour;
+    TAG* current=tagListe;
+    TAG* currentEnd;
+    TAG* precCur;
     bool Found;
     int mCtr,cCtr;
 
@@ -1302,10 +1302,10 @@ void VeriSyn::VerifSyntax()
     Fonction* pInFunc;
     */
 
-    while (Cour)
+    while (current)
     {
 
-        readingPredef= Cour->GetisPredefFileTAG();      // est-ce que c'est un fichier de predef?
+        readingPredef= current->GetisPredefFileTAG();      // est-ce que c'est un fichier de predef?
         switch (State)
         {
         case ST_INTRA:
@@ -1317,64 +1317,64 @@ void VeriSyn::VerifSyntax()
                 State = ST_DEHORS;
                 break;
             }
-            CourEnd = Cour;
-            precCour = Cour;
+            currentEnd = current;
+            precCur = current;
             Found = false;
-            while (CourEnd && !(CourEnd->GetToken()==TOKEN_PROCEDURE || CourEnd->GetToken()==TOKEN_FUNCTION || CourEnd->GetToken()==TOKEN_ENDOFMODULE))
+            while (currentEnd && !(currentEnd->GetToken()==TOKEN_PROCEDURE || currentEnd->GetToken()==TOKEN_FUNCTION || currentEnd->GetToken()==TOKEN_ENDOFMODULE))
             {
-                precCour = CourEnd;
-                CourEnd = CourEnd->GetNext();
+                precCur = currentEnd;
+                currentEnd = currentEnd->GetNext();
             }
             //tmpInstrCollect.Clear();
             /*
             tmpInstrCollect.SetBuffer(NULL);
-            VerifyInstruction(Cour,CourEnd,errListe,pInFunc,&tmpInstrCollect);
-            pInFunc->InstrListe=tmpInstrCollect.GetBuffer();
+            VerifyInstruction(current,currentEnd,errListe,pInFunc,&tmpInstrCollect);
+            pInFunc->instructionList=tmpInstrCollect.GetBuffer();
             */
-            VerifyInstruction(Cour,CourEnd,tmpFonc,tmpFonc->GetInstrListe());
-            Cour = precCour;
+            VerifyInstruction(current,currentEnd,tmpFonc,tmpFonc->getInstructionList());
+            current = precCur;
             State = ST_DEHORS;
             break;
         case ST_DEHORS:
-            if (Cour->GetToken() == TOKEN_PUBLIC)
+            if (current->GetToken() == TOKEN_PUBLIC)
                 State = ST_P00;
-            else if (Cour->GetToken() == TOKEN_TYPET)
+            else if (current->GetToken() == TOKEN_TYPET)
             {
                 State = ST_T00;
                 // il faut v?rifier l'existance de End Type
-                CourEnd = Cour;
+                currentEnd = current;
                 Found = false;
-                while (CourEnd && !Found)
+                while (currentEnd && !Found)
                 {
-                    if (CourEnd->GetNext())
+                    if (currentEnd->GetNext())
                     {
-                        if (CourEnd->GetNext()->GetNext())
-                            if (CourEnd->GetToken()==TOKEN_END && CourEnd->GetNext()->GetToken()==TOKEN_TYPET)
+                        if (currentEnd->GetNext()->GetNext())
+                            if (currentEnd->GetToken()==TOKEN_END && currentEnd->GetNext()->GetToken()==TOKEN_TYPET)
                                 Found = true;
                     }
-                    CourEnd = CourEnd->GetNext();
+                    currentEnd = currentEnd->GetNext();
                 }
                 if (!Found)
                 {
-                    errListe->add("'Type' sans 'End Type'",Cour);
-                    AvanceNextLigne(&Cour);
+                    errListe->add("'Type' sans 'End Type'",current);
+                    AvanceNextLigne(&current);
                     State = ST_DEHORS;
                 }
             }
-            else if (Cour->GetToken() == TOKEN_CRLF)
+            else if (current->GetToken() == TOKEN_CRLF)
             {
                 State = ST_DEHORS;
             }
-            else if (Cour->GetToken() == TOKEN_PROCEDURE)
+            else if (current->GetToken() == TOKEN_PROCEDURE)
                 State = ST_PROC00;
-            else if (Cour->GetToken() == TOKEN_FUNCTION)
+            else if (current->GetToken() == TOKEN_FUNCTION)
                 State = ST_FUNC00;
-            else if (Cour->GetToken() == TOKEN_ENDOFMODULE) // ben.. c'est pas grave
+            else if (current->GetToken() == TOKEN_ENDOFMODULE) // ben.. c'est pas grave
                 State = ST_DEHORS;
             else
             {
-                errListe->add("Inattendu (dehors): ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu (dehors): ",current);
+                AvanceNextLigne(&current);
                 State = ST_DEHORS;
             }
             break;
@@ -1383,116 +1383,116 @@ void VeriSyn::VerifSyntax()
         //  PUBLIC Declaration
         // -----------------------------------------------------------------------------------------------
         case ST_P00:
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
 
                 tmpVar= new VariableItem();
                 VariablesPublic.add(tmpVar);
                 tmpVar->SetCar(VR_PUBLIC);
                 tmpVar->SetFunc(NULL);
-                tmpVar->SetTagNom(Cour);
+                tmpVar->setTagName(current);
                 tmpVar->SetTagType(NULL);
                 State = ST_P01;
             }
             else
             {
-                errListe->add("On attend un identifiant",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un identifiant",current);
+                AvanceNextLigne(&current);
                 State = ST_DEHORS;
             }
             break;
         case ST_P01:
-            if (Cour->GetToken() == TOKEN_AS)
+            if (current->GetToken() == TOKEN_AS)
                 State = ST_P06;
-            else if (Cour->GetToken() == TOKEN_OPENCRO)
+            else if (current->GetToken() == TOKEN_OPENCRO)
             {
                 State = ST_P02;
             }
             else
             {
-                errListe->add("On attend 'as' ou '['",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'as' ou '['",current);
+                AvanceNextLigne(&current);
                 State = ST_DEHORS;
             }
             break;
         case ST_P02:
-            CourEnd = Cour;
+            currentEnd = current;
             mCtr = 0;
             cCtr = 0;
-            while (!(((CourEnd->GetToken() == TOKEN_CLOSECRO || CourEnd->GetToken() == TOKEN_VIRGULE) && mCtr==0 && cCtr==0)  || CourEnd->GetNext() == NULL))
+            while (!(((currentEnd->GetToken() == TOKEN_CLOSECRO || currentEnd->GetToken() == TOKEN_VIRGULE) && mCtr==0 && cCtr==0)  || currentEnd->GetNext() == NULL))
             {
-                if (CourEnd->GetToken() == TOKEN_OPENPAR)
+                if (currentEnd->GetToken() == TOKEN_OPENPAR)
                     mCtr++;
-                else if (CourEnd->GetToken() == TOKEN_CLOSEPAR)
+                else if (currentEnd->GetToken() == TOKEN_CLOSEPAR)
                     mCtr--;
-                else if (CourEnd->GetToken() == TOKEN_OPENCRO)
+                else if (currentEnd->GetToken() == TOKEN_OPENCRO)
                     cCtr++;
-                else if (CourEnd->GetToken() == TOKEN_CLOSECRO)
+                else if (currentEnd->GetToken() == TOKEN_CLOSECRO)
                     cCtr--;
-                CourEnd = CourEnd->GetNext();
+                currentEnd = currentEnd->GetNext();
             }
-            if (CourEnd->GetToken()==TOKEN_CLOSECRO)
+            if (currentEnd->GetToken()==TOKEN_CLOSECRO)
             {
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
-                VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
+                VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
                 tmpVar->GetDimListe()->add(tmpDim);
                 State= ST_P05;
-                Cour=CourEnd;
+                current=currentEnd;
             }
-            else if (CourEnd->GetToken()==TOKEN_VIRGULE)
+            else if (currentEnd->GetToken()==TOKEN_VIRGULE)
             {
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
-                VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
+                VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
                 tmpVar->GetDimListe()->add(tmpDim);
                 State= ST_P02;
-                Cour=CourEnd;
+                current=currentEnd;
             }
             else
             {
-                errListe->add("On attend une expression de dimension",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une expression de dimension",current);
+                AvanceNextLigne(&current);
                 State = ST_DEHORS;
             }
             break;
         case ST_P05:
-            if (Cour->GetToken() == TOKEN_AS)
+            if (current->GetToken() == TOKEN_AS)
                 State = ST_P06;
             else
             {
-                errListe->add("On attend 'as' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'as' ",current);
+                AvanceNextLigne(&current);
                 State = ST_DEHORS;
             }
             break;
         case ST_P06:
-            if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
+            if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
-                tmpVar->setType(GetVarType(Cour));
-                tmpVar->SetTagType(Cour);
+                tmpVar->setType(GetVarType(current));
+                tmpVar->SetTagType(current);
                 State = ST_P07;
             }
             else
             {
-                errListe->add("On attend un type ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un type ",current);
+                AvanceNextLigne(&current);
                 State = ST_DEHORS;
             }
             break;
         case ST_P07:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 // On a d?clar? une variable publique
                 tmpVar->SetCar(VR_PUBLIC);
 
-                AvanceNextLigne(&Cour);
+                AvanceNextLigne(&current);
                 State = ST_DEHORS;
             }
             else
             {
-                errListe->add("Inattendu ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu ",current);
+                AvanceNextLigne(&current);
                 State = ST_DEHORS;
             }
             break;
@@ -1503,134 +1503,134 @@ void VeriSyn::VerifSyntax()
         // -----------------------------------------------------------------------------------------------
 
         case ST_T00:
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
                 tmpType= new TypeItem();
                 Types.add(tmpType);
-                tmpType->SetTagNom(Cour);
+                tmpType->setTagName(current);
                 State = ST_T01;
             }
             else
             {
-                errListe->add("On attend un identifiant ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un identifiant ",current);
+                AvanceNextLigne(&current);
                 State = ST_DEHORS;
             }
             break;
         case ST_T01:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 State = ST_T02;
             }
             else
             {
-                errListe->add("Inattendu: ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu: ",current);
+                AvanceNextLigne(&current);
                 State = ST_DEHORS;
             }
             break;
         case ST_T02:
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
                 tmpVar= new VariableItem();
-                tmpType->GetChampListe()->add(tmpVar);
-                tmpVar->SetTagNom(Cour);
+                tmpType->getFieldList()->add(tmpVar);
+                tmpVar->setTagName(current);
                 State = ST_T03;
             }
-            else if (Cour->GetToken() == TOKEN_END)
+            else if (current->GetToken() == TOKEN_END)
                 State = ST_T10;
-            else if (Cour->GetToken() == TOKEN_CRLF)
+            else if (current->GetToken() == TOKEN_CRLF)
             {
                 State = ST_T02;
             }
             else
             {
-                errListe->add("Vous devez declarer les champs du type ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Vous devez declarer les champs du type ",current);
+                AvanceNextLigne(&current);
                 State = ST_T02;
             }
             break;
         case ST_T03:
-            if (Cour->GetToken() == TOKEN_OPENCRO)
+            if (current->GetToken() == TOKEN_OPENCRO)
                 State = ST_T04;
-            else if (Cour->GetToken() == TOKEN_AS)
+            else if (current->GetToken() == TOKEN_AS)
                 State = ST_T08;
             else
             {
-                errListe->add("On attend 'as' ou '[' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'as' ou '[' ",current);
+                AvanceNextLigne(&current);
 
                 State = ST_T02;
             }
             break;
         case ST_T04:
-            CourEnd=Cour;
+            currentEnd=current;
             mCtr=0;
             cCtr=0;
-            while (!(((CourEnd->GetToken() == TOKEN_CLOSECRO || CourEnd->GetToken() == TOKEN_VIRGULE) && mCtr==0 && cCtr==0)  || CourEnd == NULL))
+            while (!(((currentEnd->GetToken() == TOKEN_CLOSECRO || currentEnd->GetToken() == TOKEN_VIRGULE) && mCtr==0 && cCtr==0)  || currentEnd == NULL))
             {
-                if (CourEnd->GetToken() == TOKEN_OPENPAR)
+                if (currentEnd->GetToken() == TOKEN_OPENPAR)
                     mCtr++;
-                else if (CourEnd->GetToken() == TOKEN_CLOSEPAR)
+                else if (currentEnd->GetToken() == TOKEN_CLOSEPAR)
                     mCtr--;
-                else if (CourEnd->GetToken() == TOKEN_OPENCRO)
+                else if (currentEnd->GetToken() == TOKEN_OPENCRO)
                     cCtr++;
-                else if (CourEnd->GetToken() == TOKEN_CLOSECRO)
+                else if (currentEnd->GetToken() == TOKEN_CLOSECRO)
                     cCtr--;
-                CourEnd = CourEnd->GetNext();
+                currentEnd = currentEnd->GetNext();
             }
 
-            if (CourEnd->GetToken()==TOKEN_VIRGULE)
+            if (currentEnd->GetToken()==TOKEN_VIRGULE)
             {
                 tmpDim=new DimElemItem();
                 tmpDim->SetExprNull();
-                VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
+                VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
                 tmpVar->GetDimListe()->add(tmpDim);
                 State=ST_T04;
-                Cour=CourEnd;
+                current=currentEnd;
             }
-            else if (CourEnd->GetToken()==TOKEN_CLOSECRO)
+            else if (currentEnd->GetToken()==TOKEN_CLOSECRO)
             {
                 tmpDim=new DimElemItem();
                 tmpDim->SetExprNull();
-                VerifyExpression(true,Cour,CourEnd,false,tmpDim->GetExprPtr());
+                VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
                 tmpVar->GetDimListe()->add(tmpDim);
                 State=ST_T07;
-                Cour=CourEnd;
+                current=currentEnd;
             }
             else
             {
-                errListe->add("On attend une expression pour la dimension",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une expression pour la dimension",current);
+                AvanceNextLigne(&current);
                 State = ST_T02;
             }
             break;
         case ST_T07:
-            if (Cour->GetToken() == TOKEN_AS)
+            if (current->GetToken() == TOKEN_AS)
                 State=ST_T08;
             else
             {
-                errListe->add("On attend 'as' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'as' ",current);
+                AvanceNextLigne(&current);
                 State = ST_T02;
             }
             break;
         case ST_T08:
-            if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
+            if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
-                tmpVar->setType(GetVarType(Cour));
-                tmpVar->SetTagType(Cour);
+                tmpVar->setType(GetVarType(current));
+                tmpVar->SetTagType(current);
                 State = ST_T09;
             }
             else
             {
-                errListe->add("On attend un type ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un type ",current);
+                AvanceNextLigne(&current);
                 State = ST_T02;
             }
             break;
         case ST_T09:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 // On a d?clar? un champ du type
                 tmpVar->SetCar(VR_MEMBER);
@@ -1639,31 +1639,31 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->add("Inattendu ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu ",current);
+                AvanceNextLigne(&current);
                 State = ST_T02;
             }
             break;
         case ST_T10:
-            if (Cour->GetToken() == TOKEN_TYPET)
+            if (current->GetToken() == TOKEN_TYPET)
                 State = ST_T11;
             else
             {
-                errListe->add("Inattendu ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu ",current);
+                AvanceNextLigne(&current);
                 State = ST_T02;
             }
             break;
         case ST_T11:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 // On a d?clar? un type
                 State = ST_DEHORS;
             }
             else
             {
-                errListe->add("Inattendu ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu ",current);
+                AvanceNextLigne(&current);
                 State = ST_T02;
             }
             break;
@@ -1675,103 +1675,103 @@ void VeriSyn::VerifSyntax()
 
         case ST_PROC00:
             tmpFonc= new FonctionItem();
-            tmpFonc->SetLigne(Cour->GetLigne());
-            tmpFonc->SetRetType(TP_VOID);
+            tmpFonc->setLine(current->getLine());
+            tmpFonc->setReturnType(TP_VOID);
             if (readingPredef){
-                tmpFonc->SetIsAssembler();
+                tmpFonc->setIsAssembler();
             }
 
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
-                tmpFonc->SetNom(Cour->GetIdentif());
+                tmpFonc->setName(current->GetIdentif());
                 State = ST_PROC01;
                 Fonctions.add(tmpFonc);     // on l'insere tout de suite
             }
-            else if (Cour->GetToken() == TOKEN_MAIN){
-                tmpFonc->SetNom("_main");
-                tmpFonc->SetUsed();
+            else if (current->GetToken() == TOKEN_MAIN){
+                tmpFonc->setName("_main");
+                tmpFonc->setUsed();
                 State = ST_PROC01;
                 Fonctions.AddDebut(tmpFonc);        // on l'insere tout de suite
             }
             else
             {
-                errListe->add("On attend un identifiant",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un identifiant",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             //tmpFoncPtr = (Fonction*)foncCollect->add(tmpFonc);    //tmpFoncPtr pointe sur l'?l?ment qui vient d'etre inser?
             //pInFunc = tmpFoncPtr;
             break;
         case ST_PROC01:
-            if (Cour->GetToken() == TOKEN_DEUXPOINTS)
+            if (current->GetToken() == TOKEN_DEUXPOINTS)
                 State=ST_PROC02;
-            else if (Cour->GetToken() == TOKEN_OPENPAR)
+            else if (current->GetToken() == TOKEN_OPENPAR)
             {
                 State=ST_PROC03;
             }
-            else if (Cour->GetToken() == TOKEN_CRLF)
+            else if (current->GetToken() == TOKEN_CRLF)
             {
                 // On a d?clar? une nouvelle procedure
                 State = ST_INTRA;
             }
             else
             {
-                errListe->add("On attend ':' ou '('",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend ':' ou '('",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_PROC02:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 // On a d?clar? une nouvelle procedure
                 State = ST_INTRA;
             }
-            else if (Cour->GetToken() == TOKEN_OPENPAR)
+            else if (current->GetToken() == TOKEN_OPENPAR)
             {
                 State=ST_PROC03;
             }
             else
             {
-                errListe->add("Inattendu. On attend '(' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu. On attend '(' ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_PROC03:
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
                 tmpVar=new VariableItem();
-                tmpFonc->GetArguListe()->AddDebut(tmpVar);
-                tmpVar->SetTagNom(Cour);
+                tmpFonc->getArgumentList()->AddDebut(tmpVar);
+                tmpVar->setTagName(current);
                 State = ST_PROC04;
             }
-            else if (Cour->GetToken() == TOKEN_CLOSEPAR)
+            else if (current->GetToken() == TOKEN_CLOSEPAR)
             {
                 State = ST_PROC08;
             }
             else
             {
-                errListe->add("On attend une déclaration d'argument ou ')' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une déclaration d'argument ou ')' ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_PROC04:
-            if (Cour->GetToken() == TOKEN_AS)
+            if (current->GetToken() == TOKEN_AS)
                 State = ST_PROC05;
             else
             {
-                errListe->add("On attend 'as' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'as' ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_PROC05:
-            if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
+            if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
-                tmpVar->setType(GetVarType(Cour));
-                tmpVar->SetTagType(Cour);
+                tmpVar->setType(GetVarType(current));
+                tmpVar->SetTagType(current);
                 tmpVar->SetCar(VR_ARGU);
                 tmpVar->SetFunc(tmpFonc);
                 // On a d?clar? un argument
@@ -1780,40 +1780,40 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->add("On attend un type ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un type ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_PROC06:
-            if (Cour->GetToken() == TOKEN_VIRGULE)
+            if (current->GetToken() == TOKEN_VIRGULE)
                 State = ST_PROC07;
-            else if (Cour->GetToken() == TOKEN_CLOSEPAR)
+            else if (current->GetToken() == TOKEN_CLOSEPAR)
                 State = ST_PROC08;
             else
             {
-                errListe->add("On attend ',' ou ')' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend ',' ou ')' ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_PROC07:
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
                 tmpVar=new VariableItem();
-                tmpFonc->GetArguListe()->AddDebut(tmpVar);
-                tmpVar->SetTagNom(Cour);
+                tmpFonc->getArgumentList()->AddDebut(tmpVar);
+                tmpVar->setTagName(current);
                 State = ST_PROC04;
             }
             else
             {
-                errListe->add("On attend une déclaration d'argument ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une déclaration d'argument ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_PROC08:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 // On a d?clar? une nouvelle procedure
                 // la déclaration des arguments s'est pass? avec succ?s
@@ -1821,8 +1821,8 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->add("Inattendu ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
@@ -1830,86 +1830,86 @@ void VeriSyn::VerifSyntax()
 
         case ST_FUNC00:
             tmpFonc= new FonctionItem();
-            tmpFonc->SetLigne(Cour->GetLigne());
-            tmpFonc->SetRetType(TP_VOID);   // ... pour l'instant
+            tmpFonc->setLine(current->getLine());
+            tmpFonc->setReturnType(TP_VOID);   // ... pour l'instant
             Fonctions.add(tmpFonc);     // on l'insere tout de suite
             if (readingPredef){
-                tmpFonc->SetIsAssembler();
+                tmpFonc->setIsAssembler();
             }
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
-                tmpFonc->SetNom(Cour->GetIdentif());
+                tmpFonc->setName(current->GetIdentif());
                 State = ST_FUNC01;
             }
             else
             {
-                errListe->add("On attend un identifiant",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un identifiant",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             //tmpFoncPtr = (Fonction*)foncCollect->add(tmpFonc);    //tmpFoncPtr pointe sur l'?l?ment qui vient d'etre inser?
             //pInFunc = tmpFoncPtr;
             break;
         case ST_FUNC01:
-            if (Cour->GetToken() == TOKEN_DEUXPOINTS)
+            if (current->GetToken() == TOKEN_DEUXPOINTS)
                 State=ST_FUNC02;
-            else if (Cour->GetToken() == TOKEN_OPENPAR)
+            else if (current->GetToken() == TOKEN_OPENPAR)
                 State=ST_FUNC03;
-            else if (Cour->GetToken() == TOKEN_AS)
+            else if (current->GetToken() == TOKEN_AS)
                 State = ST_FUNC09;
             else
             {
-                errListe->add("On attend ':' ou '(' ou 'as' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend ':' ou '(' ou 'as' ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_FUNC02:
-            if (Cour->GetToken() == TOKEN_AS)
+            if (current->GetToken() == TOKEN_AS)
                 State = ST_FUNC09;
-            else if (Cour->GetToken() == TOKEN_OPENPAR)
+            else if (current->GetToken() == TOKEN_OPENPAR)
                 State=ST_FUNC03;
             else
             {
-                errListe->add("On attend ':' ou '(' ou 'as' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend ':' ou '(' ou 'as' ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_FUNC03:
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
                 tmpVar=new VariableItem();
-                tmpFonc->GetArguListe()->AddDebut(tmpVar);
-                tmpVar->SetTagNom(Cour);
+                tmpFonc->getArgumentList()->AddDebut(tmpVar);
+                tmpVar->setTagName(current);
                 State = ST_FUNC04;
             }
-            else if (Cour->GetToken() == TOKEN_CLOSEPAR)
+            else if (current->GetToken() == TOKEN_CLOSEPAR)
             {
                 State = ST_FUNC08;
             }
             else
             {
-                errListe->add("On attend une déclaration d'argument ou ')' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une déclaration d'argument ou ')' ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_FUNC04:
-            if (Cour->GetToken() == TOKEN_AS)
+            if (current->GetToken() == TOKEN_AS)
                 State = ST_FUNC05;
             else
             {
-                errListe->add("On attend 'as' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'as' ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_FUNC05:
-            if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
+            if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
-                tmpVar->setType(GetVarType(Cour));
-                tmpVar->SetTagType(Cour);
+                tmpVar->setType(GetVarType(current));
+                tmpVar->SetTagType(current);
                 tmpVar->SetCar(VR_ARGU);
                 tmpVar->SetFunc(tmpFonc);
                 // On a d?clar? un argument
@@ -1918,71 +1918,71 @@ void VeriSyn::VerifSyntax()
             }
             else
             {
-                errListe->add("On attend un type ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un type ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_FUNC06:
-            if (Cour->GetToken() == TOKEN_VIRGULE)
+            if (current->GetToken() == TOKEN_VIRGULE)
                 State = ST_FUNC07;
-            else if (Cour->GetToken() == TOKEN_CLOSEPAR)
+            else if (current->GetToken() == TOKEN_CLOSEPAR)
                 State = ST_FUNC08;
             else
             {
-                errListe->add("On attend ',' ou ')' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend ',' ou ')' ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_FUNC07:
-            if (Cour->GetToken() == TOKEN_IDENTIF)
+            if (current->GetToken() == TOKEN_IDENTIF)
             {
                 tmpVar=new VariableItem();
-                tmpFonc->GetArguListe()->AddDebut(tmpVar);
-                tmpVar->SetTagNom(Cour);
+                tmpFonc->getArgumentList()->AddDebut(tmpVar);
+                tmpVar->setTagName(current);
                 State = ST_FUNC04;
             }
             else
             {
-                errListe->add("On attend une déclaration d'argument ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend une déclaration d'argument ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_FUNC08:
-            if (Cour->GetToken() == TOKEN_AS)
+            if (current->GetToken() == TOKEN_AS)
                 State = ST_FUNC09;
             else
             {
-                errListe->add("On attend 'as' ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend 'as' ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_FUNC09:
-            if (Cour->GetToken() == TOKEN_IDENTIF || IsAType(Cour))
+            if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
-                tmpFonc->SetRetType(GetVarType(Cour));
+                tmpFonc->setReturnType(GetVarType(current));
                 State = ST_FUNC10;
             }
             else
             {
-                errListe->add("On attend un type ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("On attend un type ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
         case ST_FUNC10:
-            if (Cour->GetToken() == TOKEN_CRLF)
+            if (current->GetToken() == TOKEN_CRLF)
             {
                 // il faut d?clarer la fonction
                 State = ST_INTRA;
             }
             else
             {
-                errListe->add("Inattendu ",Cour);
-                AvanceNextLigne(&Cour);
+                errListe->add("Inattendu ",current);
+                AvanceNextLigne(&current);
                 State = ST_INTRA;
             }
             break;
@@ -1990,10 +1990,10 @@ void VeriSyn::VerifSyntax()
             break;
 
         }
-        if (Cour)
+        if (current)
         {
-            precCour = Cour;
-            Cour=Cour->GetNext();
+            precCur = current;
+            current=current->GetNext();
         }
     }
     return;

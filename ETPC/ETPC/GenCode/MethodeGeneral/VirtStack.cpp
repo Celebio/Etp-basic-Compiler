@@ -38,11 +38,11 @@ VariableItem* VirtStack::pop(){
 void VirtStack::clearStack(){
 
     VirtStackElem* pCour=VirtualStackBuffer;
-    VirtStackElem* precCour=pCour;
+    VirtStackElem* precCur=pCour;
     while (pCour){
-        precCour=pCour;
+        precCur=pCour;
         pCour=pCour->next;
-        delete precCour;
+        delete precCur;
     }
     VirtualStackBuffer=NULL;
 }
@@ -51,7 +51,7 @@ int VirtStack::getStackPos(char* varName)
     VirtStackElem* pCour=VirtualStackBuffer;
     while(pCour)
     {
-        if (!strcmp(varName,pCour->var->GetTagNom()->GetIdentif()))
+        if (!strcmp(varName,pCour->var->getTagName()->GetIdentif()))
             return pCour->depth;
         pCour=pCour->next;
     }
@@ -63,7 +63,7 @@ void VirtStack::display(){
     printf("Virtual Stack State:\n");
     while(pCour)
     {
-        printf("depth:%i  \t var_name:%s \t\tde size:%i\n",pCour->depth,pCour->var->GetTagNom()->GetIdentif(),pCour->var->getSize());
+        printf("depth:%i  \t var_name:%s \t\tde size:%i\n",pCour->depth,pCour->var->getTagName()->GetIdentif(),pCour->var->getSize());
         pCour=pCour->next;
     }
     //VirtualStackBuffer=NULL;
