@@ -20,14 +20,14 @@ function multAndDisplay:(i as integer, j as integer) as integer
 
 
 
-procedure main:
+Procedure Main:
 
-    local a as integer
-    local b as integer
-    local c as integer
+    Local a as Integer
+    Local b as Integer
+    Local c as Integer
     'local byter as byte
     'local gdf as long
-    local i as integer
+    Local i as Integer
 
     b = 12
     c = 3

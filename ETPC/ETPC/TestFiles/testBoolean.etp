@@ -1,0 +1,22 @@
+
+
+
+Procedure Main:
+
+    local a as Integer
+    local c as Boolean
+
+    a = 15
+    c = False
+
+    clearscreen()
+
+    If c Then
+        dispintXY(5, 5, 1337)
+    Else
+        dispintXY(5, 5, 666)
+    End If
+
+    waitkey()
+
+

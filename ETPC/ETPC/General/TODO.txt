@@ -1,8 +1,17 @@
 
 
-les expressions booleenes (avec des variables)
+- better coverage
+
+- les expressions booleenes (avec des variables) c = a < b
+- les tableaux
+- UDTypes
+- by val, by ref?
+- classes?
+- strings
+- list
+- map
+
 revoir la verif s?mantique
-les tableaux
 les instructions (for, goto label,foreach)
 les floats
 

@@ -129,7 +129,7 @@ void Tokenizer::AvanceTokenPtr(char **pText)
                  jk== ')' || jk == '[' || jk == ']'  ||
                  jk== ':' || jk == 39  || jk == ','  ||
                  jk== '.' || jk ==0   || jk == '!'  ||
-                 jk== 34 ) && (!InAString)) || (InAString && jk==13) ));    // les caract?res qui peuvent faire arreter un token
+                 jk== 34 || jk == 10 ) && (!InAString)) || (InAString && (jk==13 || jk==10)) ));    // les caract?res qui peuvent faire arreter un token
 }
 
 TAG Tokenizer::GetToken(char **bText,int* column)
@@ -138,10 +138,11 @@ TAG Tokenizer::GetToken(char **bText,int* column)
     perTAG.SetIdentif(NULL);
     //perTAG.Identif[0] = 0;
     char* deb=*bText;
-    if (**bText == 13)
+    if (**bText == 13 || **bText == 10)
     {
-        (*bText)++; // il faut sauter le chr(10)
         (*bText)++;
+        if (**bText == 10)
+            (*bText)++; // il faut sauter le chr(10)
         perTAG.SetToken(TOKEN_CRLF);
     }
     else if (**bText == 32  || **bText == 9)    //espace
@@ -161,7 +162,7 @@ TAG Tokenizer::GetToken(char **bText,int* column)
     else if (**bText == 39) // commentaire
     {
         //avancer jusqu'au retour de line
-        while (**bText !=13 && **bText!=0)
+        while (**bText !=13 && **bText !=10 && **bText!=0)
             (*bText)++;
         perTAG.SetToken(TOKEN_COMMENT);
     }
