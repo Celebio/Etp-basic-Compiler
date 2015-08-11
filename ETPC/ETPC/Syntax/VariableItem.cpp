@@ -27,13 +27,13 @@ void VariableItem::destroy()
 void VariableItem::display()
 {
     printf("Variable NOM:%s:\n",bTagName->GetIdentif());
-    if (Car ==VR_PUBLIC)
+    if (locality ==VR_PUBLIC)
         printf("PUBLIC ");
-    else if (Car==VR_LOCAL)
+    else if (locality==VR_LOCAL)
         printf("LOCAL ");
-    else if (Car==VR_MEMBER)
+    else if (locality==VR_MEMBER)
         printf("MEMBER ");
-    else if (Car==VR_ARGU)
+    else if (locality==VR_ARGU)
         printf("ARGUMENT ");
     printf("Dimensions:\n");
     DimListe.display();

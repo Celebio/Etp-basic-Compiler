@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "Tokenizer.h"
+#include "tokenizer.h"
 
 Tokenizer::Tokenizer(void)
 {
@@ -184,7 +184,7 @@ TAG Tokenizer::GetToken(char **bText,int* column)
     else if (**bText == '-')
     {
         (*bText)++;
-        perTAG.SetToken(TOKEN_MOINS);
+        perTAG.SetToken(TOKEN_MINUS);
     }
     else if (**bText == '*')
     {

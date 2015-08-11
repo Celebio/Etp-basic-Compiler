@@ -51,18 +51,18 @@ void Genz80::setEnvironnement(Collection* BerrListe,
     Fonctions=BFonctions;
 }
 
-int Genz80::getNbRegObject(CNoeud* bNoeud,NatureOpz80 bNat){
+int Genz80::getNbRegObject(ASTNode* bNoeud,NatureOpz80 bNat){
     return 0;
 }
 
-int Genz80::getNbRegArith(CNoeud* bNoeud,NatureOpz80 bNat){
+int Genz80::getNbRegArith(ASTNode* bNoeud,NatureOpz80 bNat){
     return 0;
 }
 
 
 
 /*
-size_opz80 Genz80::getSize(CNoeud* bNoeud){
+size_opz80 Genz80::getSize(ASTNode* bNoeud){
 
 }
 */

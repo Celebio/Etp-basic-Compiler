@@ -22,7 +22,7 @@
 #include <fstream>
 
 #include "VirtStackz80.h"
-#include "noeud.h"
+#include "astnode.h"
 
 
 typedef enum LigneNaturez80 {NAz80_ETIQ,NAz80_INST,NAz80_COMMENT,NAz80_UNKNOWN} LigneNaturez80;

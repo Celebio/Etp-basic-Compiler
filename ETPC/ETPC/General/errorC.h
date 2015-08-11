@@ -18,7 +18,7 @@
 //#define _ERRORC_H_1
 
 #include "TAG.h"
-#include "ColItem.h"
+#include "colitem.h"
 
 class errorC :
     public ColItem

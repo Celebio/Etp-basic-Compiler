@@ -59,7 +59,7 @@ bool VeriSem::TypeExiste(VariableItem* bVariable)
     }
     if (!Found)
     {
-        errListe->add("Type inconnu",bVariable->GetTagType());
+        errListe->add("Type inconnu",bVariable->getTagType());
     }
     return Found;
 }
@@ -77,9 +77,9 @@ void VeriSem::setEnvironnement(Collection* BerrListe,
 
 
 
-VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
+VarTypeType VeriSem::GetTypeExpression(ASTNode *expr,
                                 VarTypeType typeAttendu,
-                                FonctionItem* foncEnCours){
+                                FunctionItem* foncEnCours){
     VarTypeType retVal(TP_UNKNOWN);
     VarTypeType unknownVal(TP_UNKNOWN);
     VarTypeType intVal(TP_INTEGER);
@@ -93,7 +93,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
     ColIterator pTypeListe;
     TypeItem* Type1;
     VariableItem* Var1;
-    FonctionItem* Fonc1;
+    FunctionItem* Fonc1;
     //DimElemItem* Dim1;
 
     int i;
@@ -139,7 +139,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
                                     printf("le champs %s existe dans le type %s\n",Var1->getTagName()->GetIdentif(),bType.Expr);
                                 #endif
                                 // verification eventuelle pour la size du tableau
-                                Var1->GetDimListe()->bindIterator(&pDimListe);
+                                Var1->getDimList()->bindIterator(&pDimListe);
                                 i=0;
                                 while (pDimListe.elemExists()){
                                     pDimListe.getNext();
@@ -365,7 +365,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
         if (pVarListe.elemExists()){
             Var1=(VariableItem*)pVarListe.getElem();
             i=0;
-            Var1->GetDimListe()->bindIterator(&pDimListe);
+            Var1->getDimList()->bindIterator(&pDimListe);
 
             while (pDimListe.elemExists()){
                 i++;
@@ -400,7 +400,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             pVarListe.getNext();
         }
         if (pVarListe.elemExists()){
-            Var1->GetDimListe()->bindIterator(&pDimListe);
+            Var1->getDimList()->bindIterator(&pDimListe);
             i=0;
             while (pDimListe.elemExists()){
                 i++;
@@ -437,7 +437,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             pVarListe.getNext();
         }
         if (pVarListe.elemExists()){
-            Var1->GetDimListe()->bindIterator(&pDimListe);
+            Var1->getDimList()->bindIterator(&pDimListe);
             i=0;
             while (pDimListe.elemExists()){
                 i++;
@@ -466,7 +466,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
         #endif
         Fonctions->bindIterator(&pFuncListe);
         while (pFuncListe.elemExists()){
-            Fonc1=(FonctionItem*)pFuncListe.getElem();
+            Fonc1=(FunctionItem*)pFuncListe.getElem();
             if (!strcmp(Fonc1->getName(),expr->getTag()->GetIdentif())){
                 #ifdef _DEBUGSEM
                     printf("C'est bien declared..\n");
@@ -546,7 +546,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
             #endif
         }
         if (pVarListe.elemExists()){
-            Var1->GetDimListe()->bindIterator(&pDimListe);
+            Var1->getDimList()->bindIterator(&pDimListe);
             i=0;
             while (pDimListe.elemExists()){
                 i++;
@@ -608,7 +608,7 @@ VarTypeType VeriSem::GetTypeExpression(CNoeud *expr,
     return retVal;
 
 }
-void VeriSem::VerifSemInstr(Collection *bInstrListe,FonctionItem* foncEnCours){
+void VeriSem::VerifSemInstr(Collection *bInstrListe,FunctionItem* foncEnCours){
     ColIterator iter1;
     InstructionETPB* bInst;
     bInstrListe->bindIterator(&iter1);
@@ -618,7 +618,7 @@ void VeriSem::VerifSemInstr(Collection *bInstrListe,FonctionItem* foncEnCours){
     }
 }
 
-void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
+void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FunctionItem* foncEnCours){
     Collection* listElseIfExpr;
     Collection* listElseIfCorps;
     ColIterator iterElseIfExpr;
@@ -627,7 +627,7 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
     VarTypeType longVal(TP_LONG);
     VarTypeType byteVal(TP_BYTE);
     VarTypeType typeAux,typePro;
-    CNoeud *forExprTreestep = NULL;
+    ASTNode *forExprTreestep = NULL;
 
     switch(bInstr->getNat())
     {
@@ -701,7 +701,7 @@ void VeriSem::VerifSemInstr(InstructionETPB *bInstr,FonctionItem* foncEnCours){
         while (iterElseIfCorps.elemExists())
         {
             VerifSemInstr((Collection *)iterElseIfCorps.getNext(),foncEnCours);
-            GetTypeExpression((CNoeud*)iterElseIfExpr.getNext(),typePro,foncEnCours);
+            GetTypeExpression((ASTNode*)iterElseIfExpr.getNext(),typePro,foncEnCours);
         }
         if (iterElseIfExpr.elemExists())
         {
@@ -732,7 +732,7 @@ void VeriSem::VerifSem(){
     TypeItem* Type2;
     VariableItem* Var1;
     VariableItem* Var2;
-    FonctionItem* Fonc1;
+    FunctionItem* Fonc1;
 
     // Verification des types, des declarations circulaires
 
@@ -783,7 +783,7 @@ void VeriSem::VerifSem(){
 
     Fonctions->bindIterator(&iter1);
     while (iter1.elemExists()){
-        Fonc1=(FonctionItem*)iter1.getNext();
+        Fonc1=(FunctionItem*)iter1.getNext();
         // Verification de double definition des parametres
         Fonc1->getArgumentList()->bindIterator(&iter2);
         while (iter2.elemExists()){

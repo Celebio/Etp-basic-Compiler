@@ -27,7 +27,7 @@ void GenIL::setEnvironnement(Collection* BerrListe,
     Fonctions=BFonctions;
 }
 
-int GenIL::getNbRegObject(CNoeud* bNoeud,NatureOp bNat){
+int GenIL::getNbRegObject(ASTNode* bNoeud,NatureOp bNat){
     int val;
     if (bNoeud->getNature()==NODE_OPERAND_VARIABLE){
         if (bNat==NO_REG){
@@ -44,7 +44,7 @@ int GenIL::getNbRegObject(CNoeud* bNoeud,NatureOp bNat){
     return val;
 }
 
-int GenIL::getNbRegArith(CNoeud* bNoeud,NatureOp bNat){
+int GenIL::getNbRegArith(ASTNode* bNoeud,NatureOp bNat){
     NodeNature NatureArbre=bNoeud->getNature();
     int val=-1;
     int n1,n2,nMax;
@@ -95,7 +95,7 @@ int GenIL::getNbRegArith(CNoeud* bNoeud,NatureOp bNat){
     bNoeud->setNbReg(val);
     return val;
 }
-void GenIL::codeObject(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
+void GenIL::codeObject(ASTNode* bNoeud,NatureOp bNat,Operande** opertr){
     size_op size=SZ_UNKNOWN;
 
     if (bNoeud->getType().Type==TP_INTEGER) size=SZ_W;
@@ -119,7 +119,7 @@ void GenIL::codeObject(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
     }
 }
 
-void GenIL::codeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
+void GenIL::codeArith(ASTNode* bNoeud,NatureOp bNat,Operande** opertr){
     NodeNature NatureArbre=bNoeud->getNature();
     size_op size=SZ_UNKNOWN;
     Operande* Op1;
@@ -248,7 +248,7 @@ void GenIL::codeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr){
 void GenIL::generateCode(){
     ColIterator iter1;
     ColIterator iter2;
-    FonctionItem* Fonc1;
+    FunctionItem* Fonc1;
     VariableItem* Var1;
     InstructionETPB* Instr1;
 
@@ -257,7 +257,7 @@ void GenIL::generateCode(){
     int somme;
     Fonctions->bindIterator(&iter1);
     while(iter1.elemExists()){
-        Fonc1=(FonctionItem*)iter1.getNext();
+        Fonc1=(FunctionItem*)iter1.getNext();
         virtualStack.clearStack();
         ilCoder.addLabel(Fonc1->getName());
         Fonc1->getArgumentList()->bindIterator(&iter2);

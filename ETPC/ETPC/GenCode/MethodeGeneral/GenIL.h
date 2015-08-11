@@ -6,7 +6,7 @@
 #include <math.h>
 
 #include "IL.h"
-#include "FonctionItem.h"
+#include "functionitem.h"
 #include "InstructionETPB.h"
 #include "PileRegTemp.h"
 
@@ -26,11 +26,11 @@ private:
 
     int mNbRegMax;
 
-    int getNbRegArith(CNoeud* bNoeud,NatureOp bNat);
-    int getNbRegObject(CNoeud* bNoeud,NatureOp bNat);
+    int getNbRegArith(ASTNode* bNoeud,NatureOp bNat);
+    int getNbRegObject(ASTNode* bNoeud,NatureOp bNat);
 
-    void codeArith(CNoeud* bNoeud,NatureOp bNat,Operande** opertr);
-    void codeObject(CNoeud* bNoeud,NatureOp bNat,Operande** opertr);
+    void codeArith(ASTNode* bNoeud,NatureOp bNat,Operande** opertr);
+    void codeObject(ASTNode* bNoeud,NatureOp bNat,Operande** opertr);
 
 public:
     GenIL(void);

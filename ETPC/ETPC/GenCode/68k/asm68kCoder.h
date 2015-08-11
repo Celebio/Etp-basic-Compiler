@@ -23,7 +23,7 @@
 
 
 #include "VirtStack68k.h"
-#include "noeud.h"
+#include "astnode.h"
 
 typedef enum LineNature68k {NA_ETIQ,NA_INST,NA_COMMENT,NA_UNKNOWN} LineNature68k;
 typedef enum OperandNature68k {OP_DIRECT,OP_INDIRECT,OP_INDEXE,OP_INTEGER,OP_FLOAT,OP_STRING,OP_LABEL} OperandNature68k;
@@ -125,7 +125,7 @@ public:
 
     void setStream(std::ofstream* bStream) {mStream= bStream; }
 
-    InsOpEnum68k nodeToOp(CNoeud* bNoeud);
+    InsOpEnum68k nodeToOp(ASTNode* bNoeud);
 
     Operande68k* createOp(reg_id bdirectRegister);
     Operande68k* createOp(int bdep,reg_id bRegBase);

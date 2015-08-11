@@ -20,7 +20,7 @@
     2004/2007
 \******************************************************************/
 /******************************************************\
-    LectureFichier.cpp
+    filereader.cpp
 
     ouvre le fichier TEST et appelle les diff?rentes
     fonctions, tokeniser, verificateur syntaxique...
@@ -35,8 +35,8 @@
 #include <ctype.h>
 
 
-#include "LectureFichier.h"
-#include "Compiler.h"
+#include "filereader.h"
+#include "compiler.h"
 
 
 

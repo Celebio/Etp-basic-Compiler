@@ -24,7 +24,7 @@
 #include <ctype.h>
 
 
-#include "Tokenizer.h"
+#include "tokenizer.h"
 #include "verisyn.h"
 #include "verisem.h"
 #include "Gen68k.h"

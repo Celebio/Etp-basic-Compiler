@@ -14,36 +14,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef _FILEREADER_H_1
+//#define _FILEREADER_H_1
 
-#include "FonctionItem.h"
-#include <stdio.h>
+//extern void AfficheContenu(void *BText);
+extern void Quit();
+extern long FileSize;
 
-FonctionItem::FonctionItem(void)
-{
-    assembler=false;
-    used=false;
-}
-FonctionItem::~FonctionItem(void)
-{
-}
-void FonctionItem::destroy()
-{
-}
-void FonctionItem::display()
-{
-    printf("Fonction:line:%i  nom:%s, arguments:\n",line,name);
-    printf("Arguments:\n");
-    argumentList.display();
-    printf("Variables locales:\n");
-    variableList.display();
 
-    if (returnType.Type != TP_VOID)
-    {
-        printf("retourne ");
-        returnType.display();
-    }
-    printf("\n");
-    printf("Instructions:\n");
-    instructionList.display();
-}
+#endif
 

@@ -16,7 +16,7 @@
 */
 
 #include <stdio.h>
-#include "ColItem.h"
+#include "colitem.h"
 
 ColItem::ColItem(void)
 {

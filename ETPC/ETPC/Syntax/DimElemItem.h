@@ -17,15 +17,15 @@
 #ifndef _DIMELEMITEM_H_1
 #define _DIMELEMITEM_H_1
 
-#include "noeud.h"
-#include "ColItem.h"
+#include "astnode.h"
+#include "colitem.h"
 
 class DimElemItem :
     public ColItem
 {
 private:
     int ConstVal;
-    CNoeud* expr;
+    ASTNode* expr;
 public:
 
     DimElemItem(void);
@@ -36,8 +36,8 @@ public:
     void display();
 
     int GetConstVal(){return ConstVal;}
-    CNoeud* GetExpr(){return expr;}
-    CNoeud** GetExprPtr(){return &expr;}
+    ASTNode* GetExpr(){return expr;}
+    ASTNode** GetExprPtr(){return &expr;}
 
     void SetExprNull(){expr=NULL;}
 };

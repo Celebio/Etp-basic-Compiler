@@ -15,7 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "noeud.h"
+#include "astnode.h"
 //#include <iostream.h>
 
 const char *ImageOperator[]={
@@ -44,7 +44,7 @@ const char *ImageOperator[]={
 
 
 
-CNoeud::CNoeud(void)
+ASTNode::ASTNode(void)
 {
     mNature=NODE_UNKNOWN;
     mType.Type=TP_UNKNOWN;  // on ne connait pas le type de cet ?l?ment
@@ -53,18 +53,18 @@ CNoeud::CNoeud(void)
     mFilsD=NULL;
     nbReg=-1;
     for(int i=0;i<30;i++)
-        Successeur[i]=NULL;
+        next[i]=NULL;
 }
-CNoeud::CNoeud(TAG* bTAG)
+ASTNode::ASTNode(TAG* bTAG)
 {
-    //CNoeud();
+    //ASTNode();
     mNature=NODE_UNKNOWN;
     mType.Type=TP_UNKNOWN;  // on ne connait pas le type de cet ?l?ment
     mType.Expr=NULL;        // '    '   '   '   '   '   '   '   '
     mFilsG=NULL;
     mFilsD=NULL;
     for(int i=0;i<30;i++)
-        Successeur[i]=NULL;
+        next[i]=NULL;
     mTAG =bTAG;
     // faut faire des trucs du style... (pour la g?n?ration de code)
     //if (bTAG->Token ==
@@ -93,12 +93,12 @@ CNoeud::CNoeud(TAG* bTAG)
     }
 }
 
-CNoeud::~CNoeud(void)
+ASTNode::~ASTNode(void)
 {
     destroyTree();
 }
 
-void CNoeud::destroyTree(){
+void ASTNode::destroyTree(){
     if (mFilsG)
     {
         mFilsG->destroyTree();
@@ -110,14 +110,14 @@ void CNoeud::destroyTree(){
         delete mFilsD;
     }
     for(int i=0;i<30;i++)
-        if (Successeur[i])
+        if (next[i])
         {
-            Successeur[i]->destroyTree();
-            delete Successeur[i];
+            next[i]->destroyTree();
+            delete next[i];
         }
 }
 
-const char *CNoeud::getNodeRepr(){
+const char *ASTNode::getNodeRepr(){
     if (mOperator==OPTOR_MOINSUNAIRE)
         return "-U";
     if (!(mTAG->GetToken() ==TOKEN_IDENTIF || mTAG->GetToken() ==TOKEN_NOMBRE || mTAG->GetToken() ==TOKEN_STRINGCONSTANT))
@@ -128,7 +128,7 @@ const char *CNoeud::getNodeRepr(){
 
 
 
-void CNoeud::display(const char *S,const char *SD,const char *SG){
+void ASTNode::display(const char *S,const char *SD,const char *SG){
     char str1[300];
     char str2[300];
     char str3[300];
@@ -144,7 +144,7 @@ void CNoeud::display(const char *S,const char *SD,const char *SG){
     if (mFilsD)
         mFilsD->display(str1,str2,str3);
 
-    for(j=0;j<30 && !Successeur[j];j++);
+    for(j=0;j<30 && !next[j];j++);
 
     if (mFilsD==NULL && mFilsG==NULL && j==30)
         printf("%s+-<%s >\n",S,getNodeRepr());
@@ -170,22 +170,20 @@ void CNoeud::display(const char *S,const char *SD,const char *SG){
 
     for(j=0;j<30;j++)
     {
-        if (Successeur[j])
+        if (next[j])
         {
             sprintf(str2,"%s%s     |",SG,Ind);
             sprintf(str3,"%s%s     |",SD,Ind);
-            Successeur[j]->display(str1,str2,str3);
+            next[j]->display(str1,str2,str3);
         }
     }
 }
 
-void CNoeud::display(){
-    if (this)
-        display(""," "," ");
-
+void ASTNode::display(){
+    display(""," "," ");
 }
 
-void CNoeud::display(int indent){
+void ASTNode::display(int indent){
     for(int i=0;i<indent;i++)
         printf(" ");
     printf("<%s>\n",getNodeRepr());
@@ -194,18 +192,18 @@ void CNoeud::display(int indent){
     if (mFilsD)
         mFilsD->display(indent+5);
     for(int i=0;i<30;i++)
-        if (Successeur[i])
+        if (next[i])
         {
-            Successeur[i]->display();
+            next[i]->display();
         }
 }
 
-CNoeud* CNoeud::addRightChild(TAG* bTAG){
-    mFilsD = new CNoeud(bTAG);
+ASTNode* ASTNode::addRightChild(TAG* bTAG){
+    mFilsD = new ASTNode(bTAG);
     return mFilsD;
 }
-CNoeud* CNoeud::addLeftChild(TAG* bTAG){
-    mFilsG = new CNoeud(bTAG);
+ASTNode* ASTNode::addLeftChild(TAG* bTAG){
+    mFilsG = new ASTNode(bTAG);
     return mFilsG;
 }
 
@@ -226,7 +224,7 @@ TypeOptor getOperatorType(enumTokenType bToken)
         retVal = OPTOR_DIV;
     else if (bToken == TOKEN_MULT)
         retVal = OPTOR_MULT;
-    else if (bToken == TOKEN_MOINS)
+    else if (bToken == TOKEN_MINUS)
         retVal = OPTOR_SUB;
     else if (bToken == TOKEN_PLUS)
         retVal = OPTOR_ADD;
@@ -264,29 +262,29 @@ TypeOptor getOperatorType(enumTokenType bToken)
 }
 
 
-void CNoeud::setRightChild(CNoeud *bNoeud){
+void ASTNode::setRightChild(ASTNode *bNoeud){
     mFilsD=bNoeud;
 }
-void CNoeud::setLeftChild(CNoeud *bNoeud){
+void ASTNode::setLeftChild(ASTNode *bNoeud){
     mFilsG=bNoeud;
 }
-void CNoeud::setAsFunction(){
+void ASTNode::setAsFunction(){
     mNature=NODE_OPERAND_FUNCTION;
     #ifdef _DEBUGARBRES
         printf("finalement function\n");
     #endif
 }
-void CNoeud::setAsArray(){
+void ASTNode::setAsArray(){
     mNature=NODE_OPERAND_ARRAY;
     #ifdef _DEBUGARBRES
         printf("finalement array\n");
     #endif
 }
-void CNoeud::setOperatorUnaryMinus(){
+void ASTNode::setOperatorUnaryMinus(){
     mOperator=OPTOR_MOINSUNAIRE;
     mOperType=OPUND;
 }
-void CNoeud::setOperatorArith(){
+void ASTNode::setOperatorArith(){
     if (mOperator==OPTOR_CMP_AND){
         mOperator=OPTOR_ARI_AND;
     }
@@ -297,61 +295,61 @@ void CNoeud::setOperatorArith(){
         mOperator=OPTOR_ARI_XOR;
     }
 }
-void CNoeud::setType(VarTypeType bType){
+void ASTNode::setType(VarTypeType bType){
     if (bType.Type!=TP_USER)
         bType.Expr=NULL;
     mType=bType;
 }
-void CNoeud::setNbReg(int nb){
+void ASTNode::setNbReg(int nb){
     nbReg=nb;
 }
 
-bool CNoeud::isLeaf(){
+bool ASTNode::isLeaf(){
     return (mFilsG==NULL && mFilsD==NULL);
 };
 
-int CNoeud::getNbReg(){
+int ASTNode::getNbReg(){
     return nbReg;
 }
 
-CNoeud* CNoeud::getLeftChild(){
+ASTNode* ASTNode::getLeftChild(){
     return mFilsG;
 }
-CNoeud* CNoeud::getRightChild(){
+ASTNode* ASTNode::getRightChild(){
     return mFilsD;
 }
-CNoeud** CNoeud::getSuccPtr(int index){
-    return &Successeur[index];
+ASTNode** ASTNode::getSuccPtr(int index){
+    return &next[index];
 }
-int CNoeud::getSuccNmbr(){
+int ASTNode::getSuccNmbr(){
     int i;
-    for(i=0;Successeur[i]!=NULL;i++);
+    for(i=0;next[i]!=NULL;i++);
     return i;
 }
-NodeNature CNoeud::getNature(){
+NodeNature ASTNode::getNature(){
     return mNature;
 }
-VarTypeType CNoeud::getType(){
+VarTypeType ASTNode::getType(){
     return mType;
 }
-TAG* CNoeud::getTag(){
+TAG* ASTNode::getTag(){
     return mTAG;
 }
-TypeOptor CNoeud::getOperator(){
+TypeOptor ASTNode::getOperator(){
     return mOperator;
 }
 
-natureOperator CNoeud::getOperType(){
+natureOperator ASTNode::getOperType(){
     return mOperType;
 }
-bool CNoeud::isCommutative(){
+bool ASTNode::isCommutative(){
     if (mOperator== OPTOR_MULT || mOperator== OPTOR_ADD || mOperator== OPTOR_CONCAT ||
         mOperator== OPTOR_EQUAL || mOperator== OPTOR_DIFFERENT || mOperator== OPTOR_CMP_AND ||
         mOperator== OPTOR_CMP_OR)
         return true;
     return false;
 }
-natureOperator CNoeud::getOperType(TAG* bTag)
+natureOperator ASTNode::getOperType(TAG* bTag)
 {
     enumTokenType bToken = bTag->GetToken();
     if ((bToken >= TOKEN_PLUS && bToken <= TOKEN_CONCAT) ||
@@ -367,7 +365,7 @@ natureOperator CNoeud::getOperType(TAG* bTag)
         return NOTOP;
 }
 
-bool CNoeud::isConstant(){
+bool ASTNode::isConstant(){
     if (mNature==NODE_OPERAND_CONSTANT){
         return true;
     }
@@ -388,7 +386,7 @@ bool CNoeud::isConstant(){
     return false;
 }
 
-void CNoeud::simplifyConstantExpression(){
+void ASTNode::simplifyConstantExpression(){
     if (!isConstant()) return;
     printf("ok on va simplifier\n");
     this->display();

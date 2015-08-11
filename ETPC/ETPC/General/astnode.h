@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include "TAG.h"
 #include "VarTypeType.h"
-#include "ColItem.h"
+#include "colitem.h"
 
 
 typedef enum NodeNature{
@@ -87,16 +87,16 @@ typedef enum TypeOptor{
 
 extern TypeOptor getOperatorType(enumTokenType bToken);
 
-class CNoeud :
+class ASTNode :
     public ColItem
 {
 private:
     NodeNature mNature;
-    CNoeud* mFilsG;
-    CNoeud* mFilsD;
-    CNoeud* Successeur[30]; // pour les arbres non-binaires
+    ASTNode* mFilsG;
+    ASTNode* mFilsD;
+    ASTNode* next[30]; // pour les arbres non-binaires
 
-    CNoeud* mParent;
+    ASTNode* mParent;
     TAG* mTAG;
 
     TypeOptor mOperator;
@@ -112,13 +112,13 @@ private:
     natureOperator getOperType(TAG* bTag);
 public:
 
-    CNoeud(void);
-    CNoeud(TAG* bTAG);
-    ~CNoeud(void);
+    ASTNode(void);
+    ASTNode(TAG* bTAG);
+    ~ASTNode(void);
 
 
-    CNoeud* addLeftChild(TAG* bTAG);
-    CNoeud* addRightChild(TAG* bTAG);
+    ASTNode* addLeftChild(TAG* bTAG);
+    ASTNode* addRightChild(TAG* bTAG);
 
     void display(const char *S,const char *SD,const char *SG);
     void display();
@@ -126,8 +126,8 @@ public:
     const char *getNodeRepr();
 
     void destroyTree();
-    void setLeftChild(CNoeud* bNoeud);
-    void setRightChild(CNoeud* bNoeud);
+    void setLeftChild(ASTNode* bNoeud);
+    void setRightChild(ASTNode* bNoeud);
     void setType(VarTypeType bType);
     void setAsFunction();   // identifiant est une fonction
     void setAsArray();      // identifiant est un tableau
@@ -140,9 +140,9 @@ public:
     bool isConstant();
     void simplifyConstantExpression();
 
-    CNoeud* getLeftChild();
-    CNoeud* getRightChild();
-    CNoeud** getSuccPtr(int index);
+    ASTNode* getLeftChild();
+    ASTNode* getRightChild();
+    ASTNode** getSuccPtr(int index);
     int getSuccNmbr();
     NodeNature getNature();
     VarTypeType getType();

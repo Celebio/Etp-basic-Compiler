@@ -31,7 +31,7 @@ IL::~IL(void){
 /**********************************************************
     UTILE
     *******************************************************************/
-InsOpEnum IL::nodeToOp(CNoeud* bNoeud)
+InsOpEnum IL::nodeToOp(ASTNode* bNoeud)
 {
     switch(bNoeud->getOperator())
     {

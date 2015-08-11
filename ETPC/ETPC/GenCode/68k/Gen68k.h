@@ -26,9 +26,9 @@
 #include <iostream>
 
 #include "asm68kCoder.h"
-#include "FonctionItem.h"
+#include "functionitem.h"
 #include "InstructionETPB.h"
-#include "PileRegTemp68k.h"
+#include "TempRegStack68k.h"
 
 
 typedef enum NatureOp { NO_REG, NO_DVAL, NO_DADR } NatureOp;
@@ -46,22 +46,22 @@ private:
 
     asm68kCoder ilCoder;
     VirtStack68k virtualStack;
-    PileRegTemp68k* registerStack;
+    TempRegStack68k* registerStack;
     int currentStackVariablesSize;
     bool returnInstrAsLastInstr;
     int mNbRegMax;
 
-    size_op68k getSize(CNoeud* bNoeud);
+    size_op68k getSize(ASTNode* bNoeud);
 
-    int getNbRegArith(CNoeud* bNoeud,NatureOp bNat);
-    int getNbRegObject(CNoeud* bNoeud,NatureOp bNat);
-    int getNbRegBool(CNoeud* bNoeud);
+    int getNbRegArith(ASTNode* bNoeud,NatureOp bNat);
+    int getNbRegObject(ASTNode* bNoeud,NatureOp bNat);
+    int getNbRegBool(ASTNode* bNoeud);
 
 
 
-    void codeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr);
-    void codeObject(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr);
-    void codeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg);
+    void codeArith(ASTNode* bNoeud,NatureOp bNat,Operande68k** opertr);
+    void codeObject(ASTNode* bNoeud,NatureOp bNat,Operande68k** opertr);
+    void codeBool(ASTNode* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg);
 
     void codeInstr(InstructionETPB* bInstr);
     void codeInstr(Collection* bInstrSuite);

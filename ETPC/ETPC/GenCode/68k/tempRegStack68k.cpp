@@ -15,27 +15,27 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "PileRegTemp68k.h"
+#include "TempRegStack68k.h"
 
 
-PileRegTemp68k::PileRegTemp68k(){
+TempRegStack68k::TempRegStack68k(){
 }
-PileRegTemp68k::~PileRegTemp68k(){
+TempRegStack68k::~TempRegStack68k(){
 }
-PileRegTemp68k::PileRegTemp68k(asm68kCoder* bIL,VirtStack68k* bStack){
+TempRegStack68k::TempRegStack68k(asm68kCoder* bIL,VirtStack68k* bStack){
     mTempCtr=0;
     mIL=bIL;
     mStack=bStack;
 }
 
-void PileRegTemp68k::popD(void){
+void TempRegStack68k::popD(void){
     int i;
     for (i=0;i<D_STACK_SIZE-1;i++){
         stackForD[i]=stackForD[i+1];
     }
     stackForD[D_STACK_SIZE-1]=UNDEFREG;
 }
-void PileRegTemp68k::pushD(reg_id R){
+void TempRegStack68k::pushD(reg_id R){
     int i;
     for (i=D_STACK_SIZE;i>0;i--){
         stackForD[i]=stackForD[i-1];
@@ -44,7 +44,7 @@ void PileRegTemp68k::pushD(reg_id R){
 }
 
 
-void PileRegTemp68k::init(){
+void TempRegStack68k::init(){
     int i;
     for(i=0;i<D_STACK_SIZE;i++){
         stackForD[i]=(reg_id)(i+D1);
@@ -53,17 +53,17 @@ void PileRegTemp68k::init(){
         stackForD[i]=UNDEFREG;
     }
 }
-void PileRegTemp68k::switchD(void){
+void TempRegStack68k::switchD(void){
     reg_id aux=stackForD[0];
     stackForD[0]=stackForD[1];
     stackForD[1]=aux;
 }
 
-Operande68k* PileRegTemp68k::front(){
+Operande68k* TempRegStack68k::front(){
     return mIL->createOp(stackForD[0]);
 }
 
-void PileRegTemp68k::allocate(Operande68k* M){
+void TempRegStack68k::allocate(Operande68k* M){
     if (M->nat==OP_DIRECT){
         popD();
     }
@@ -78,7 +78,7 @@ void PileRegTemp68k::allocate(Operande68k* M){
     else{
     }
 }
-void PileRegTemp68k::freeOperand(Operande68k* M){
+void TempRegStack68k::freeOperand(Operande68k* M){
     if (M->nat==OP_DIRECT){
         pushD(M->val.directRegister);
     }
@@ -94,7 +94,7 @@ void PileRegTemp68k::freeOperand(Operande68k* M){
     }
 }
 
-Operande68k* PileRegTemp68k::allocateTemp(int size){
+Operande68k* TempRegStack68k::allocateTemp(int size){
     Operande68k* retVal;
     VariableItem* StackVar=new VariableItem();
     TAG *tagNomVar=new TAG();
@@ -109,7 +109,7 @@ Operande68k* PileRegTemp68k::allocateTemp(int size){
     mStack->pushToStack(StackVar);
     return retVal;
 }
-void PileRegTemp68k::freeTemp(Operande68k* T,int size){
+void TempRegStack68k::freeTemp(Operande68k* T,int size){
     VariableItem* AEffacer;
     AEffacer=mStack->pop();
     mIL->add("Liberation de temporaire");

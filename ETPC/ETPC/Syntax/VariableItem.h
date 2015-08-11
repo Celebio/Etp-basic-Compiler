@@ -22,7 +22,7 @@
 #include "VarTypeType.h"
 #include "TAG.h"
 
-class FonctionItem;
+class FunctionItem;
 
 typedef enum VarPortEnum {
     VR_PUBLIC,
@@ -36,12 +36,12 @@ class VariableItem:
     public ColItem
 {
 private:
-    VarPortEnum Car;    // LOCAL/PUBLIC
+    VarPortEnum locality;    // LOCAL/PUBLIC
     TAG* bTagName;           // le TAG dont le champ Identif contient le nom de la variable
     Collection DimListe;    // Liste des expressions des dimensions
     VarTypeType Type;   // Integer,Float,User-defined,etc..
     TAG* bTAGType;      // le TAG dont le champ Identif donne d?finit le type
-    FonctionItem* Func;     // La fonction qui la contient (pour les variables locales)
+    FunctionItem* Func;     // La fonction qui la contient (pour les variables locales)
     int size;           // size en octet
     bool Pointed;
 public:
@@ -54,22 +54,22 @@ public:
     void display();
 
     // Get
-    VarPortEnum GetCar() {return Car;}
+    VarPortEnum GetLocality() {return locality;}
     TAG* getTagName() {return bTagName;}
-    Collection* GetDimListe() {return &DimListe;}
+    Collection* getDimList() {return &DimListe;}
     VarTypeType getType() {return Type;}
-    TAG* GetTagType() {return bTAGType;}
-    FonctionItem* GetFunc() {return Func;}
+    TAG* getTagType() {return bTAGType;}
+    FunctionItem* GetFunc() {return Func;}
     int getSize() {return size;}
     bool GetPointed() {return Pointed;}
 
     // Set
-    void SetCar(VarPortEnum bCar) {Car=bCar;}
+    void setLocality(VarPortEnum bCar) {locality=bCar;}
     void setTagName(TAG* nTAGNom) {bTagName=nTAGNom;}
-    void SetDimListe(Collection* bListe) {if (bListe) DimListe=*bListe;}
+    void setDimListe(Collection* bListe) {if (bListe) DimListe=*bListe;}
     void setType(VarTypeType bType) {Type=bType;}
-    void SetTagType(TAG* nTAGType) {bTAGType=nTAGType;}
-    void SetFunc(FonctionItem* bFunc) {Func=bFunc;}
+    void setTagType(TAG* nTAGType) {bTAGType=nTAGType;}
+    void SetFunc(FunctionItem* bFunc) {Func=bFunc;}
     void SetSize(int bSize) {size=bSize;}
     void SetPointed(bool ptd) {Pointed=ptd;}
 };

@@ -27,11 +27,11 @@
 #define max3(a,b,c) (max(a,max(b,c)))
 
 Gen68k::Gen68k(void){
-    registerStack = new PileRegTemp68k(&ilCoder,&virtualStack);
+    registerStack = new TempRegStack68k(&ilCoder,&virtualStack);
 }
 Gen68k::Gen68k(const char *oFileName){
     sprintf(outputFileName,"%s%s",oFileName,".asm");
-    registerStack= new PileRegTemp68k(&ilCoder,&virtualStack);
+    registerStack= new TempRegStack68k(&ilCoder,&virtualStack);
 }
 
 Gen68k::~Gen68k(void){
@@ -55,7 +55,7 @@ void Gen68k::setEnvironnement(Collection* BerrListe,
     Fonctions=BFonctions;
 }
 
-int Gen68k::getNbRegObject(CNoeud* bNoeud, NatureOp bNat){
+int Gen68k::getNbRegObject(ASTNode* bNoeud, NatureOp bNat){
     int val;
     if (bNoeud->getNature()==NODE_OPERAND_VARIABLE){
         if (bNat==NO_REG){
@@ -72,7 +72,7 @@ int Gen68k::getNbRegObject(CNoeud* bNoeud, NatureOp bNat){
     return val;
 }
 
-int Gen68k::getNbRegBool(CNoeud* bNoeud){
+int Gen68k::getNbRegBool(ASTNode* bNoeud){
     bNoeud->display();
     int val=-1;
     TypeOptor operaTOR = bNoeud->getOperator();
@@ -109,7 +109,7 @@ int Gen68k::getNbRegBool(CNoeud* bNoeud){
     return val;
 }
 
-int Gen68k::getNbRegArith(CNoeud* bNoeud,NatureOp bNat){
+int Gen68k::getNbRegArith(ASTNode* bNoeud,NatureOp bNat){
     NodeNature NatureArbre=bNoeud->getNature();
     int val=-1;
     int n1,n2,nMax;
@@ -160,7 +160,7 @@ int Gen68k::getNbRegArith(CNoeud* bNoeud,NatureOp bNat){
     bNoeud->setNbReg(val);
     return val;
 }
-void Gen68k::codeObject(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
+void Gen68k::codeObject(ASTNode* bNoeud,NatureOp bNat,Operande68k** opertr){
     size_op68k size=getSize(bNoeud);
 
     if (bNoeud->getNature()==NODE_OPERAND_VARIABLE){
@@ -178,7 +178,7 @@ void Gen68k::codeObject(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
     }
 }
 
-size_op68k Gen68k::getSize(CNoeud* bNoeud){
+size_op68k Gen68k::getSize(ASTNode* bNoeud){
     size_op68k size=SZ_UNKNOWN;
 
     if (bNoeud->getType().Type==TP_INTEGER) size=SZ_W;
@@ -189,7 +189,7 @@ size_op68k Gen68k::getSize(CNoeud* bNoeud){
     return size;
 }
 
-void Gen68k::codeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
+void Gen68k::codeArith(ASTNode* bNoeud,NatureOp bNat,Operande68k** opertr){
     NodeNature NatureArbre=bNoeud->getNature();
     size_op68k size=getSize(bNoeud);
     Operande68k* Op1;
@@ -269,7 +269,7 @@ void Gen68k::codeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
             (bNoeud->getRightChild()->getNature()!=NODE_OPERAND_CONSTANT &&
              bNoeud->getRightChild()->getNature()!=NODE_OPERAND_VARIABLE))
     {
-        CNoeud* aux=bNoeud->getRightChild();
+        ASTNode* aux=bNoeud->getRightChild();
         bNoeud->setRightChild(bNoeud->getLeftChild());
         bNoeud->setLeftChild(aux);
         codeArith(bNoeud, bNat, opertr);
@@ -338,7 +338,7 @@ void Gen68k::codeArith(CNoeud* bNoeud,NatureOp bNat,Operande68k** opertr){
     }
 }
 
-void Gen68k::codeBool(CNoeud* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg){
+void Gen68k::codeBool(ASTNode* bNoeud,bool AvecSaut,bool ValSaut,Operande68k* etiqSaut,bool DansReg,bool ValReg){
     //printf("Entree dans COdeBOOl\n");
     //printf("expression booleenne:\n");
     //bNoeud->display();
@@ -537,7 +537,7 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         break;
     case INS_CALL:
         int somme;
-        CNoeud* CallNoeud;
+        ASTNode* CallNoeud;
 
         somme=0;        // la somme des tailles de ce qui est pouss? dans la pile
         size_op68k SizeOfArgument;
@@ -561,10 +561,10 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         }
         break;
     case INS_STRUCT_FOR:
-        CNoeud* initExpr;
-        CNoeud* finExpr;
-        CNoeud* stepExpr;
-        CNoeud* varExpr;
+        ASTNode* initExpr;
+        ASTNode* finExpr;
+        ASTNode* stepExpr;
+        ASTNode* varExpr;
         Operande68k* EtiqForDebTest;
         Operande68k* EtiqForFin;
 
@@ -661,7 +661,7 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         break;
     case INS_STRUCT_DOLPWH:     // do ... loop while (condition)
         Collection* CorpsDo;
-        CNoeud* exprDo;
+        ASTNode* exprDo;
         Operande68k* EtiqDebut;
         CorpsDo = bInstr->getDoBody();
         exprDo = bInstr->getDoExprCondition();
@@ -672,7 +672,7 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         break;
     case INS_STRUCT_DOWH:       // do while (condition) .... loop
         Collection* CorpsWhile;
-        CNoeud* exprWhile;
+        ASTNode* exprWhile;
         Operande68k* EtiqWhileDebut;
         Operande68k* EtiqWhileFin;
 
@@ -689,7 +689,7 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
 
         break;
     case INS_IF:
-        CNoeud* exprIf;
+        ASTNode* exprIf;
         exprIf = bInstr->getIfExprTree();
         //printf("codeInstr IF\n");
         //printf("Expression du If:\n");
@@ -712,7 +712,7 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         listExprElseIf->bindIterator(&iterExprElseIf);
         listCorpsElseIf->bindIterator(&iterCorpsElseIf);
         Collection* InstrCorpsElseIf;
-        CNoeud* exprElseIf;
+        ASTNode* exprElseIf;
 
         // -------------------------------------------------------
         // Codage de expression de IF
@@ -737,7 +737,7 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
         // Codage des ELSE IF
         // -------------------------------------------------------
         while(iterExprElseIf.elemExists()){
-            exprElseIf=(CNoeud*)iterExprElseIf.getNext();
+            exprElseIf=(ASTNode*)iterExprElseIf.getNext();
             InstrCorpsElseIf=(Collection*)iterCorpsElseIf.getNext();
             if (iterExprElseIf.elemExists()) {  // le suivant existe
                 EtiqFinLocalCorpsElseIf = ilCoder.createOpLabel();   // donc nouvelle etiquette
@@ -790,7 +790,7 @@ void Gen68k::codeInstr(InstructionETPB* bInstr){
 void Gen68k::generateCode(){
     ColIterator iter1;
     ColIterator iter2;
-    FonctionItem* Fonc1;
+    FunctionItem* Fonc1;
     VariableItem* Var1;
 
     std::ofstream file(outputFileName);
@@ -803,7 +803,7 @@ void Gen68k::generateCode(){
     currentStackVariablesSize = 0;
     Fonctions->bindIterator(&iter1);
     while(iter1.elemExists()){
-        Fonc1=(FonctionItem*)iter1.getNext();
+        Fonc1=(FunctionItem*)iter1.getNext();
         if (Fonc1->isUsed()){
 
 

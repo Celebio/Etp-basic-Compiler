@@ -75,10 +75,10 @@ VarTypeType VeriSyn::GetVarType(TAG* bTag)
     }
     return RetVal;
 }
-void VeriSyn::NetoyerArbreParentheses(CNoeud *CurNoeud)
+void VeriSyn::NetoyerArbreParentheses(ASTNode *CurNoeud)
 {
-    CNoeud* filsD;
-    CNoeud* filsG;
+    ASTNode* filsD;
+    ASTNode* filsG;
     if (CurNoeud==NULL) return;
 
     filsD=CurNoeud->getRightChild();
@@ -112,7 +112,7 @@ bool VeriSyn::VerifyExpression(bool requis,
                       TAG* debTag,
                       TAG* finTag,
                       bool moinsPermis,
-                      CNoeud** ArbreExpress)
+                      ASTNode** ArbreExpress)
 {
 #ifdef _DEBUGARBRES
     printf("verifying expression...\n");
@@ -121,11 +121,11 @@ bool VeriSyn::VerifyExpression(bool requis,
     TAG* currentEnd;
     TAG* precCur=current;
     int mCtr,cCtr,argCtr;
-    CNoeud* Arbre=*ArbreExpress;
-    CNoeud* lastAdded=NULL;
-    CNoeud* aux;
-    CNoeud* courNoeud;
-    CNoeud* precNoeud;
+    ASTNode* Arbre=*ArbreExpress;
+    ASTNode* lastAdded=NULL;
+    ASTNode* aux;
+    ASTNode* courNoeud;
+    ASTNode* precNoeud;
     //typeOperator crTokType;
     if (debTag==finTag && requis)
     {
@@ -141,7 +141,7 @@ bool VeriSyn::VerifyExpression(bool requis,
 #endif
 
 
-        aux = new CNoeud(current);
+        aux = new ASTNode(current);
         //crTokType=aux->getOperType();
 
 
@@ -152,7 +152,7 @@ bool VeriSyn::VerifyExpression(bool requis,
         }
         if (!Arbre)
         {
-            if (current->GetToken()==TOKEN_MOINS)      // si le premier terme est un token_moins, ce token_moins est un operateur unaire droite
+            if (current->GetToken()==TOKEN_MINUS)      // si le premier terme est un token_moins, ce token_moins est un operateur unaire droite
             {
                 aux->setOperatorUnaryMinus();
             }
@@ -319,9 +319,9 @@ bool VeriSyn::VerifyExpression(bool requis,
                     lastAdded->setRightChild(NULL);
                     lastAdded->setLeftChild(NULL);
                     //argCtr=0;
-                    //while (lastAdded->Successeur[argCtr])
+                    //while (lastAdded->next[argCtr])
                     //{
-                    //  lastAdded->Successeur[argCtr]->display();
+                    //  lastAdded->next[argCtr]->display();
                     //  argCtr++;
                     //}
 
@@ -416,7 +416,7 @@ bool VeriSyn::VerifyExpression(bool requis,
 
 void VeriSyn::VerifyInstruction(TAG* debTag,
                        TAG* finTag,
-                       FonctionItem* pFunc,
+                       FunctionItem* pFunc,
                        Collection* instrCollect)
 {
 
@@ -437,7 +437,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
     VariableItem* tmpVar=NULL;
     DimElemItem* tmpDim=NULL;
     TypeItem* tmpType=NULL;
-    FonctionItem* tmpFonc=NULL;
+    FunctionItem* tmpFonc=NULL;
 
     while (current && current!=finTag)
     {
@@ -634,10 +634,10 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             {
                 tmpVar= new VariableItem();
                 pFunc->getVariableList()->add(tmpVar);
-                tmpVar->SetCar(VR_PUBLIC);
+                tmpVar->setLocality(VR_PUBLIC);
                 tmpVar->SetFunc(NULL);
                 tmpVar->setTagName(current);
-                tmpVar->SetTagType(NULL);
+                tmpVar->setTagType(NULL);
                 State = INST_LOCAL01;
             }
             else
@@ -687,7 +687,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->add(tmpDim);
+                tmpVar->getDimList()->add(tmpDim);
                 State= INST_LOCAL05;
                 current=currentEnd;
             }
@@ -696,7 +696,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->add(tmpDim);
+                tmpVar->getDimList()->add(tmpDim);
                 State= INST_LOCAL02;
                 current=currentEnd;
             }
@@ -722,7 +722,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
                 tmpVar->setType(GetVarType(current));
-                tmpVar->SetTagType(current);
+                tmpVar->setTagType(current);
                 State = INST_LOCAL07;
             }
             else
@@ -736,7 +736,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
             if (current->GetToken() == TOKEN_CRLF)
             {
                 // On a d?clar? une variable locale
-                tmpVar->SetCar(VR_LOCAL);
+                tmpVar->setLocality(VR_LOCAL);
                 AvanceNextLigne(&current);
                 State = INST_00;
             }
@@ -1061,7 +1061,7 @@ void VeriSyn::VerifyInstruction(TAG* debTag,
                 // signaler les erreurs dans l'expression
 
                 //VerifyExpression(true,current,currentEnd,true,instrCour->getIfExprTreePtr());
-                CNoeud* exprElseIf=NULL;
+                ASTNode* exprElseIf=NULL;
                 VerifyExpression(true,current,currentEnd,true,&exprElseIf);
                 instrCour->getIfExprElseIf()->add(exprElseIf);
                 State = INST_IF01;
@@ -1289,7 +1289,7 @@ void VeriSyn::VerifSyntax()
     VariableItem* tmpVar=NULL;
     DimElemItem* tmpDim=NULL;
     TypeItem* tmpType=NULL;
-    FonctionItem* tmpFonc=NULL;
+    FunctionItem* tmpFonc=NULL;
     /*
     Variable tmpVar;
     Collection<DimElem> tmpDimCollect;  // les dimensions d'une variable
@@ -1388,10 +1388,10 @@ void VeriSyn::VerifSyntax()
 
                 tmpVar= new VariableItem();
                 VariablesPublic.add(tmpVar);
-                tmpVar->SetCar(VR_PUBLIC);
+                tmpVar->setLocality(VR_PUBLIC);
                 tmpVar->SetFunc(NULL);
                 tmpVar->setTagName(current);
-                tmpVar->SetTagType(NULL);
+                tmpVar->setTagType(NULL);
                 State = ST_P01;
             }
             else
@@ -1436,7 +1436,7 @@ void VeriSyn::VerifSyntax()
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->add(tmpDim);
+                tmpVar->getDimList()->add(tmpDim);
                 State= ST_P05;
                 current=currentEnd;
             }
@@ -1445,7 +1445,7 @@ void VeriSyn::VerifSyntax()
                 tmpDim = new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->add(tmpDim);
+                tmpVar->getDimList()->add(tmpDim);
                 State= ST_P02;
                 current=currentEnd;
             }
@@ -1470,7 +1470,7 @@ void VeriSyn::VerifSyntax()
             if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
                 tmpVar->setType(GetVarType(current));
-                tmpVar->SetTagType(current);
+                tmpVar->setTagType(current);
                 State = ST_P07;
             }
             else
@@ -1484,7 +1484,7 @@ void VeriSyn::VerifSyntax()
             if (current->GetToken() == TOKEN_CRLF)
             {
                 // On a d?clar? une variable publique
-                tmpVar->SetCar(VR_PUBLIC);
+                tmpVar->setLocality(VR_PUBLIC);
 
                 AvanceNextLigne(&current);
                 State = ST_DEHORS;
@@ -1585,7 +1585,7 @@ void VeriSyn::VerifSyntax()
                 tmpDim=new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->add(tmpDim);
+                tmpVar->getDimList()->add(tmpDim);
                 State=ST_T04;
                 current=currentEnd;
             }
@@ -1594,7 +1594,7 @@ void VeriSyn::VerifSyntax()
                 tmpDim=new DimElemItem();
                 tmpDim->SetExprNull();
                 VerifyExpression(true,current,currentEnd,false,tmpDim->GetExprPtr());
-                tmpVar->GetDimListe()->add(tmpDim);
+                tmpVar->getDimList()->add(tmpDim);
                 State=ST_T07;
                 current=currentEnd;
             }
@@ -1619,7 +1619,7 @@ void VeriSyn::VerifSyntax()
             if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
                 tmpVar->setType(GetVarType(current));
-                tmpVar->SetTagType(current);
+                tmpVar->setTagType(current);
                 State = ST_T09;
             }
             else
@@ -1633,7 +1633,7 @@ void VeriSyn::VerifSyntax()
             if (current->GetToken() == TOKEN_CRLF)
             {
                 // On a d?clar? un champ du type
-                tmpVar->SetCar(VR_MEMBER);
+                tmpVar->setLocality(VR_MEMBER);
                 tmpVar->SetFunc(NULL);
                 State = ST_T02;
             }
@@ -1674,7 +1674,7 @@ void VeriSyn::VerifSyntax()
         // -----------------------------------------------------------------------------------------------
 
         case ST_PROC00:
-            tmpFonc= new FonctionItem();
+            tmpFonc= new FunctionItem();
             tmpFonc->setLine(current->getLine());
             tmpFonc->setReturnType(TP_VOID);
             if (readingPredef){
@@ -1771,8 +1771,8 @@ void VeriSyn::VerifSyntax()
             if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
                 tmpVar->setType(GetVarType(current));
-                tmpVar->SetTagType(current);
-                tmpVar->SetCar(VR_ARGU);
+                tmpVar->setTagType(current);
+                tmpVar->setLocality(VR_ARGU);
                 tmpVar->SetFunc(tmpFonc);
                 // On a d?clar? un argument
 
@@ -1829,7 +1829,7 @@ void VeriSyn::VerifSyntax()
 
 
         case ST_FUNC00:
-            tmpFonc= new FonctionItem();
+            tmpFonc= new FunctionItem();
             tmpFonc->setLine(current->getLine());
             tmpFonc->setReturnType(TP_VOID);   // ... pour l'instant
             Fonctions.add(tmpFonc);     // on l'insere tout de suite
@@ -1909,8 +1909,8 @@ void VeriSyn::VerifSyntax()
             if (current->GetToken() == TOKEN_IDENTIF || IsAType(current))
             {
                 tmpVar->setType(GetVarType(current));
-                tmpVar->SetTagType(current);
-                tmpVar->SetCar(VR_ARGU);
+                tmpVar->setTagType(current);
+                tmpVar->setLocality(VR_ARGU);
                 tmpVar->SetFunc(tmpFonc);
                 // On a d?clar? un argument
 

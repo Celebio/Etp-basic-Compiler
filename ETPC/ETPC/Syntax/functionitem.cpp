@@ -14,13 +14,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _LECTUREFICHIER_H_1
-//#define _LECTUREFICHIER_H_1
 
-//extern void AfficheContenu(void *BText);
-extern void Quit();
-extern long FileSize;
+#include "functionitem.h"
+#include <stdio.h>
 
+FunctionItem::FunctionItem(void)
+{
+    assembler=false;
+    used=false;
+}
+FunctionItem::~FunctionItem(void)
+{
+}
+void FunctionItem::destroy()
+{
+}
+void FunctionItem::display()
+{
+    printf("Fonction:line:%i  nom:%s, arguments:\n",line,name);
+    printf("Arguments:\n");
+    argumentList.display();
+    printf("Variables locales:\n");
+    variableList.display();
 
-#endif
+    if (returnType.Type != TP_VOID)
+    {
+        printf("retourne ");
+        returnType.display();
+    }
+    printf("\n");
+    printf("Instructions:\n");
+    instructionList.display();
+}
 

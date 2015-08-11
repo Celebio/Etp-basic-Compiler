@@ -14,14 +14,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef _FONCTIONITEM_H_1
-#define _FONCTIONITEM_H_1
+#ifndef _FUNCTIONITEM_H_1
+#define _FUNCTIONITEM_H_1
 
 #include "collection.h"
 #include "VarTypeType.h"
 #include "asm68kCoder.h"
 
-class FonctionItem :
+class FunctionItem :
     public ColItem
 {
 private:
@@ -36,8 +36,8 @@ private:
     asm68kCoder* asmCode;
 
 public:
-    FonctionItem(void);
-    ~FonctionItem(void);
+    FunctionItem(void);
+    ~FunctionItem(void);
 
 
     void destroy();

@@ -21,7 +21,7 @@
 #define D_STACK_SIZE (D7-D1+1)
 #define A_STACK_SIZE (A6-A0+1)
 
-class PileRegTemp68k{
+class TempRegStack68k{
 private:
     reg_id stackForD[D_STACK_SIZE];
     reg_id stackForA[A_STACK_SIZE];
@@ -33,9 +33,9 @@ private:
     VirtStack68k* mStack;
     int mTempCtr;
 public:
-    PileRegTemp68k(void);
-    PileRegTemp68k(asm68kCoder* bIL,VirtStack68k* bStack);
-    ~PileRegTemp68k(void);
+    TempRegStack68k(void);
+    TempRegStack68k(asm68kCoder* bIL,VirtStack68k* bStack);
+    ~TempRegStack68k(void);
 
     void init();
     void switchD(void);

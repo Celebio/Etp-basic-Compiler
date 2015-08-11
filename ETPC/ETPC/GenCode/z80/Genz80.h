@@ -27,7 +27,7 @@
 
 #include "asmz80Coder.h"
 //#include "PileRegTempz80.h"
-#include "FonctionItem.h"
+#include "functionitem.h"
 #include "InstructionETPB.h"
 
 
@@ -49,13 +49,13 @@ private:
 
     int mNbRegMax;
 
-    //size_opz80 getSize(CNoeud* bNoeud);
+    //size_opz80 getSize(ASTNode* bNoeud);
 
-    int getNbRegArith(CNoeud* bNoeud,NatureOpz80 bNat);
-    int getNbRegObject(CNoeud* bNoeud,NatureOpz80 bNat);
+    int getNbRegArith(ASTNode* bNoeud,NatureOpz80 bNat);
+    int getNbRegObject(ASTNode* bNoeud,NatureOpz80 bNat);
 
-//  void codeArith(CNoeud* bNoeud,NatureOp bNat,Operandez80** opertr);
-//  void codeObject(CNoeud* bNoeud,NatureOp bNat,Operandez80** opertr);
+//  void codeArith(ASTNode* bNoeud,NatureOp bNat,Operandez80** opertr);
+//  void codeObject(ASTNode* bNoeud,NatureOp bNat,Operandez80** opertr);
 
 public:
     Genz80(void);

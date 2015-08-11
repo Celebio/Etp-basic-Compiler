@@ -19,10 +19,10 @@
 
 #include "VariableItem.h"
 #include "collection.h"
-#include "FonctionItem.h"
+#include "functionitem.h"
 #include "DimElemItem.h"
 #include "InstructionETPB.h"
-#include "Tokenizer.h"
+#include "tokenizer.h"
 
 class VeriSem
 {
@@ -35,14 +35,14 @@ private:
     int UpdateVarSize(VariableItem* bVar,VarTypeType bType,bool UDasPtr);
     bool TypeExiste(VariableItem* bVariable);
 
-    VarTypeType GetTypeExpression(CNoeud *expr,
+    VarTypeType GetTypeExpression(ASTNode *expr,
                                 VarTypeType typeAttendu,
-                                FonctionItem* foncEnCours);
+                                FunctionItem* foncEnCours);
 
-    void VerifSemInstr(Collection *bInstrListe,FonctionItem* foncEnCours);
+    void VerifSemInstr(Collection *bInstrListe,FunctionItem* foncEnCours);
 
     void VerifSemInstr(InstructionETPB *bInstr,
-                   FonctionItem* foncEnCours);
+                   FunctionItem* foncEnCours);
 public:
     VeriSem(void);
     ~VeriSem(void);

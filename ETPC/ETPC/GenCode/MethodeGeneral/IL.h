@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include "VirtStack.h"
-#include "noeud.h"
+#include "astnode.h"
 
 typedef enum LigneNature {NA_ETIQ,NA_INST,NA_COMMENT,NA_UNKNOWN};
 typedef enum OperandeNature {OP_DIRECT,OP_INDIRECT,OP_INDEXE,OP_INTEGER,OP_FLOAT,OP_STRING,OP_LABEL};
@@ -77,7 +77,7 @@ public:
 
     void display();
 
-    InsOpEnum nodeToOp(CNoeud* bNoeud);
+    InsOpEnum nodeToOp(ASTNode* bNoeud);
 
     Operande* createOp(reg_id bdirectRegister);
     Operande* createOp(int bdep,reg_id bRegBase);

@@ -19,7 +19,7 @@
 #define _COLITERATOR_H_1
 
 
-#include "ColItem.h"
+#include "colitem.h"
 
 
 class ColIterator

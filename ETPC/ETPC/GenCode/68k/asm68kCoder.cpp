@@ -68,7 +68,7 @@ asm68kCoder::~asm68kCoder(void){
 /**********************************************************
     UTILE
     *******************************************************************/
-InsOpEnum68k asm68kCoder::nodeToOp(CNoeud* bNoeud)
+InsOpEnum68k asm68kCoder::nodeToOp(ASTNode* bNoeud)
 {
     switch(bNoeud->getOperator())
     {

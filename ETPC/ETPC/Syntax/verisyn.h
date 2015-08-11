@@ -20,13 +20,13 @@
 //#define _VERISYN_H_1
 
 //#include "TAG.h"
-//#include "Noeud.h"
+//#include "astnode.h"
 //#include "Collection.h"
 
 #include "VariableItem.h"
 #include "DimElemItem.h"
 #include "TypeItem.h"
-#include "FonctionItem.h"
+#include "functionitem.h"
 
 
 
@@ -67,15 +67,15 @@ private:
     void AvanceNextLigne(TAG** bTAG);
     bool IsAType(TAG* bTag);
     VarTypeType GetVarType(TAG* bTag);
-    void NetoyerArbreParentheses(CNoeud *CurNoeud);
+    void NetoyerArbreParentheses(ASTNode *CurNoeud);
     bool VerifyExpression(bool requis,
                       TAG* debTag,
                       TAG* finTag,
                       bool moinsPermis,
-                      CNoeud** ArbreExpress);
+                      ASTNode** ArbreExpress);
     void VerifyInstruction(TAG* debTag,
                        TAG* finTag,
-                       FonctionItem* pFunc,
+                       FunctionItem* pFunc,
                        Collection* instrCollect);
 
 public:
