@@ -12,7 +12,7 @@ Procedure Main:
     clearscreen()
 
     If c Then
-        dispintXY(5, 5, 1337)
+        dispintXY(5, 5, a)
     Else
         dispintXY(5, 5, 666)
     End If

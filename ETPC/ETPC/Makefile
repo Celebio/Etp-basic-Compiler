@@ -1,5 +1,5 @@
 # Makefile pour Pingu by Onur et FpgForce
-# 2005
+# 2005 (->2017 ;))
 
 # compiler
 CC = g++
@@ -7,13 +7,13 @@ CC = g++
 LD = g++
 
 # compiler flags
-CFLAGS = -c -O3 -std=c++11
+CFLAGS = -c -O3 -std=c++11 --coverage
 # Object flags
 OFLAGS = -o
 # Includes
 INC = -IGeneral -ISyntax -IVerif -IGenCode/68k -IGenCode/z80
 # Link Editor flags
-LDFLAGS = -o
+LDFLAGS = --coverage -o
 
 # Objects list
 OLIST = Obj/ColItem.o Obj/ColIterator.o Obj/collection.o Obj/compiler.o Obj/errorC.o Obj/filereader.o Obj/astnode.o Obj/TAG.o Obj/VarTypeType.o Obj/DimElemItem.o Obj/functionitem.o Obj/InstructionETPB.o Obj/tokenizer.o Obj/TypeItem.o Obj/VariableItem.o Obj/verisyn.o Obj/verisem.o Obj/asm68kCoder.o Obj/Gen68k.o  Obj/tempRegStack68k.o Obj/VirtStack68k.o Obj/Genz80.o Obj/VirtStackz80.o Obj/asmz80Coder.o

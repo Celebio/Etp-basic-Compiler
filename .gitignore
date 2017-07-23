@@ -1,1 +1,10 @@
 *.DS_Store
+outetp.o
+output.asm
+cov.info
+output-for-sonar.xml
+program.89z
+program.9xz
+sonar-project.properties
+Story/
+.scannerwork

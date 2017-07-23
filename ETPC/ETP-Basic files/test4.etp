@@ -2,15 +2,14 @@
 'public i as long
 
 procedure jghd(fz as integer)
-	
+
 
 function sdf:(i as long) as file
 	'local i as string
-	
-	do 
+
+	do
 		jghd 876860
 	loop while fdr<9837
-	
-	
-	
-	
+
+
+
