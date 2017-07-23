@@ -2,3 +2,7 @@
 
 function addit(a as long,b as long) as long
 	return a+b
+
+Procedure Main:
+    clearscreen()
+

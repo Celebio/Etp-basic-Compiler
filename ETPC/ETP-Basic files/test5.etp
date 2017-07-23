@@ -38,6 +38,8 @@ procedure kjhfd:(fs as integer,sdf as string)
 
 	'a=a+43+b.num.tur.num.tutu+3598
 
+Procedure Main:
+    clearscreen()
 
 
 
