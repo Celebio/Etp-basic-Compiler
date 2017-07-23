@@ -1,6 +1,9 @@
 *.DS_Store
+*.o
+*.gcda
+*.gcno
 outetp.o
-output.asm
+outetp.asm
 cov.info
 output-for-sonar.xml
 program.89z
